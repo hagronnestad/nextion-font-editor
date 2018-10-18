@@ -16,17 +16,17 @@ namespace NextionFontEditor
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var file16 = @"C:\Users\hag\Desktop\fontello_16.zi";
-            var file24 = @"C:\Users\hag\Desktop\fontello_24.zi";
-            var file32 = @"C:\Users\hag\Desktop\fontello_32.zi";
+            var file1 = @"Test Files\Arial_40_ascii.zi";
+            var file2 = @"Test Files\Arial_40_iso-8859-1.zi";
+            var file3 = @"Test Files\Arial_40_gb2312.zi";
 
-            var bytes16 = File.ReadAllBytes(file16);
-            var bytes24 = File.ReadAllBytes(file24);
-            var bytes32 = File.ReadAllBytes(file32);
+            var bytes1 = File.ReadAllBytes(file1);
+            var bytes2 = File.ReadAllBytes(file2);
+            var bytes3 = File.ReadAllBytes(file3);
 
-            DrawFont(bytes16, p, textBox1);
-            DrawFont(bytes24, p2, textBox2);
-            DrawFont(bytes32, p3, textBox3);
+            DrawFont(bytes1, p, textBox1);
+            DrawFont(bytes2, p2, textBox2);
+            DrawFont(bytes3, p3, textBox3);
         }
 
         private void DrawFont(byte[] bytes, PictureBox p, TextBox t)
@@ -48,7 +48,6 @@ namespace NextionFontEditor
             var charCount = charDataLength / bytesPerChar;
 
             t.Text = fontName;
-
 
             var spacing = 6;
             var g = p.CreateGraphics();
@@ -73,7 +72,6 @@ namespace NextionFontEditor
                 var yPos = 1 + (row * cHeight + (row * spacing));
 
                 g.DrawRectangle(pr, xPos - 1, yPos - 1, cWidth + 1, cHeight + 1);
-
 
                 for (int y = 0; y < cHeight; y++)
                 {
