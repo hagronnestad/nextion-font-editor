@@ -1,0 +1,15 @@
+fontello 16
+8*16
+chardataLength = 3584
+3584 / 16 = 224 characters
+
+
+
+arial_black_bold_24
+12*24
+8064 / 36 = 224
+
+
+arial_black_bold_32
+16*32
+14336 / 64 = 224

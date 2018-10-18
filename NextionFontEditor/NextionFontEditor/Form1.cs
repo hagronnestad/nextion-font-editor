@@ -14,69 +14,93 @@ namespace NextionFontEditor
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             var file16 = @"C:\Users\hag\Desktop\fontello_16.zi";
+            var file24 = @"C:\Users\hag\Desktop\fontello_24.zi";
             var file32 = @"C:\Users\hag\Desktop\fontello_32.zi";
 
             var bytes16 = File.ReadAllBytes(file16);
+            var bytes24 = File.ReadAllBytes(file24);
             var bytes32 = File.ReadAllBytes(file32);
 
-            textBox1.Text = Encoding.ASCII.GetString(bytes16.Skip(0x1C).Take(bytes16[0x14]).ToArray());
-            textBox2.Text = Encoding.ASCII.GetString(bytes32.Skip(0x1C).Take(bytes32[0x14]).ToArray());
-
-            //DrawFont(bytes16, p);
-            DrawFont(bytes32, p2);
+            DrawFont(bytes16, p, textBox1);
+            DrawFont(bytes24, p2, textBox2);
+            DrawFont(bytes32, p3, textBox3);
         }
 
-        private void DrawFont(byte[] bytes, PictureBox p)
+        private void DrawFont(byte[] bytes, PictureBox p, TextBox t)
         {
-            var cWidth = bytes[6];
-            var cHeight = bytes[7];
-            var spacing = 12;
+            var headerLength = 0x1C; // 27
+            var header = bytes.Take(headerLength).ToArray();
+
+            var fontNameLength = header[0x11]; var fontNameLength2 = header[0x12]; // Always the same as 0x11?
+            var fontName = Encoding.ASCII.GetString(bytes.Skip(headerLength).Take(fontNameLength).ToArray());
+
+            var cWidth = header[0x6];
+            var cHeight = header[0x7];
+
+            var variableDataLength = BitConverter.ToUInt32(header.Skip(0x14).Take(4).ToArray(), 0);
+            var charDataLength = variableDataLength - fontNameLength;
+
+            var charactersData = bytes.Skip(headerLength + fontNameLength).ToArray();
+            var bytesPerChar = (cWidth * cHeight) / 8;
+            var charCount = charDataLength / bytesPerChar;
+
+            t.Text = fontName;
+
+
+            var spacing = 6;
             var g = p.CreateGraphics();
 
             var bb = new SolidBrush(Color.Black);
-            var pr = new Pen(Color.Red);
+            var pr = new Pen(Color.DarkCyan);
 
-            var columns = 15;
-            var rows = 1;
+            var columns = 20;
+            var row = -1;
 
-            for (int row = 0; row < rows; row++)
+            for (int charIndex = 0; charIndex < charCount; charIndex++)
             {
-                for (int column = 0; column < columns; column++)
+                var charData = charactersData.Skip(charIndex * bytesPerChar).Take(bytesPerChar).ToArray();
+                var bits = BytesToBits(charData);
+
+                var column = charIndex % columns;
+                if (column == 0) row++;
+
+                var pixel = 0;
+
+                var xPos = 1 + (column * cWidth + (column * spacing));
+                var yPos = 1 + (row * cHeight + (row * spacing));
+
+                g.DrawRectangle(pr, xPos - 1, yPos - 1, cWidth + 1, cHeight + 1);
+
+
+                for (int y = 0; y < cHeight; y++)
                 {
-                    var cell = (row * columns) + column;
-                    var bytesPerLine = cWidth / 8;
-                    var charData = bytes.Skip(0x24 + (cell * cHeight * bytesPerLine)).Take(cHeight * bytesPerLine).ToArray();
-
-                    for (int charLine = 0; charLine < cHeight; charLine++)
+                    for (int x = 0; x < cWidth; x++)
                     {
-                        g.DrawRectangle(pr, (column * cWidth) + (column * spacing), row * (cHeight + spacing), cWidth, cHeight);
-
-                        var lineBytes = charData.Skip(bytesPerLine * charLine).Take(bytesPerLine).ToArray();
-
-                        for (int lineByte = 0; lineByte < lineBytes.Length; lineByte++)
-                        {
-                            for (int k = 0; k < 8; k++)
-                            {
-                                if ((lineBytes[lineByte] & (1 << k)) != 0)
-                                {
-                                    var x = (column * (cWidth + spacing)) + (bytesPerLine * lineByte) + k;
-                                    var y = (row * (cHeight + spacing)) + charLine;
-
-                                    g.FillRectangle(bb, x, y, 1, 1);
-                                }
-                            }
-                        }
+                        if (bits[pixel]) g.FillRectangle(bb, xPos + x, yPos + y, 1, 1);
+                        pixel++;
                     }
                 }
+
             }
+        }
+
+        public bool[] BytesToBits(byte[] bytes)
+        {
+            bool[] bits = new bool[bytes.Length * 8];
+
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    var index = i * 8 + j;
+                    bits[index] = (bytes[i] & (1 << (7 - j))) != 0;
+                }
+            }
+
+            return bits;
         }
     }
 }
