@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -41,7 +41,7 @@ namespace NextionFontEditor
             var cHeight = header[0x7];
 
             var variableDataLength = BitConverter.ToUInt32(header.Skip(0x14).Take(4).ToArray(), 0);
-            var charDataLength = variableDataLength - fontNameLength;
+            var charDataLength = variableDataLength - fontNameLength - 4; // 4 empty bytes before font name starts
 
             var charactersData = bytes.Skip(headerLength + fontNameLength).ToArray();
             var bytesPerChar = (cWidth * cHeight) / 8;
