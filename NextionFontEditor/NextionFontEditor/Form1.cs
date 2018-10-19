@@ -31,7 +31,7 @@ namespace NextionFontEditor
 
         private void DrawFont(byte[] bytes, PictureBox p, TextBox t)
         {
-            var headerLength = 0x1C; // 27
+            var headerLength = 0x1C; // 28
             var header = bytes.Take(headerLength).ToArray();
 
             var fontNameLength = header[0x11]; var fontNameLength2 = header[0x12]; // Always the same as 0x11?
@@ -41,11 +41,15 @@ namespace NextionFontEditor
             var cHeight = header[0x7];
 
             var variableDataLength = BitConverter.ToUInt32(header.Skip(0x14).Take(4).ToArray(), 0);
-            var charDataLength = variableDataLength - fontNameLength - 4; // 4 empty bytes before font name starts
+            var charDataLength = variableDataLength - fontNameLength;
 
             var charactersData = bytes.Skip(headerLength + fontNameLength).ToArray();
             var bytesPerChar = (cWidth * cHeight) / 8;
-            var charCount = charDataLength / bytesPerChar;
+
+            var charCount = BitConverter.ToUInt32(header.Skip(0x0C).Take(4).ToArray(), 0);
+            var calculatedCharCount = charDataLength / bytesPerChar;
+
+            if (charCount != calculatedCharCount) throw new Exception($"{nameof(charCount)} and {nameof(calculatedCharCount)} doesn't match.");
 
             t.Text = fontName;
 
@@ -55,7 +59,7 @@ namespace NextionFontEditor
             var bb = new SolidBrush(Color.Black);
             var pr = new Pen(Color.DarkCyan);
 
-            var columns = 20;
+            var columns = 10;
             var row = -1;
 
             for (int charIndex = 0; charIndex < charCount; charIndex++)
