@@ -22,7 +22,7 @@ This is a reverse engineered specification of the Nextion font format. Use at ow
 
 | Offset     | Length | Data                                             | Type   | Value               | Description                                                      |
 |------------|-------:|--------------------------------------------------|--------|--------------------:|------------------------------------------------------------------|
-| 0x00000000 | 6      | `04 FF 00 0A 01 00`                              |        |                     | Fixed?                                                           |
+| 0x00000000 | 6      | `04 FF 00 0A`                                    |        |                     | File signature / magic numbers                                   |
 | 0x00000006 | 1      | `14`                                             | byte   | 20                  | Character width                                                  |
 | 0x00000007 | 1      | `28`                                             | byte   | 40                  | Character height                                                 |
 | 0x0000000C | 4      | `5F 00 00 00`                                    | uint32 | 95                  | Number of characters in file                                     |
