@@ -46,16 +46,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="FormFontPreview.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="FormFontPreview.Designer.cs">
+      <DependentUpon>FormFontPreview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormFontGenerator.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormFontGenerator.Designer.cs">
+      <DependentUpon>FormFontGenerator.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="FormFontPreview.resx">
+      <DependentUpon>FormFontPreview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormFontGenerator.resx">
+      <DependentUpon>FormFontGenerator.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -90,6 +99,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZiLib\ZiLib.csproj">
+      <Project>{656212B8-63AB-4C9D-A654-59F54AB10EA5}</Project>
+      <Name>ZiLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
