@@ -13,51 +13,8 @@ namespace NextionFontEditor {
             InitializeComponent();
         }
 
-        private void lstFonts_MeasureItem(object sender, MeasureItemEventArgs e) {
-            e.ItemWidth = lstFonts.Width;
-            e.ItemHeight = 30;
-        }
-
-        private void lstFonts_DrawItem(object sender, DrawItemEventArgs e) {
-            e.DrawBackground();
-
-            var fontName = lstFonts.Items[e.Index].ToString();
-
-            var font = new Font(fontName, 20, GraphicsUnit.Pixel);
-
-            // See if the item is selected.
-            if ((e.State & DrawItemState.Selected) == DrawItemState.Selected) {
-
-                e.Graphics.DrawString(fontName, font, SystemBrushes.HighlightText, e.Bounds.Left, e.Bounds.Top);
-
-            } else {
-
-                using (SolidBrush br = new SolidBrush(e.ForeColor)) {
-                    e.Graphics.DrawString(fontName, font, br, e.Bounds.Left, e.Bounds.Top);
-                }
-
-            }
-
-            e.DrawFocusRectangle();
-        }
-
         private void FormFontGenerator_Load(object sender, EventArgs e) {
-
-            InitializeFontList();
             InitializeSizesList();
-
-        }
-
-        private void InitializeFontList() {
-            lstFonts.Items.Clear();
-
-            using (InstalledFontCollection col = new InstalledFontCollection()) {
-                lstFonts.Items.AddRange(col.Families
-                        .OrderBy(x => x.Name)
-                        .Select(x => x.Name)
-                        .ToArray()
-                    );
-            }
         }
 
         private void InitializeSizesList() {

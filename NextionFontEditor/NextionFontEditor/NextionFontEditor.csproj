@@ -46,6 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\FontListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="FormFontPreview.cs">
       <SubType>Form</SubType>
     </Compile>
