@@ -26,10 +26,6 @@ namespace ZiLib {
 
         public List<Bitmap> CharBitmaps { get; set; } = new List<Bitmap>();
 
-        public static ZiFont FromFile(string fileName) {
-            return FromBytes(File.ReadAllBytes(fileName));
-        }
-
         public void CreateBitmaps() {
             CharBitmaps.Clear();
 
@@ -57,28 +53,84 @@ namespace ZiLib {
             }
         }
 
+        public void Save(string fileName) {
+            var file = new List<byte>();
+
+            file.AddRange(MagicNumbers);
+            file.Add(0x03); // Encoding
+            file.Add(0x00); // Encoding? Maybe 16-bit?
+            file.Add(CharacterWidth);
+            file.Add(CharacterHeight);
+            file.Add(0x00); // Unknown
+            file.Add(0x00); // Unknown
+            file.Add(0x20); // Unknown
+            file.Add(0x7E); // Unknown
+            file.AddRange(BitConverter.GetBytes(CharacterCount));
+            file.Add(0x03); // Version?
+            file.Add(NameLength);
+            file.Add(NameLength);
+            file.Add(0x00); // Unknown
+            file.AddRange(BitConverter.GetBytes(VariableDataLength));
+            file.Add(0x00); // Unknown
+            file.Add(0x00); // Unknown
+            file.Add(0x00); // Unknown
+            file.Add(0x00); // Unknown
+            file.AddRange(Encoding.ASCII.GetBytes(Name));
+            file.AddRange(CharData);
+
+            File.WriteAllBytes(fileName, file.ToArray());
+        }
+
+        public static ZiFont FromFile(string fileName) {
+            return FromBytes(File.ReadAllBytes(fileName));
+        }
+
         public static ZiFont FromBytes(byte[] bytes) {
-            var zifont = new ZiFont();
+            var ziFont = new ZiFont();
 
-            zifont.Header = bytes.Take(HEADER_LENGTH).ToArray();
-            zifont.NameLength = zifont.Header[0x11];
-            zifont.Name = Encoding.ASCII.GetString(bytes.Skip(HEADER_LENGTH).Take(zifont.NameLength).ToArray());
+            ziFont.Header = bytes.Take(HEADER_LENGTH).ToArray();
+            ziFont.NameLength = ziFont.Header[0x11];
+            ziFont.Name = Encoding.ASCII.GetString(bytes.Skip(HEADER_LENGTH).Take(ziFont.NameLength).ToArray());
 
-            zifont.CharacterWidth = zifont.Header[0x6];
-            zifont.CharacterHeight = zifont.Header[0x7];
+            ziFont.CharacterWidth = ziFont.Header[0x6];
+            ziFont.CharacterHeight = ziFont.Header[0x7];
 
-            zifont.VariableDataLength = BitConverter.ToUInt32(zifont.Header.Skip(0x14).Take(4).ToArray(), 0);
-            zifont.CharDataLength = zifont.VariableDataLength - zifont.NameLength;
+            ziFont.VariableDataLength = BitConverter.ToUInt32(ziFont.Header.Skip(0x14).Take(4).ToArray(), 0);
+            ziFont.CharDataLength = ziFont.VariableDataLength - ziFont.NameLength;
 
-            zifont.CharData = bytes.Skip(HEADER_LENGTH + zifont.NameLength).ToArray();
-            zifont.BytesPerChar = (zifont.CharacterWidth * zifont.CharacterHeight) / 8;
+            ziFont.CharData = bytes.Skip(HEADER_LENGTH + ziFont.NameLength).ToArray();
+            ziFont.BytesPerChar = (ziFont.CharacterWidth * ziFont.CharacterHeight) / 8;
 
-            zifont.CharacterCount = BitConverter.ToUInt32(zifont.Header.Skip(0x0C).Take(4).ToArray(), 0);
-            var calculatedCharCount = zifont.CharDataLength / zifont.BytesPerChar;
+            ziFont.CharacterCount = BitConverter.ToUInt32(ziFont.Header.Skip(0x0C).Take(4).ToArray(), 0);
+            var calculatedCharCount = ziFont.CharDataLength / ziFont.BytesPerChar;
 
-            if (zifont.CharacterCount != calculatedCharCount) throw new Exception($"{nameof(zifont.CharacterCount)} and {nameof(calculatedCharCount)} doesn't match.");
+            if (ziFont.CharacterCount != calculatedCharCount) throw new Exception($"{nameof(ziFont.CharacterCount)} and {nameof(calculatedCharCount)} doesn't match.");
 
-            return zifont;
+            return ziFont;
+        }
+
+        public static ZiFont FromCharacterBitmaps(string fontName, byte width, byte height, List<Bitmap> characters) {
+            var bytesPerChar = width * height / 8;
+            var charDataLength = (uint) (bytesPerChar * characters.Count());
+
+            var ziFont = new ZiFont {
+                Name = fontName,
+                NameLength = (byte) fontName.Length,
+                CharacterWidth = width,
+                CharacterHeight = height,
+                CharacterCount = (uint) characters.Count(),
+                CharDataLength = charDataLength,
+                VariableDataLength = (uint) fontName.Length + charDataLength,
+                BytesPerChar = bytesPerChar
+            };
+
+            var charData = new List<byte>();
+            foreach (var cb in characters) {
+                charData.AddRange(BinaryTools.BitmapTo1BppData(cb));
+            }
+            ziFont.CharData = charData.ToArray();
+
+            return ziFont;
         }
     }
 }
