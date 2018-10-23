@@ -152,4 +152,4 @@ Now let's remove the zeroes (blank pixel) and replace the ones with an X:
 00: 
 ```
 
-There's our exclamation mark! 😎
+❗️ There's our exclamation mark ❗️
