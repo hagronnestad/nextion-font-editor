@@ -15,10 +15,28 @@ The Nextion Font Format is a proprietary font format used by the Nextion Editor 
 
 | Code page / encoding  | Value                 | Number of characters  |
 |-----------------------|-----------------------|-----------------------|
-| ASCII                 | 0x01                  | 95                    |
-| ISO-8859-1            | 0x03                  | 224                   |
-
-
+| ASCII                 | 0x0100                | 95                    |
+| GB2312                | 0x0200                | 8273                  |
+| ISO-8859-1            | 0x0300                | 224                   |
+| ISO-8859-2            | 0x0400                | 224                   |
+| ISO-8859-3            | 0x0500                | 224                   |
+| ISO-8859-4            | 0x0600                | 224                   |
+| ISO-8859-5            | 0x0700                | 224                   |
+| ISO-8859-6            | 0x0800                | 224                   |
+| ISO-8859-7            | 0x0900                | 224                   |
+| BIG5                  | 0x1001                | 14225                 |
+| ISO-8859-8            | 0x0A00                | 224                   |
+| ISO-8859-9            | 0x0B00                | 224                   |
+| ISO-8859-13           | 0x0C00                | 224                   |
+| ISO-8859-15           | 0x0D00                | 224                   |
+| ISO-8859-11           | 0x0E00                | 224                   |
+| KS_C_5601-1987        | 0x0F00                | 3855                  |
+| WINDOWS-1255          | 0x1100                | 224                   |
+| WINDOWS-1256          | 0x1200                | 224                   |
+| WINDOWS-1257          | 0x1300                | 224                   |
+| WINDOWS-1258          | 0x1400                | 224                   |
+| WINDOWS-874           | 0x1500                | 224                   |
+| KOI8-R                | 0x1600                | 224                   |
 
 
 ## File format structure
@@ -34,15 +52,23 @@ The Nextion Font Format is a proprietary font format used by the Nextion Editor 
 
 | Offset     | Length | Data                                             | Type   | Value               | Description                                                                           |
 |------------|-------:|--------------------------------------------------|--------|--------------------:|---------------------------------------------------------------------------------------|
-| 0x00000000 | 4      | `04 FF 00 0A`                                    |        |                     | File signature / magic numbers                                                        |
-| 0x00000000 | 2      | `03 00`                                          | uint16 | 3                   | Code page / character encoding (possible values listed in the reference table)        |
+| 0x00000000 | 4      | `04 FF 00 0A` *                                  | byte[] |                     | File signature / magic numbers                                                        |
+| 0x00000004 | 2      | `03 00`                                          | uint16 | 3                   | Code page / character encoding (possible values listed in the reference table)        |
 | 0x00000006 | 1      | `14`                                             | byte   | 20                  | Character width                                                                       |
 | 0x00000007 | 1      | `28`                                             | byte   | 40                  | Character height                                                                      |
+| 0x00000008 | 1      | `00`                                             | byte   | 0                   | Code page multibyte - first byte start                                                |
+| 0x00000009 | 1      | `00`                                             | byte   | 0                   | Code page multibyte - first byte end                                                  |
+| 0x0000000A | 1      | `20`                                             | byte   | 32, ' ' (ASCII)     | Code page start / multibyte second byte start                                         |
+| 0x0000000B | 1      | `7E`                                             | byte   | 126, '~' (ASCII)    | Code page end / multibyte second byte end                                             |
 | 0x0000000C | 4      | `5F 00 00 00`                                    | uint32 | 95                  | Number of characters in file                                                          |
+| 0x00000010 | 1      | `03`                                             | byte   | 3                   | File Format Version?                                                                  |
 | 0x00000011 | 1      | `0E`                                             | byte   | 14                  | Length of font name                                                                   |
-| 0x00000012 | 1      | `0E`                                             | byte   |                     | Also length of font name? Seems to always be the same as 0x11                         |
+| 0x00000012 | 1      | `0E`                                             | byte   | 14                  | Also length of font name? Always the same value as 0x11                               |
+| 0x00000013 | 1      | `00`                                             | byte   | 0                   | Reserved                                                                              |
 | 0x00000014 | 4      | `2A 25 00 00`                                    | uint32 | 9514                | Total length of font name and character data                                          |
-| 0x00000018 | 4      | `00 00 00 00`                                    |        |                     | Unknown, font name comes after these                                                  |
+| 0x00000018 | 4      | `00 00 00 00`                                    | uint32 | 0                   | Reserved                                                                              |
+
+> **\* The file signature/magic bytes for a .zi file containing the `BIG5` code page is different from all other files. For `BIG5` the magic bytes are `04 7E 22 0A`. Which means that the second and third byte might be variable and have some meaning beyond being magic numbers.**
 
 ### Font name
 Variable length font name. In this case the font name is `0x0E (14)` bytes long as seen in offset `0x00000011`.
