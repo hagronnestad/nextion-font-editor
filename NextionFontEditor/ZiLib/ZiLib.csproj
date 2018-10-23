@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryTools.cs" />
+    <Compile Include="CodePages.cs" />
     <Compile Include="ZiFont.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

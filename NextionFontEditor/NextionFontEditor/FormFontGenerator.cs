@@ -17,6 +17,8 @@ namespace NextionFontEditor {
 
         private void FormFontGenerator_Load(object sender, EventArgs e) {
             InitializeNextionFontSizesList();
+
+            new FormFontPreview().Show();
         }
 
         private void InitializeNextionFontSizesList() {
@@ -29,9 +31,9 @@ namespace NextionFontEditor {
         }
 
         private void CreatePreview() {
-            var previewChars = Enumerable.Range(32, 224).Select(x => ((char) x).ToString()).ToArray();
+            //var previewChars = CodePages.GetAscii();
+            var previewChars = CodePages.GetBig5().Skip(34).Take(300);
 
-            //var previewChars = 
 
             var fontName = lstFonts.SelectedItem?.ToString() ?? "";
             var fontSize = (int) numFontSize.Value;
@@ -46,7 +48,7 @@ namespace NextionFontEditor {
                 var allCharsMaxSize = size;
 
                 foreach (var c in previewChars) {
-                    var mst = GetMaxFontSizeForRect(c, fontName, size, new SizeF(width, height));
+                    var mst = GetMaxFontSizeForRect(c.ToString(), fontName, size, new SizeF(width, height));
                     if (mst < allCharsMaxSize) {
                         allCharsMaxSize = mst;
                     }
@@ -68,13 +70,13 @@ namespace NextionFontEditor {
                     g.FillRectangle(new SolidBrush(Color.White), 0, 0, width, height);
 
                     if (rbUseSingleCharacterMaxSize.Checked) {
-                        ms = GetMaxFontSizeForRect(c, fontName, size, new SizeF(width, height));
+                        ms = GetMaxFontSizeForRect(c.ToString(), fontName, size, new SizeF(width, height));
                     }
 
                     var font = new Font(fontName, ms, GraphicsUnit.Pixel);
 
                     g.DrawString(
-                        c,
+                        c.ToString(),
                         font,
                         new SolidBrush(Color.Black),
                         new RectangleF((float) numCharOffsetX.Value, (float) numCharOffsetY.Value, width, height),
