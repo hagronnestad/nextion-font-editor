@@ -1,12 +1,27 @@
 # Nextion Font Format Specification
 This is a reverse engineered specification of the Nextion font format. Use at own risk.
 
+## General information
+
+The Nextion Font Format is a proprietary font format used by the Nextion Editor HMI software. Nextion Editor has a built in "Font Generator"-tool which converts standard fonts into .zi files that is compatible with the Nextion HMI displays.
+
 | Information           |                       |
 |-----------------------|-----------------------|
-| **Example file**      | Arial_40_ascii.zi     |
-| **Software**          | Nextion Editor        |
+| **Software**          | Nextion Editor V0.53  |
 | **File extension**    | .zi                   |
+| **Example file**      | Arial_40_ascii.zi     |
 
+## Code pages / character encoding reference
+
+| Code page / encoding  | Value                 | Number of characters  |
+|-----------------------|-----------------------|-----------------------|
+| ASCII                 | 0x01                  | 95                    |
+| ISO-8859-1            | 0x03                  | 224                   |
+
+
+
+
+## File format structure
 
 ### Fixed header
 
@@ -17,16 +32,17 @@ This is a reverse engineered specification of the Nextion font format. Use at ow
 0x00000010: 03 0E 0E 00 2A 25 00 00 00 00 00 00
 ```
 
-| Offset     | Length | Data                                             | Type   | Value               | Description                                                      |
-|------------|-------:|--------------------------------------------------|--------|--------------------:|------------------------------------------------------------------|
-| 0x00000000 | 4      | `04 FF 00 0A`                                    |        |                     | File signature / magic numbers                                   |
-| 0x00000006 | 1      | `14`                                             | byte   | 20                  | Character width                                                  |
-| 0x00000007 | 1      | `28`                                             | byte   | 40                  | Character height                                                 |
-| 0x0000000C | 4      | `5F 00 00 00`                                    | uint32 | 95                  | Number of characters in file                                     |
-| 0x00000011 | 1      | `0E`                                             | byte   | 14                  | Length of font name                                              |
-| 0x00000012 | 1      | `0E`                                             | byte   |                     | Also length of font name? Seems to always be the same as 0x11    |
-| 0x00000014 | 4      | `2A 25 00 00`                                    | uint32 | 9514                | Total length of font name and character data                     |
-| 0x00000018 | 4      | `00 00 00 00`                                    |        |                     | Unknown, font name comes after these                             |
+| Offset     | Length | Data                                             | Type   | Value               | Description                                                                           |
+|------------|-------:|--------------------------------------------------|--------|--------------------:|---------------------------------------------------------------------------------------|
+| 0x00000000 | 4      | `04 FF 00 0A`                                    |        |                     | File signature / magic numbers                                                        |
+| 0x00000000 | 2      | `03 00`                                          | uint16 | 3                   | Code page / character encoding (possible values listed in the reference table)        |
+| 0x00000006 | 1      | `14`                                             | byte   | 20                  | Character width                                                                       |
+| 0x00000007 | 1      | `28`                                             | byte   | 40                  | Character height                                                                      |
+| 0x0000000C | 4      | `5F 00 00 00`                                    | uint32 | 95                  | Number of characters in file                                                          |
+| 0x00000011 | 1      | `0E`                                             | byte   | 14                  | Length of font name                                                                   |
+| 0x00000012 | 1      | `0E`                                             | byte   |                     | Also length of font name? Seems to always be the same as 0x11                         |
+| 0x00000014 | 4      | `2A 25 00 00`                                    | uint32 | 9514                | Total length of font name and character data                                          |
+| 0x00000018 | 4      | `00 00 00 00`                                    |        |                     | Unknown, font name comes after these                                                  |
 
 ### Font name
 Variable length font name. In this case the font name is `0x0E (14)` bytes long as seen in offset `0x00000011`.
