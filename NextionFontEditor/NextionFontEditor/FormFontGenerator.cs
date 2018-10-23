@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
 using System.Windows.Forms;
+using ZiLib;
 
 namespace NextionFontEditor {
 
@@ -14,35 +16,46 @@ namespace NextionFontEditor {
         }
 
         private void FormFontGenerator_Load(object sender, EventArgs e) {
-            InitializeSizesList();
+            InitializeNextionFontSizesList();
         }
 
-        private void InitializeSizesList() {
-            for (int i = 8; i <= 800; i += 8) {
-                cmbSize.Items.Add(i);
+        private void InitializeNextionFontSizesList() {
+            for (int i = 8; i <= 255; i += 8) {
+                cmbNextionFontSize.Items.Add(i);
             }
 
-            cmbSize.Text = "80";
+            cmbNextionFontSize.Text = "16";
+            numFontSize.Value = 16;
         }
 
         private void CreatePreview() {
-            var previewChars = Enumerable.Range(32, 225).Select(x => ((char) x).ToString()).ToArray();
+            var previewChars = Enumerable.Range(32, 224).Select(x => ((char) x).ToString()).ToArray();
 
-            panelPreview.Controls.Clear();
+            //var previewChars = 
 
             var fontName = lstFonts.SelectedItem?.ToString() ?? "";
+            var fontSize = (int) numFontSize.Value;
 
-            var size = int.Parse(cmbSize.Text);
+            var size = int.Parse(cmbNextionFontSize.Text);
             var width = size / 2;
             var height = size;
 
-            var ms = size;
-            foreach (var c in previewChars) {
-                var mst = GetMaxFontSizeForRect(c, fontName, size, new SizeF(width, height));
-                if (mst < ms) {
-                    ms = mst;
+            var ms = fontSize;
+
+            if (rbUseAllCharactersMaxSize.Checked) {
+                var allCharsMaxSize = size;
+
+                foreach (var c in previewChars) {
+                    var mst = GetMaxFontSizeForRect(c, fontName, size, new SizeF(width, height));
+                    if (mst < allCharsMaxSize) {
+                        allCharsMaxSize = mst;
+                    }
                 }
+
+                ms = allCharsMaxSize;
             }
+
+            var pPreviews = new List<Bitmap>();
 
             foreach (var c in previewChars) {
                 var b = new Bitmap(width, height);
@@ -54,7 +67,7 @@ namespace NextionFontEditor {
 
                     g.FillRectangle(new SolidBrush(Color.White), 0, 0, width, height);
 
-                    if (chkUseGlobalMaxSize.Checked) {
+                    if (rbUseSingleCharacterMaxSize.Checked) {
                         ms = GetMaxFontSizeForRect(c, fontName, size, new SizeF(width, height));
                     }
 
@@ -64,7 +77,7 @@ namespace NextionFontEditor {
                         c,
                         font,
                         new SolidBrush(Color.Black),
-                        new RectangleF((float) offsetX.Value, (float) offsetY.Value, width, height),
+                        new RectangleF((float) numCharOffsetX.Value, (float) numCharOffsetY.Value, width, height),
                             new StringFormat(StringFormat.GenericDefault) {
                                 Alignment = StringAlignment.Center,
                                 LineAlignment = StringAlignment.Center
@@ -80,22 +93,25 @@ namespace NextionFontEditor {
                     //    g.ScaleTransform(scale, scale);
                     //}
 
-                    var p = new PictureBox() {
-                        Width = width,
-                        Height = height,
-                        Image = b,
-                        Margin = new Padding(0)
-                    };
-
-                    panelPreview.Controls.Add(p);
+                    pPreviews.Add(b);
                 }
             }
 
-            var data = BitmapTo1BppData(new Bitmap(((PictureBox) panelPreview.Controls[1]).Image));
-        }
+            panelPreview.SuspendLayout();
+            panelPreview.Controls.Clear();
+            panelPreview.Controls.AddRange(
+                pPreviews.Select(x => new PictureBox() {
+                    Width = width,
+                    Height = height,
+                    Image = x,
+                    Margin = new Padding(3)
+                }).ToArray());
+            panelPreview.ResumeLayout();
 
-        private void button1_Click(object sender, EventArgs e) {
-            CreatePreview();
+            //var data = BitmapTo1BppData(new Bitmap(((PictureBox) panelPreview.Controls[1]).Image));
+
+            var newZiFont = ZiFont.FromCharacterBitmaps("test", (byte) width, (byte) height, pPreviews);
+            newZiFont.Save("test.zi");
         }
 
         private int GetMaxFontSizeForRect(string text, String fontName, int fontSize, SizeF rect) {
@@ -114,33 +130,40 @@ namespace NextionFontEditor {
             return fontSize;
         }
 
-        private byte[] BitmapTo1BppData(Bitmap b) {
-            var pixels = new bool[b.Width * b.Height];
+        private void lstFonts_SelectedIndexChanged(object sender, EventArgs e) {
+            CreatePreview();
+        }
 
-            for (int y = 0; y < b.Height; y++) {
+        private void numCharOffsetX_ValueChanged(object sender, EventArgs e) {
+            CreatePreview();
+        }
 
-                for (int x = 0; x < b.Width; x++) {
+        private void numCharOffsetY_ValueChanged(object sender, EventArgs e) {
+            CreatePreview();
+        }
 
-                    var pixel = b.GetPixel(x, y);
-                    pixels[(y * b.Width) + x] = (pixel.R == 0 && pixel.G == 0 && pixel.B == 0);
-                }
+        private void cmbFontSize_SelectedIndexChanged(object sender, EventArgs e) {
+            CreatePreview();
+        }
 
-            }
+        private void cmbNextionFontSize_SelectedIndexChanged(object sender, EventArgs e) {
+            CreatePreview();
+        }
 
-            var data = new byte[b.Width * b.Height / 8];
+        private void numFontSize_ValueChanged(object sender, EventArgs e) {
+            CreatePreview();
+        }
 
-            for (int i = 0; i < data.Length; i++) {
+        private void rbManualFontSize_CheckedChanged(object sender, EventArgs e) {
+            CreatePreview();
+        }
 
-                for (int j = 0; j < 8; j++) {
+        private void rbUseAllCharactersMaxSize_CheckedChanged(object sender, EventArgs e) {
+            CreatePreview();
+        }
 
-                    var bit = pixels[(i * 8) + j] ? 1 : 0;
-                    data[i] |= (byte) (bit << (7 - j));
-
-                }
-
-            }
-
-            return data;
+        private void rbUseSingleCharacterMaxSize_CheckedChanged(object sender, EventArgs e) {
+            CreatePreview();
         }
     }
 }

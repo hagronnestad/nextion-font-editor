@@ -23,34 +23,37 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            this.cmbSize = new System.Windows.Forms.ComboBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.cmbNextionFontSize = new System.Windows.Forms.ComboBox();
             this.panelPreview = new System.Windows.Forms.FlowLayoutPanel();
-            this.offsetX = new System.Windows.Forms.NumericUpDown();
-            this.offsetY = new System.Windows.Forms.NumericUpDown();
-            this.chkUseGlobalMaxSize = new System.Windows.Forms.CheckBox();
+            this.numCharOffsetX = new System.Windows.Forms.NumericUpDown();
+            this.numCharOffsetY = new System.Windows.Forms.NumericUpDown();
+            this.lblPreview = new System.Windows.Forms.Label();
+            this.lblNextionFontSize = new System.Windows.Forms.Label();
+            this.lblCharOffsetX = new System.Windows.Forms.Label();
+            this.lblCharOffsetY = new System.Windows.Forms.Label();
+            this.lblCharOffset = new System.Windows.Forms.Label();
+            this.lblFontSize = new System.Windows.Forms.Label();
+            this.lblFont = new System.Windows.Forms.Label();
+            this.numFontSize = new System.Windows.Forms.NumericUpDown();
+            this.rbManualFontSize = new System.Windows.Forms.RadioButton();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.rbUseAllCharactersMaxSize = new System.Windows.Forms.RadioButton();
+            this.rbUseSingleCharacterMaxSize = new System.Windows.Forms.RadioButton();
             this.lstFonts = new NextionFontEditor.Controls.FontListBox();
-            ((System.ComponentModel.ISupportInitialize)(this.offsetX)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.offsetY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numCharOffsetX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numCharOffsetY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numFontSize)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // cmbSize
+            // cmbNextionFontSize
             // 
-            this.cmbSize.FormattingEnabled = true;
-            this.cmbSize.Location = new System.Drawing.Point(13, 13);
-            this.cmbSize.Name = "cmbSize";
-            this.cmbSize.Size = new System.Drawing.Size(121, 21);
-            this.cmbSize.TabIndex = 3;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(13, 282);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(179, 46);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.cmbNextionFontSize.FormattingEnabled = true;
+            this.cmbNextionFontSize.Location = new System.Drawing.Point(12, 25);
+            this.cmbNextionFontSize.Name = "cmbNextionFontSize";
+            this.cmbNextionFontSize.Size = new System.Drawing.Size(121, 21);
+            this.cmbNextionFontSize.TabIndex = 3;
+            this.cmbNextionFontSize.SelectedIndexChanged += new System.EventHandler(this.cmbNextionFontSize_SelectedIndexChanged);
             // 
             // panelPreview
             // 
@@ -58,60 +61,189 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelPreview.AutoScroll = true;
-            this.panelPreview.Location = new System.Drawing.Point(12, 370);
+            this.panelPreview.Location = new System.Drawing.Point(356, 25);
             this.panelPreview.Name = "panelPreview";
-            this.panelPreview.Size = new System.Drawing.Size(840, 176);
+            this.panelPreview.Size = new System.Drawing.Size(460, 565);
             this.panelPreview.TabIndex = 5;
             // 
-            // offsetX
+            // numCharOffsetX
             // 
-            this.offsetX.Location = new System.Drawing.Point(171, 120);
-            this.offsetX.Maximum = new decimal(new int[] {
+            this.numCharOffsetX.Location = new System.Drawing.Point(32, 149);
+            this.numCharOffsetX.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
-            this.offsetX.Minimum = new decimal(new int[] {
+            this.numCharOffsetX.Minimum = new decimal(new int[] {
             1000,
             0,
             0,
             -2147483648});
-            this.offsetX.Name = "offsetX";
-            this.offsetX.Size = new System.Drawing.Size(60, 20);
-            this.offsetX.TabIndex = 6;
+            this.numCharOffsetX.Name = "numCharOffsetX";
+            this.numCharOffsetX.Size = new System.Drawing.Size(53, 20);
+            this.numCharOffsetX.TabIndex = 6;
+            this.numCharOffsetX.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numCharOffsetX.ValueChanged += new System.EventHandler(this.numCharOffsetX_ValueChanged);
             // 
-            // offsetY
+            // numCharOffsetY
             // 
-            this.offsetY.Location = new System.Drawing.Point(171, 146);
-            this.offsetY.Maximum = new decimal(new int[] {
+            this.numCharOffsetY.Location = new System.Drawing.Point(32, 175);
+            this.numCharOffsetY.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
-            this.offsetY.Minimum = new decimal(new int[] {
+            this.numCharOffsetY.Minimum = new decimal(new int[] {
             1000,
             0,
             0,
             -2147483648});
-            this.offsetY.Name = "offsetY";
-            this.offsetY.Size = new System.Drawing.Size(60, 20);
-            this.offsetY.TabIndex = 7;
+            this.numCharOffsetY.Name = "numCharOffsetY";
+            this.numCharOffsetY.Size = new System.Drawing.Size(53, 20);
+            this.numCharOffsetY.TabIndex = 7;
+            this.numCharOffsetY.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numCharOffsetY.ValueChanged += new System.EventHandler(this.numCharOffsetY_ValueChanged);
             // 
-            // chkUseGlobalMaxSize
+            // lblPreview
             // 
-            this.chkUseGlobalMaxSize.AutoSize = true;
-            this.chkUseGlobalMaxSize.Location = new System.Drawing.Point(171, 190);
-            this.chkUseGlobalMaxSize.Name = "chkUseGlobalMaxSize";
-            this.chkUseGlobalMaxSize.Size = new System.Drawing.Size(119, 17);
-            this.chkUseGlobalMaxSize.TabIndex = 8;
-            this.chkUseGlobalMaxSize.Text = "Use global max size";
-            this.chkUseGlobalMaxSize.UseVisualStyleBackColor = true;
+            this.lblPreview.AutoSize = true;
+            this.lblPreview.Location = new System.Drawing.Point(353, 9);
+            this.lblPreview.Name = "lblPreview";
+            this.lblPreview.Size = new System.Drawing.Size(45, 13);
+            this.lblPreview.TabIndex = 10;
+            this.lblPreview.Text = "Preview";
+            // 
+            // lblNextionFontSize
+            // 
+            this.lblNextionFontSize.AutoSize = true;
+            this.lblNextionFontSize.Location = new System.Drawing.Point(9, 9);
+            this.lblNextionFontSize.Name = "lblNextionFontSize";
+            this.lblNextionFontSize.Size = new System.Drawing.Size(90, 13);
+            this.lblNextionFontSize.TabIndex = 11;
+            this.lblNextionFontSize.Text = "Nextion Font Size";
+            // 
+            // lblCharOffsetX
+            // 
+            this.lblCharOffsetX.AutoSize = true;
+            this.lblCharOffsetX.Location = new System.Drawing.Point(12, 151);
+            this.lblCharOffsetX.Name = "lblCharOffsetX";
+            this.lblCharOffsetX.Size = new System.Drawing.Size(14, 13);
+            this.lblCharOffsetX.TabIndex = 12;
+            this.lblCharOffsetX.Text = "X";
+            // 
+            // lblCharOffsetY
+            // 
+            this.lblCharOffsetY.AutoSize = true;
+            this.lblCharOffsetY.Location = new System.Drawing.Point(12, 177);
+            this.lblCharOffsetY.Name = "lblCharOffsetY";
+            this.lblCharOffsetY.Size = new System.Drawing.Size(14, 13);
+            this.lblCharOffsetY.TabIndex = 13;
+            this.lblCharOffsetY.Text = "Y";
+            // 
+            // lblCharOffset
+            // 
+            this.lblCharOffset.AutoSize = true;
+            this.lblCharOffset.Location = new System.Drawing.Point(12, 128);
+            this.lblCharOffset.Name = "lblCharOffset";
+            this.lblCharOffset.Size = new System.Drawing.Size(82, 13);
+            this.lblCharOffset.TabIndex = 14;
+            this.lblCharOffset.Text = "Character offset";
+            // 
+            // lblFontSize
+            // 
+            this.lblFontSize.AutoSize = true;
+            this.lblFontSize.Location = new System.Drawing.Point(9, 58);
+            this.lblFontSize.Name = "lblFontSize";
+            this.lblFontSize.Size = new System.Drawing.Size(51, 13);
+            this.lblFontSize.TabIndex = 16;
+            this.lblFontSize.Text = "Font Size";
+            // 
+            // lblFont
+            // 
+            this.lblFont.AutoSize = true;
+            this.lblFont.Location = new System.Drawing.Point(9, 222);
+            this.lblFont.Name = "lblFont";
+            this.lblFont.Size = new System.Drawing.Size(28, 13);
+            this.lblFont.TabIndex = 17;
+            this.lblFont.Text = "Font";
+            // 
+            // numFontSize
+            // 
+            this.numFontSize.Location = new System.Drawing.Point(23, 6);
+            this.numFontSize.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numFontSize.Minimum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numFontSize.Name = "numFontSize";
+            this.numFontSize.Size = new System.Drawing.Size(50, 20);
+            this.numFontSize.TabIndex = 18;
+            this.numFontSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numFontSize.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numFontSize.ValueChanged += new System.EventHandler(this.numFontSize_ValueChanged);
+            // 
+            // rbManualFontSize
+            // 
+            this.rbManualFontSize.AutoSize = true;
+            this.rbManualFontSize.Location = new System.Drawing.Point(3, 9);
+            this.rbManualFontSize.Name = "rbManualFontSize";
+            this.rbManualFontSize.Size = new System.Drawing.Size(14, 13);
+            this.rbManualFontSize.TabIndex = 20;
+            this.rbManualFontSize.UseVisualStyleBackColor = true;
+            this.rbManualFontSize.CheckedChanged += new System.EventHandler(this.rbManualFontSize_CheckedChanged);
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.rbUseSingleCharacterMaxSize);
+            this.panel1.Controls.Add(this.rbUseAllCharactersMaxSize);
+            this.panel1.Controls.Add(this.rbManualFontSize);
+            this.panel1.Controls.Add(this.numFontSize);
+            this.panel1.Location = new System.Drawing.Point(12, 73);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(326, 33);
+            this.panel1.TabIndex = 21;
+            // 
+            // rbUseAllCharactersMaxSize
+            // 
+            this.rbUseAllCharactersMaxSize.AutoSize = true;
+            this.rbUseAllCharactersMaxSize.Checked = true;
+            this.rbUseAllCharactersMaxSize.Location = new System.Drawing.Point(84, 7);
+            this.rbUseAllCharactersMaxSize.Name = "rbUseAllCharactersMaxSize";
+            this.rbUseAllCharactersMaxSize.Size = new System.Drawing.Size(79, 17);
+            this.rbUseAllCharactersMaxSize.TabIndex = 21;
+            this.rbUseAllCharactersMaxSize.TabStop = true;
+            this.rbUseAllCharactersMaxSize.Text = "All max size";
+            this.rbUseAllCharactersMaxSize.UseVisualStyleBackColor = true;
+            this.rbUseAllCharactersMaxSize.CheckedChanged += new System.EventHandler(this.rbUseAllCharactersMaxSize_CheckedChanged);
+            // 
+            // rbUseSingleCharacterMaxSize
+            // 
+            this.rbUseSingleCharacterMaxSize.AutoSize = true;
+            this.rbUseSingleCharacterMaxSize.Location = new System.Drawing.Point(169, 7);
+            this.rbUseSingleCharacterMaxSize.Name = "rbUseSingleCharacterMaxSize";
+            this.rbUseSingleCharacterMaxSize.Size = new System.Drawing.Size(97, 17);
+            this.rbUseSingleCharacterMaxSize.TabIndex = 22;
+            this.rbUseSingleCharacterMaxSize.Text = "Single max size";
+            this.rbUseSingleCharacterMaxSize.UseVisualStyleBackColor = true;
+            this.rbUseSingleCharacterMaxSize.CheckedChanged += new System.EventHandler(this.rbUseSingleCharacterMaxSize_CheckedChanged);
             // 
             // lstFonts
             // 
+            this.lstFonts.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.lstFonts.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
             this.lstFonts.FontPreviewSize = 16;
             this.lstFonts.FormattingEnabled = true;
+            this.lstFonts.IntegralHeight = false;
             this.lstFonts.Items.AddRange(new object[] {
             "",
             "Agency FB",
@@ -347,40 +479,60 @@
             "Yu Gothic UI Light",
             "Yu Gothic UI Semibold",
             "Yu Gothic UI Semilight"});
-            this.lstFonts.Location = new System.Drawing.Point(529, 12);
+            this.lstFonts.Location = new System.Drawing.Point(12, 238);
             this.lstFonts.Name = "lstFonts";
-            this.lstFonts.Size = new System.Drawing.Size(323, 342);
+            this.lstFonts.Size = new System.Drawing.Size(338, 352);
             this.lstFonts.TabIndex = 9;
+            this.lstFonts.SelectedIndexChanged += new System.EventHandler(this.lstFonts_SelectedIndexChanged);
             // 
             // FormFontGenerator
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(864, 558);
+            this.ClientSize = new System.Drawing.Size(828, 602);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.lblFont);
+            this.Controls.Add(this.lblFontSize);
+            this.Controls.Add(this.lblCharOffset);
+            this.Controls.Add(this.lblCharOffsetY);
+            this.Controls.Add(this.lblCharOffsetX);
+            this.Controls.Add(this.lblNextionFontSize);
+            this.Controls.Add(this.lblPreview);
             this.Controls.Add(this.lstFonts);
-            this.Controls.Add(this.chkUseGlobalMaxSize);
-            this.Controls.Add(this.offsetY);
-            this.Controls.Add(this.offsetX);
+            this.Controls.Add(this.numCharOffsetY);
+            this.Controls.Add(this.numCharOffsetX);
             this.Controls.Add(this.panelPreview);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.cmbSize);
+            this.Controls.Add(this.cmbNextionFontSize);
             this.Name = "FormFontGenerator";
-            this.Text = "FormFontGenerator";
+            this.Text = "Font Generator";
             this.Load += new System.EventHandler(this.FormFontGenerator_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.offsetX)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.offsetY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numCharOffsetX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numCharOffsetY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numFontSize)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.ComboBox cmbSize;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ComboBox cmbNextionFontSize;
         private System.Windows.Forms.FlowLayoutPanel panelPreview;
-        private System.Windows.Forms.NumericUpDown offsetX;
-        private System.Windows.Forms.NumericUpDown offsetY;
-        private System.Windows.Forms.CheckBox chkUseGlobalMaxSize;
+        private System.Windows.Forms.NumericUpDown numCharOffsetX;
+        private System.Windows.Forms.NumericUpDown numCharOffsetY;
         private Controls.FontListBox lstFonts;
+        private System.Windows.Forms.Label lblPreview;
+        private System.Windows.Forms.Label lblNextionFontSize;
+        private System.Windows.Forms.Label lblCharOffsetX;
+        private System.Windows.Forms.Label lblCharOffsetY;
+        private System.Windows.Forms.Label lblCharOffset;
+        private System.Windows.Forms.Label lblFontSize;
+        private System.Windows.Forms.Label lblFont;
+        private System.Windows.Forms.NumericUpDown numFontSize;
+        private System.Windows.Forms.RadioButton rbManualFontSize;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.RadioButton rbUseSingleCharacterMaxSize;
+        private System.Windows.Forms.RadioButton rbUseAllCharactersMaxSize;
     }
 }
