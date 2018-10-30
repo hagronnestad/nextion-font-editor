@@ -15,28 +15,28 @@ The Nextion Font Format is a proprietary font format used by the Nextion Editor 
 
 | Code page / encoding  | Value                 | Number of characters  |
 |-----------------------|-----------------------|-----------------------|
-| ASCII                 | 0x0100                | 95                    |
-| GB2312                | 0x0200                | 8273                  |
-| ISO-8859-1            | 0x0300                | 224                   |
-| ISO-8859-2            | 0x0400                | 224                   |
-| ISO-8859-3            | 0x0500                | 224                   |
-| ISO-8859-4            | 0x0600                | 224                   |
-| ISO-8859-5            | 0x0700                | 224                   |
-| ISO-8859-6            | 0x0800                | 224                   |
-| ISO-8859-7            | 0x0900                | 224                   |
+| ASCII                 | 0x01                  | 95                    |
+| GB2312                | 0x02                  | 8273                  |
+| ISO-8859-1            | 0x03                  | 224                   |
+| ISO-8859-2            | 0x04                  | 224                   |
+| ISO-8859-3            | 0x05                  | 224                   |
+| ISO-8859-4            | 0x06                  | 224                   |
+| ISO-8859-5            | 0x07                  | 224                   |
+| ISO-8859-6            | 0x08                  | 224                   |
+| ISO-8859-7            | 0x09                  | 224                   |
 | BIG5                  | 0x1001                | 14225                 |
-| ISO-8859-8            | 0x0A00                | 224                   |
-| ISO-8859-9            | 0x0B00                | 224                   |
-| ISO-8859-13           | 0x0C00                | 224                   |
-| ISO-8859-15           | 0x0D00                | 224                   |
-| ISO-8859-11           | 0x0E00                | 224                   |
-| KS_C_5601-1987        | 0x0F00                | 3855                  |
-| WINDOWS-1255          | 0x1100                | 224                   |
-| WINDOWS-1256          | 0x1200                | 224                   |
-| WINDOWS-1257          | 0x1300                | 224                   |
-| WINDOWS-1258          | 0x1400                | 224                   |
-| WINDOWS-874           | 0x1500                | 224                   |
-| KOI8-R                | 0x1600                | 224                   |
+| ISO-8859-8            | 0x0A                  | 224                   |
+| ISO-8859-9            | 0x0B                  | 224                   |
+| ISO-8859-13           | 0x0C                  | 224                   |
+| ISO-8859-15           | 0x0D                  | 224                   |
+| ISO-8859-11           | 0x0E                  | 224                   |
+| KS_C_5601-1987        | 0x0F                  | 3855                  |
+| WINDOWS-1255          | 0x11                  | 224                   |
+| WINDOWS-1256          | 0x12                  | 224                   |
+| WINDOWS-1257          | 0x13                  | 224                   |
+| WINDOWS-1258          | 0x14                  | 224                   |
+| WINDOWS-874           | 0x15                  | 224                   |
+| KOI8-R                | 0x16                  | 224                   |
 
 
 ## File format structure
@@ -53,7 +53,7 @@ The Nextion Font Format is a proprietary font format used by the Nextion Editor 
 | Offset     | Length | Data                                             | Type   | Value               | Description                                                                           |
 |------------|-------:|--------------------------------------------------|--------|--------------------:|---------------------------------------------------------------------------------------|
 | 0x00000000 | 4      | `04 FF 00 0A` *                                  | byte[] |                     | File signature / magic numbers                                                        |
-| 0x00000004 | 2      | `03 00`                                          | uint16 | 3                   | Code page / character encoding (possible values listed in the reference table)        |
+| 0x00000004 | 2      | `01 00`                                          | uint16 | 1                   | Code page / character encoding (possible values listed in the reference table)        |
 | 0x00000006 | 1      | `14`                                             | byte   | 20                  | Character width                                                                       |
 | 0x00000007 | 1      | `28`                                             | byte   | 40                  | Character height                                                                      |
 | 0x00000008 | 1      | `00`                                             | byte   | 0                   | Code page multibyte - first byte start                                                |
