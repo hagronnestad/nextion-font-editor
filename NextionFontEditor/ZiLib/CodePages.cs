@@ -3,31 +3,80 @@ using System.Linq;
 using System.Text;
 
 namespace ZiLib {
+
     public class CodePages {
 
-        private static byte[] ASCII = Enumerable.Range(32, 95).Select(x => (byte) x).ToArray();
-        private static byte[] ISO88591 = Enumerable.Range(32, 224).Select(x => (byte) x).ToArray();
+        public static CodePage CreateAscii() {
+            var start = 32;
+            var end = 95;
+            var bytes = Enumerable.Range(start, end).Select(x => (byte) x).ToArray();
+            var characters = Encoding.ASCII.GetChars(bytes);
 
-        public static char[] GetAscii() {
-            var encodings = Encoding.GetEncodings();
-            return Encoding.ASCII.GetChars(ASCII);
+            return new CodePage {
+                CodePageIdentifier = CodePageIdentifier.ASCII,
+                FirstByteStart = start,
+                FirstByteEnd = end,
+                Characters = characters
+            };
         }
 
-        public static char[] GetBig5(int firstByteStart = 0xA0, int firstByteEnd = 0xF9, int secondByteStart = 0x40, int secondByteEnd = 0xFE) {
+        public static CodePage CreateIso_8859_1() {
+            var start = 32;
+            var end = 224;
+            var bytes = Enumerable.Range(start, end).Select(x => (byte) x).ToArray();
+            var encoding = Encoding.GetEncoding("ISO-8859-1");
+            var characters = encoding.GetChars(bytes);
+
+            return new CodePage {
+                CodePageIdentifier = CodePageIdentifier.ISO_8859_1,
+                FirstByteStart = start,
+                FirstByteEnd = end,
+                Characters = characters
+            };
+        }
+
+        // This one is not working correctly, characters doesn't match the Font Generator in Nextion Editor
+        public static CodePage CreateBig5() {
+            var firstByteStart = 0xA0;
+            var firstByteEnd = 0xF9;
+            var secondByteStart = 0x40;
+            var secondByteEnd = 0xFE;
+
             var bytes = new List<byte>();
 
             for (int i = firstByteStart; i <= firstByteEnd; i++) {
                 for (int j = secondByteStart; j <= secondByteEnd; j++) {
-
                     bytes.Add((byte) i);
                     bytes.Add((byte) j);
-
                 }
             }
 
             var encoding = Encoding.GetEncoding("big5");
+            var characters = encoding.GetChars(bytes.ToArray());
 
-            return encoding.GetChars(bytes.ToArray());
+            return new CodePage {
+                CodePageIdentifier = CodePageIdentifier.BIG5,
+                FirstByteStart = firstByteStart,
+                FirstByteEnd = firstByteEnd,
+                SecondByteStart = secondByteStart,
+                SecondByteEnd = secondByteEnd,
+                Characters = characters
+            };
+        }
+
+        public static CodePage GetCodePage(CodePageIdentifier codePage) {
+            switch (codePage) {
+                case CodePageIdentifier.ASCII:
+                    return CreateAscii();
+
+                case CodePageIdentifier.ISO_8859_1:
+                    return CreateIso_8859_1();
+
+                case CodePageIdentifier.BIG5:
+                    return CreateBig5();
+            }
+
+            return null;
         }
     }
 }

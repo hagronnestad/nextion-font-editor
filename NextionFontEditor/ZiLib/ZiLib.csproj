@@ -43,6 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryTools.cs" />
+    <Compile Include="CodePage.cs" />
+    <Compile Include="CodePageIdentifier.cs" />
     <Compile Include="CodePages.cs" />
     <Compile Include="ZiFont.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

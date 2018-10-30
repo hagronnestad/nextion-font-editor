@@ -12,11 +12,17 @@ namespace ZiLib {
         private const int HEADER_LENGTH = 0x1C; // 28
 
         public byte[] Header { get; set; }
-        public string Name { get; set; }
+        public UInt16 CodePage { get; set; }
         public byte CharacterWidth { get; set; }
         public byte CharacterHeight { get; set; }
+        public byte CodePageMultibyteFirstByteStart { get; set; }
+        public byte CodePageMultibyteFirstByteEnd { get; set; }
+        public byte CodePageStartOrMultibyteSecondByteStart { get; set; }
+        public byte CodePageEndOrMultibyteSecondByteEnd { get; set; }
         public UInt32 CharacterCount { get; set; }
+        public byte FileFormatVersion => 3;
         public byte NameLength { get; set; }
+        public string Name { get; set; }
 
         public UInt32 VariableDataLength { get; set; }
         public UInt32 CharDataLength { get; set; }
@@ -53,28 +59,27 @@ namespace ZiLib {
             }
         }
 
-        public void Save(string fileName) {
+        public void Save(string fileName, CodePage codePage) {
             var file = new List<byte>();
 
             file.AddRange(MagicNumbers);
-            file.Add(0x03); // Encoding
-            file.Add(0x00); // Encoding? Maybe 16-bit?
+            file.AddRange(BitConverter.GetBytes((ushort) codePage.CodePageIdentifier));
             file.Add(CharacterWidth);
             file.Add(CharacterHeight);
-            file.Add(0x00); // Unknown
-            file.Add(0x00); // Unknown
-            file.Add(0x20); // Unknown
-            file.Add(0x7E); // Unknown
+            file.Add((byte) (codePage.IsMultibyte ? codePage.FirstByteStart : 0));
+            file.Add((byte) (codePage.IsMultibyte ? codePage.FirstByteEnd : 0));
+            file.Add((byte) (codePage.IsMultibyte ? codePage.SecondByteStart : codePage.FirstByteStart));
+            file.Add((byte) (codePage.IsMultibyte ? codePage.SecondByteEnd : codePage.FirstByteEnd));
             file.AddRange(BitConverter.GetBytes(CharacterCount));
-            file.Add(0x03); // Version?
+            file.Add(FileFormatVersion);
             file.Add(NameLength);
             file.Add(NameLength);
-            file.Add(0x00); // Unknown
+            file.Add(0x00); // Reserved
             file.AddRange(BitConverter.GetBytes(VariableDataLength));
-            file.Add(0x00); // Unknown
-            file.Add(0x00); // Unknown
-            file.Add(0x00); // Unknown
-            file.Add(0x00); // Unknown
+            file.Add(0x00); // Reserved
+            file.Add(0x00); // Reserved
+            file.Add(0x00); // Reserved
+            file.Add(0x00); // Reserved
             file.AddRange(Encoding.ASCII.GetBytes(Name));
             file.AddRange(CharData);
 

@@ -18,7 +18,7 @@ namespace NextionFontEditor {
         private void FormFontGenerator_Load(object sender, EventArgs e) {
             InitializeNextionFontSizesList();
 
-            new FormFontPreview().Show();
+            //new FormFontPreview().Show();
         }
 
         private void InitializeNextionFontSizesList() {
@@ -31,9 +31,7 @@ namespace NextionFontEditor {
         }
 
         private void CreatePreview() {
-            //var previewChars = CodePages.GetAscii();
-            var previewChars = CodePages.GetBig5().Skip(34).Take(300);
-
+            var codePage = CodePages.GetCodePage(CodePageIdentifier.ISO_8859_1);
 
             var fontName = lstFonts.SelectedItem?.ToString() ?? "";
             var fontSize = (int) numFontSize.Value;
@@ -47,7 +45,7 @@ namespace NextionFontEditor {
             if (rbUseAllCharactersMaxSize.Checked) {
                 var allCharsMaxSize = size;
 
-                foreach (var c in previewChars) {
+                foreach (var c in codePage.Characters) {
                     var mst = GetMaxFontSizeForRect(c.ToString(), fontName, size, new SizeF(width, height));
                     if (mst < allCharsMaxSize) {
                         allCharsMaxSize = mst;
@@ -59,7 +57,7 @@ namespace NextionFontEditor {
 
             var pPreviews = new List<Bitmap>();
 
-            foreach (var c in previewChars) {
+            foreach (var c in codePage.Characters) {
                 var b = new Bitmap(width, height);
 
                 using (var g = Graphics.FromImage(b)) {
@@ -73,18 +71,66 @@ namespace NextionFontEditor {
                         ms = GetMaxFontSizeForRect(c.ToString(), fontName, size, new SizeF(width, height));
                     }
 
-                    var font = new Font(fontName, ms, GraphicsUnit.Pixel);
+                    //var font = new Font(fontName, ms, GraphicsUnit.Pixel);
+                    //g.DrawString(
+                    //    c.ToString(),
+                    //    font,
+                    //    new SolidBrush(Color.Black),
+                    //    new RectangleF((float) numCharOffsetX.Value, (float) numCharOffsetY.Value, width, height),
+                    //        new StringFormat(StringFormat.GenericDefault) {
+                    //            Alignment = StringAlignment.Center,
+                    //            //LineAlignment = StringAlignment.Center
+                    //        }
+                    //    );
 
-                    g.DrawString(
+                    var dbs = (int) numDbs.Value;
+
+                    var bb = new Bitmap(width * dbs, height * dbs);
+                    var gg = Graphics.FromImage(bb);
+                    var font = new Font(fontName, ms * dbs, GraphicsUnit.Pixel);
+                    gg.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
+                    gg.TextRenderingHint = TextRenderingHint.SingleBitPerPixel;
+                    gg.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+
+                    var ss = gg.MeasureString(c.ToString(), font, new PointF(0, 0), new StringFormat(StringFormat.GenericTypographic) {
+                        //Alignment = StringAlignment.Center
+                    });
+
+                    if (ss.Width > bb.Width) {
+                        var bbb = new Bitmap((int) ss.Width, bb.Height);
+                        var ggg = Graphics.FromImage(bbb);
+                        ggg.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                        ggg.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
+                        ggg.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+
+                        ggg.DrawString(
+                            c.ToString(),
+                            font,
+                            new SolidBrush(Color.Black),
+                            new RectangleF((float) numCharOffsetX.Value, (float) numCharOffsetY.Value, width * dbs, height * dbs),
+                                new StringFormat(StringFormat.GenericTypographic) {
+                                    Alignment = StringAlignment.Center
+                                }
+                            );
+
+                        gg.DrawImage(bbb, 0, 0, bb.Width, bb.Height);
+
+                    } else {
+                        gg.DrawString(
                         c.ToString(),
                         font,
                         new SolidBrush(Color.Black),
-                        new RectangleF((float) numCharOffsetX.Value, (float) numCharOffsetY.Value, width, height),
-                            new StringFormat(StringFormat.GenericDefault) {
-                                Alignment = StringAlignment.Center,
-                                LineAlignment = StringAlignment.Center
+                        new RectangleF((float) numCharOffsetX.Value, (float) numCharOffsetY.Value, width * dbs, height * dbs),
+                            new StringFormat(StringFormat.GenericTypographic) {
+                                Alignment = StringAlignment.Center
                             }
                         );
+                    }
+
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                    g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
+                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+                    g.DrawImage(bb, 0, 0, width, height);
 
                     //new StringFormat(StringFormat.GenericDefault) {
                     //    Alignment = StringAlignment.Center
@@ -113,7 +159,7 @@ namespace NextionFontEditor {
             //var data = BitmapTo1BppData(new Bitmap(((PictureBox) panelPreview.Controls[1]).Image));
 
             var newZiFont = ZiFont.FromCharacterBitmaps("test", (byte) width, (byte) height, pPreviews);
-            newZiFont.Save("test.zi");
+            newZiFont.Save("test.zi", codePage);
         }
 
         private int GetMaxFontSizeForRect(string text, String fontName, int fontSize, SizeF rect) {
@@ -165,6 +211,10 @@ namespace NextionFontEditor {
         }
 
         private void rbUseSingleCharacterMaxSize_CheckedChanged(object sender, EventArgs e) {
+            CreatePreview();
+        }
+
+        private void numDbs_ValueChanged(object sender, EventArgs e) {
             CreatePreview();
         }
     }

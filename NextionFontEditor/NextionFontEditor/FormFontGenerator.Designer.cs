@@ -37,13 +37,15 @@
             this.numFontSize = new System.Windows.Forms.NumericUpDown();
             this.rbManualFontSize = new System.Windows.Forms.RadioButton();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.rbUseAllCharactersMaxSize = new System.Windows.Forms.RadioButton();
             this.rbUseSingleCharacterMaxSize = new System.Windows.Forms.RadioButton();
+            this.rbUseAllCharactersMaxSize = new System.Windows.Forms.RadioButton();
+            this.numDbs = new System.Windows.Forms.NumericUpDown();
             this.lstFonts = new NextionFontEditor.Controls.FontListBox();
             ((System.ComponentModel.ISupportInitialize)(this.numCharOffsetX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numCharOffsetY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numFontSize)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numDbs)).BeginInit();
             this.SuspendLayout();
             // 
             // cmbNextionFontSize
@@ -68,7 +70,7 @@
             // 
             // numCharOffsetX
             // 
-            this.numCharOffsetX.Location = new System.Drawing.Point(32, 149);
+            this.numCharOffsetX.Location = new System.Drawing.Point(32, 165);
             this.numCharOffsetX.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -87,7 +89,7 @@
             // 
             // numCharOffsetY
             // 
-            this.numCharOffsetY.Location = new System.Drawing.Point(32, 175);
+            this.numCharOffsetY.Location = new System.Drawing.Point(32, 191);
             this.numCharOffsetY.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -125,7 +127,7 @@
             // lblCharOffsetX
             // 
             this.lblCharOffsetX.AutoSize = true;
-            this.lblCharOffsetX.Location = new System.Drawing.Point(12, 151);
+            this.lblCharOffsetX.Location = new System.Drawing.Point(12, 167);
             this.lblCharOffsetX.Name = "lblCharOffsetX";
             this.lblCharOffsetX.Size = new System.Drawing.Size(14, 13);
             this.lblCharOffsetX.TabIndex = 12;
@@ -134,7 +136,7 @@
             // lblCharOffsetY
             // 
             this.lblCharOffsetY.AutoSize = true;
-            this.lblCharOffsetY.Location = new System.Drawing.Point(12, 177);
+            this.lblCharOffsetY.Location = new System.Drawing.Point(12, 193);
             this.lblCharOffsetY.Name = "lblCharOffsetY";
             this.lblCharOffsetY.Size = new System.Drawing.Size(14, 13);
             this.lblCharOffsetY.TabIndex = 13;
@@ -143,7 +145,7 @@
             // lblCharOffset
             // 
             this.lblCharOffset.AutoSize = true;
-            this.lblCharOffset.Location = new System.Drawing.Point(12, 128);
+            this.lblCharOffset.Location = new System.Drawing.Point(12, 144);
             this.lblCharOffset.Name = "lblCharOffset";
             this.lblCharOffset.Size = new System.Drawing.Size(82, 13);
             this.lblCharOffset.TabIndex = 14;
@@ -212,6 +214,17 @@
             this.panel1.Size = new System.Drawing.Size(326, 33);
             this.panel1.TabIndex = 21;
             // 
+            // rbUseSingleCharacterMaxSize
+            // 
+            this.rbUseSingleCharacterMaxSize.AutoSize = true;
+            this.rbUseSingleCharacterMaxSize.Location = new System.Drawing.Point(169, 7);
+            this.rbUseSingleCharacterMaxSize.Name = "rbUseSingleCharacterMaxSize";
+            this.rbUseSingleCharacterMaxSize.Size = new System.Drawing.Size(97, 17);
+            this.rbUseSingleCharacterMaxSize.TabIndex = 22;
+            this.rbUseSingleCharacterMaxSize.Text = "Single max size";
+            this.rbUseSingleCharacterMaxSize.UseVisualStyleBackColor = true;
+            this.rbUseSingleCharacterMaxSize.CheckedChanged += new System.EventHandler(this.rbUseSingleCharacterMaxSize_CheckedChanged);
+            // 
             // rbUseAllCharactersMaxSize
             // 
             this.rbUseAllCharactersMaxSize.AutoSize = true;
@@ -225,16 +238,29 @@
             this.rbUseAllCharactersMaxSize.UseVisualStyleBackColor = true;
             this.rbUseAllCharactersMaxSize.CheckedChanged += new System.EventHandler(this.rbUseAllCharactersMaxSize_CheckedChanged);
             // 
-            // rbUseSingleCharacterMaxSize
+            // numDbs
             // 
-            this.rbUseSingleCharacterMaxSize.AutoSize = true;
-            this.rbUseSingleCharacterMaxSize.Location = new System.Drawing.Point(169, 7);
-            this.rbUseSingleCharacterMaxSize.Name = "rbUseSingleCharacterMaxSize";
-            this.rbUseSingleCharacterMaxSize.Size = new System.Drawing.Size(97, 17);
-            this.rbUseSingleCharacterMaxSize.TabIndex = 22;
-            this.rbUseSingleCharacterMaxSize.Text = "Single max size";
-            this.rbUseSingleCharacterMaxSize.UseVisualStyleBackColor = true;
-            this.rbUseSingleCharacterMaxSize.CheckedChanged += new System.EventHandler(this.rbUseSingleCharacterMaxSize_CheckedChanged);
+            this.numDbs.Location = new System.Drawing.Point(191, 165);
+            this.numDbs.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numDbs.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numDbs.Name = "numDbs";
+            this.numDbs.Size = new System.Drawing.Size(53, 20);
+            this.numDbs.TabIndex = 22;
+            this.numDbs.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numDbs.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numDbs.ValueChanged += new System.EventHandler(this.numDbs_ValueChanged);
             // 
             // lstFonts
             // 
@@ -245,6 +271,262 @@
             this.lstFonts.FormattingEnabled = true;
             this.lstFonts.IntegralHeight = false;
             this.lstFonts.Items.AddRange(new object[] {
+            "[No name]",
+            "Agency FB",
+            "Algerian",
+            "Arial",
+            "Arial Black",
+            "Arial Narrow",
+            "Arial Rounded MT Bold",
+            "Arial Unicode MS",
+            "Bahnschrift",
+            "Bahnschrift Condensed",
+            "Bahnschrift Light",
+            "Bahnschrift Light Condensed",
+            "Bahnschrift Light SemiCondensed",
+            "Bahnschrift SemiBold",
+            "Bahnschrift SemiBold Condensed",
+            "Bahnschrift SemiCondensed",
+            "Bahnschrift SemiLight",
+            "Bahnschrift SemiLight Condensed",
+            "Baskerville Old Face",
+            "Bauhaus 93",
+            "Bell MT",
+            "Berlin Sans FB",
+            "Berlin Sans FB Demi",
+            "Bernard MT Condensed",
+            "Blackadder ITC",
+            "Bodoni MT",
+            "Bodoni MT Black",
+            "Bodoni MT Condensed",
+            "Bodoni MT Poster Compressed",
+            "Book Antiqua",
+            "Bookman Old Style",
+            "Bookshelf Symbol 7",
+            "Bradley Hand ITC",
+            "Britannic Bold",
+            "Broadway",
+            "Brush Script MT",
+            "Calibri",
+            "Calibri Light",
+            "Californian FB",
+            "Calisto MT",
+            "Cambria",
+            "Cambria Math",
+            "Candara",
+            "Castellar",
+            "Centaur",
+            "Century",
+            "Century Gothic",
+            "Century Schoolbook",
+            "Chiller",
+            "Colonna MT",
+            "Comfortaa",
+            "Comfortaa Light",
+            "Comic Sans MS",
+            "Consolas",
+            "Constantia",
+            "Cooper Black",
+            "Copperplate Gothic Bold",
+            "Copperplate Gothic Light",
+            "Corbel",
+            "Courier New",
+            "Curlz MT",
+            "DengXian",
+            "Droid Sans",
+            "Dubai",
+            "Dubai Light",
+            "Dubai Medium",
+            "Ebrima",
+            "Edwardian Script ITC",
+            "Elephant",
+            "Engravers MT",
+            "Eras Bold ITC",
+            "Eras Demi ITC",
+            "Eras Light ITC",
+            "Eras Medium ITC",
+            "Felix Titling",
+            "Footlight MT Light",
+            "Forte",
+            "Franklin Gothic Book",
+            "Franklin Gothic Demi",
+            "Franklin Gothic Demi Cond",
+            "Franklin Gothic Heavy",
+            "Franklin Gothic Medium",
+            "Franklin Gothic Medium Cond",
+            "Freestyle Script",
+            "French Script MT",
+            "Gabriola",
+            "Gadugi",
+            "Garamond",
+            "Georgia",
+            "Gigi",
+            "Gill Sans MT",
+            "Gill Sans MT Condensed",
+            "Gill Sans MT Ext Condensed Bold",
+            "Gill Sans Ultra Bold",
+            "Gill Sans Ultra Bold Condensed",
+            "Gloucester MT Extra Condensed",
+            "Goudy Old Style",
+            "Goudy Stout",
+            "Haettenschweiler",
+            "Harlow Solid Italic",
+            "Harrington",
+            "High Tower Text",
+            "HoloLens MDL2 Assets",
+            "Impact",
+            "Imprint MT Shadow",
+            "Informal Roman",
+            "Ink Free",
+            "Javanese Text",
+            "Jokerman",
+            "Juice ITC",
+            "Kristen ITC",
+            "Kunstler Script",
+            "Leelawadee UI",
+            "Leelawadee UI Semilight",
+            "Lucida Bright",
+            "Lucida Calligraphy",
+            "Lucida Console",
+            "Lucida Fax",
+            "Lucida Handwriting",
+            "Lucida Sans",
+            "Lucida Sans Typewriter",
+            "Lucida Sans Unicode",
+            "Magneto",
+            "Maiandra GD",
+            "Malgun Gothic",
+            "Malgun Gothic Semilight",
+            "Marlett",
+            "Matura MT Script Capitals",
+            "Microsoft Himalaya",
+            "Microsoft JhengHei",
+            "Microsoft JhengHei Light",
+            "Microsoft JhengHei UI",
+            "Microsoft JhengHei UI Light",
+            "Microsoft MHei",
+            "Microsoft NeoGothic",
+            "Microsoft New Tai Lue",
+            "Microsoft PhagsPa",
+            "Microsoft Sans Serif",
+            "Microsoft Tai Le",
+            "Microsoft YaHei",
+            "Microsoft YaHei Light",
+            "Microsoft YaHei UI",
+            "Microsoft YaHei UI Light",
+            "Microsoft Yi Baiti",
+            "MingLiU_HKSCS-ExtB",
+            "MingLiU-ExtB",
+            "Mistral",
+            "Modern No. 20",
+            "Mongolian Baiti",
+            "Monotype Corsiva",
+            "MS Gothic",
+            "MS Outlook",
+            "MS PGothic",
+            "MS Reference Sans Serif",
+            "MS Reference Specialty",
+            "MS UI Gothic",
+            "MT Extra",
+            "MV Boli",
+            "Myanmar Text",
+            "Niagara Engraved",
+            "Niagara Solid",
+            "Nirmala UI",
+            "Nirmala UI Semilight",
+            "NSimSun",
+            "OCR A Extended",
+            "Old English Text MT",
+            "Onyx",
+            "Orbitron",
+            "Orbitron Black",
+            "Orbitron Medium",
+            "Palace Script MT",
+            "Palatino Linotype",
+            "Papyrus",
+            "Parchment",
+            "Perpetua",
+            "Perpetua Titling MT",
+            "Playbill",
+            "PMingLiU-ExtB",
+            "Poor Richard",
+            "Pristina",
+            "Rage Italic",
+            "Ravie",
+            "Roboto",
+            "Roboto Black",
+            "Roboto Condensed",
+            "Roboto Condensed Light",
+            "Roboto Light",
+            "Roboto Medium",
+            "Roboto Mono",
+            "Roboto Mono Light",
+            "Roboto Mono Medium",
+            "Roboto Mono Thin",
+            "Roboto Slab",
+            "Roboto Thin",
+            "Rockwell",
+            "Rockwell Condensed",
+            "Rockwell Extra Bold",
+            "ROG Fonts v1.6",
+            "Script MT Bold",
+            "Segoe MDL2 Assets",
+            "Segoe Print",
+            "Segoe Script",
+            "Segoe UI",
+            "Segoe UI Black",
+            "Segoe UI Emoji",
+            "Segoe UI Historic",
+            "Segoe UI Light",
+            "Segoe UI Semibold",
+            "Segoe UI Semilight",
+            "Segoe UI Symbol",
+            "Segoe WP",
+            "Segoe WP Black",
+            "Segoe WP Light",
+            "Segoe WP Semibold",
+            "Segoe WP SemiLight",
+            "Showcard Gothic",
+            "SimSun",
+            "SimSun-ExtB",
+            "Sitka Banner",
+            "Sitka Display",
+            "Sitka Heading",
+            "Sitka Small",
+            "Sitka Subheading",
+            "Sitka Text",
+            "Snap ITC",
+            "Stencil",
+            "Sylfaen",
+            "Symbol",
+            "Tahoma",
+            "TeamViewer11",
+            "Tempus Sans ITC",
+            "Times New Roman",
+            "Trebuchet MS",
+            "Tw Cen MT",
+            "Tw Cen MT Condensed",
+            "Tw Cen MT Condensed Extra Bold",
+            "Ubuntu",
+            "Ubuntu Condensed",
+            "Ubuntu Light",
+            "Ubuntu Mono",
+            "Verdana",
+            "Viner Hand ITC",
+            "Vivaldi",
+            "Vladimir Script",
+            "Webdings",
+            "Wide Latin",
+            "Wingdings",
+            "Wingdings 2",
+            "Wingdings 3",
+            "Yu Gothic",
+            "Yu Gothic Light",
+            "Yu Gothic Medium",
+            "Yu Gothic UI",
+            "Yu Gothic UI Light",
+            "Yu Gothic UI Semibold",
+            "Yu Gothic UI Semilight",
             "",
             "Agency FB",
             "Algerian",
@@ -490,6 +772,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(828, 602);
+            this.Controls.Add(this.numDbs);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.lblFont);
             this.Controls.Add(this.lblFontSize);
@@ -511,6 +794,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numFontSize)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numDbs)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -534,5 +818,6 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.RadioButton rbUseSingleCharacterMaxSize;
         private System.Windows.Forms.RadioButton rbUseAllCharactersMaxSize;
+        private System.Windows.Forms.NumericUpDown numDbs;
     }
 }
