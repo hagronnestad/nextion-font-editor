@@ -30,6 +30,18 @@ namespace NextionFontEditor {
             numFontSize.Value = 16;
         }
 
+        public Graphics CreateGraphics(Bitmap bitmap = null) {
+            var b = bitmap ?? new Bitmap(1, 1);
+            var g = Graphics.FromImage(b);
+
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+            g.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
+
+            return g;
+        }
+
         private void CreatePreview() {
             var codePage = CodePages.GetCodePage(CodePageIdentifier.ISO_8859_1);
 
@@ -40,109 +52,42 @@ namespace NextionFontEditor {
             var width = size / 2;
             var height = size;
 
-            var ms = fontSize;
-
-            if (rbUseAllCharactersMaxSize.Checked) {
-                var allCharsMaxSize = size;
-
-                foreach (var c in codePage.Characters) {
-                    var mst = GetMaxFontSizeForRect(c.ToString(), fontName, size, new SizeF(width, height));
-                    if (mst < allCharsMaxSize) {
-                        allCharsMaxSize = mst;
-                    }
-                }
-
-                ms = allCharsMaxSize;
-            }
+            var font = new Font(fontName, fontSize, GraphicsUnit.Pixel);
 
             var pPreviews = new List<Bitmap>();
 
             foreach (var c in codePage.Characters) {
-                var b = new Bitmap(width, height);
+                var bPreview = new Bitmap(width, height);
 
-                using (var g = Graphics.FromImage(b)) {
+                using (var gPreview = CreateGraphics(bPreview)) {
 
-                    g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
-                    g.TextRenderingHint = TextRenderingHint.SingleBitPerPixel;
+                    var sChar = gPreview.MeasureString(c.ToString(), font, new PointF(0, 0), StringFormat.GenericTypographic).ToSize();
+                    if (sChar.Width == 0) sChar.Width = 1;
 
-                    g.FillRectangle(new SolidBrush(Color.White), 0, 0, width, height);
+                    var bChar = new Bitmap(sChar.Width, sChar.Height);
 
-                    if (rbUseSingleCharacterMaxSize.Checked) {
-                        ms = GetMaxFontSizeForRect(c.ToString(), fontName, size, new SizeF(width, height));
-                    }
+                    using (var gChar = CreateGraphics(bChar)) {
+                        var sb = bChar.Width > bPreview.Width ? new SolidBrush(Color.LightCoral) : new SolidBrush(Color.LightGreen);
 
-                    //var font = new Font(fontName, ms, GraphicsUnit.Pixel);
-                    //g.DrawString(
-                    //    c.ToString(),
-                    //    font,
-                    //    new SolidBrush(Color.Black),
-                    //    new RectangleF((float) numCharOffsetX.Value, (float) numCharOffsetY.Value, width, height),
-                    //        new StringFormat(StringFormat.GenericDefault) {
-                    //            Alignment = StringAlignment.Center,
-                    //            //LineAlignment = StringAlignment.Center
-                    //        }
-                    //    );
+                        gChar.FillRectangle(sb, 0, 0, sChar.Width, sChar.Height);
 
-                    var dbs = (int) numDbs.Value;
-
-                    var bb = new Bitmap(width * dbs, height * dbs);
-                    var gg = Graphics.FromImage(bb);
-                    var font = new Font(fontName, ms * dbs, GraphicsUnit.Pixel);
-                    gg.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
-                    gg.TextRenderingHint = TextRenderingHint.SingleBitPerPixel;
-                    gg.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-
-                    var ss = gg.MeasureString(c.ToString(), font, new PointF(0, 0), new StringFormat(StringFormat.GenericTypographic) {
-                        //Alignment = StringAlignment.Center
-                    });
-
-                    if (ss.Width > bb.Width) {
-                        var bbb = new Bitmap((int) ss.Width, bb.Height);
-                        var ggg = Graphics.FromImage(bbb);
-                        ggg.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-                        ggg.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
-                        ggg.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-
-                        ggg.DrawString(
-                            c.ToString(),
-                            font,
+                        gChar.DrawString(c.ToString(), font,
                             new SolidBrush(Color.Black),
-                            new RectangleF((float) numCharOffsetX.Value, (float) numCharOffsetY.Value, width * dbs, height * dbs),
-                                new StringFormat(StringFormat.GenericTypographic) {
-                                    Alignment = StringAlignment.Center
-                                }
-                            );
-
-                        gg.DrawImage(bbb, 0, 0, bb.Width, bb.Height);
-
-                    } else {
-                        gg.DrawString(
-                        c.ToString(),
-                        font,
-                        new SolidBrush(Color.Black),
-                        new RectangleF((float) numCharOffsetX.Value, (float) numCharOffsetY.Value, width * dbs, height * dbs),
-                            new StringFormat(StringFormat.GenericTypographic) {
-                                Alignment = StringAlignment.Center
-                            }
+                            0, 0, StringFormat.GenericTypographic
                         );
                     }
 
-                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-                    g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
-                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-                    g.DrawImage(bb, 0, 0, width, height);
+                    gPreview.FillRectangle(new SolidBrush(Color.White), 0, 0, width, height);
 
-                    //new StringFormat(StringFormat.GenericDefault) {
-                    //    Alignment = StringAlignment.Center
-                    //}
+                    if (bChar.Width > bPreview.Width) {
+                        gPreview.DrawImage(bChar, 0, 0, width, height);
 
-                    //var scale = width / ss.Width;
-                    //if (scale < 1) {
-                    //    g.ScaleTransform(scale, scale);
-                    //}
-
-                    pPreviews.Add(b);
+                    } else {
+                        gPreview.DrawImage(bChar, (width / 2) - (bChar.Width / 2), 0, bChar.Width, height);
+                    }
                 }
+
+                pPreviews.Add(bPreview);
             }
 
             panelPreview.SuspendLayout();
@@ -155,8 +100,6 @@ namespace NextionFontEditor {
                     Margin = new Padding(3)
                 }).ToArray());
             panelPreview.ResumeLayout();
-
-            //var data = BitmapTo1BppData(new Bitmap(((PictureBox) panelPreview.Controls[1]).Image));
 
             var newZiFont = ZiFont.FromCharacterBitmaps("test", (byte) width, (byte) height, pPreviews);
             newZiFont.Save("test.zi", codePage);
