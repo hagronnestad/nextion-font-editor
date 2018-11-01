@@ -101,7 +101,7 @@ namespace NextionFontEditor {
                 }).ToArray());
             panelPreview.ResumeLayout();
 
-            var newZiFont = ZiFont.FromCharacterBitmaps("test", (byte) width, (byte) height, pPreviews);
+            var newZiFont = ZiFont.FromCharacterBitmaps("test", (byte) width, (byte) height, codePage, pPreviews);
             newZiFont.Save("test.zi", codePage);
         }
 

@@ -8,29 +8,31 @@ namespace ZiLib {
 
         public static CodePage CreateAscii() {
             var start = 32;
-            var end = 95;
-            var bytes = Enumerable.Range(start, end).Select(x => (byte) x).ToArray();
+            var count = 95;
+            var bytes = Enumerable.Range(start, count).Select(x => (byte) x).ToArray();
             var characters = Encoding.ASCII.GetChars(bytes);
 
             return new CodePage {
                 CodePageIdentifier = CodePageIdentifier.ASCII,
                 FirstByteStart = start,
-                FirstByteEnd = end,
+                FirstByteEnd = start + count,
+                CharacterCount = count,
                 Characters = characters
             };
         }
 
         public static CodePage CreateIso_8859_1() {
             var start = 32;
-            var end = 224;
-            var bytes = Enumerable.Range(start, end).Select(x => (byte) x).ToArray();
+            var count = 224;
+            var bytes = Enumerable.Range(start, count).Select(x => (byte) x).ToArray();
             var encoding = Encoding.GetEncoding("ISO-8859-1");
             var characters = encoding.GetChars(bytes);
 
             return new CodePage {
                 CodePageIdentifier = CodePageIdentifier.ISO_8859_1,
                 FirstByteStart = start,
-                FirstByteEnd = end,
+                FirstByteEnd = start + count,
+                CharacterCount = count,
                 Characters = characters
             };
         }
@@ -60,6 +62,7 @@ namespace ZiLib {
                 FirstByteEnd = firstByteEnd,
                 SecondByteStart = secondByteStart,
                 SecondByteEnd = secondByteEnd,
+                CharacterCount = 0,
                 Characters = characters
             };
         }

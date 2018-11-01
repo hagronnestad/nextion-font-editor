@@ -17,7 +17,7 @@ namespace NextionFontEditor {
             ziFont = ZiFont.FromFile(@"Test Files\Arial_16_ascii.zi");
             ziFont.CreateBitmaps();
 
-            numChar.Maximum = ziFont.CharacterCount - 1;
+            numChar.Maximum = ziFont.CodePage.CharacterCount - 1;
 
             charEditor1.CharImage = ziFont.CharBitmaps.Skip(1).First();
             numChar.Value = 1;
