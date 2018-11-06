@@ -13,7 +13,8 @@ namespace ZiLib {
 
         private const int HEADER_LENGTH = 0x1C; // 28
 
-        public byte[] Header { get; set; }
+        private byte[] _header { get; set; }
+        private byte[] _charData { get; set; }
 
         public byte CharacterWidth { get; set; }
         public byte CharacterHeight { get; set; }
@@ -28,36 +29,7 @@ namespace ZiLib {
         public UInt32 CharDataLength { get; set; }
         public int BytesPerChar { get; set; }
 
-        public byte[] CharData { get; set; }
-
         public List<Bitmap> CharBitmaps { get; set; } = new List<Bitmap>();
-
-        public void CreateBitmaps() {
-            CharBitmaps.Clear();
-
-            var bb = new SolidBrush(Color.Black);
-            var pr = new Pen(Color.DarkCyan);
-
-            for (int charIndex = 0; charIndex < CodePage.CharacterCount; charIndex++) {
-                var charBitmap = new Bitmap(CharacterWidth, CharacterHeight);
-                var g = Graphics.FromImage(charBitmap);
-
-                var charData = CharData.Skip(charIndex * BytesPerChar).Take(BytesPerChar).ToArray();
-                var pixels = BinaryTools.BytesToBits(charData);
-
-                var pixel = 0;
-
-                for (int y = 0; y < CharacterHeight; y++) {
-                    for (int x = 0; x < CharacterWidth; x++) {
-                        if (pixels[pixel]) g.FillRectangle(bb, x, y, 1, 1);
-
-                        pixel++;
-                    }
-                }
-
-                CharBitmaps.Add(charBitmap);
-            }
-        }
 
         public void Save(string fileName, CodePage codePage) {
             var file = new List<byte>();
@@ -81,7 +53,7 @@ namespace ZiLib {
             file.Add(0x00); // Reserved
             file.Add(0x00); // Reserved
             file.AddRange(Encoding.ASCII.GetBytes(Name));
-            file.AddRange(CharData);
+            file.AddRange(_charData);
 
             File.WriteAllBytes(fileName, file.ToArray());
         }
@@ -95,29 +67,57 @@ namespace ZiLib {
 
             var ziFont = new ZiFont();
 
-            ziFont.Header = bytes.Take(HEADER_LENGTH).ToArray();
-            ziFont.NameLength = ziFont.Header[0x11];
+            ziFont._header = bytes.Take(HEADER_LENGTH).ToArray();
+            ziFont.NameLength = ziFont._header[0x11];
             ziFont.Name = Encoding.ASCII.GetString(bytes.Skip(HEADER_LENGTH).Take(ziFont.NameLength).ToArray());
 
-            ziFont.CharacterWidth = ziFont.Header[0x6];
-            ziFont.CharacterHeight = ziFont.Header[0x7];
+            ziFont.CharacterWidth = ziFont._header[0x6];
+            ziFont.CharacterHeight = ziFont._header[0x7];
 
-            ziFont.VariableDataLength = BitConverter.ToUInt32(ziFont.Header.Skip(0x14).Take(4).ToArray(), 0);
+            ziFont.VariableDataLength = BitConverter.ToUInt32(ziFont._header.Skip(0x14).Take(4).ToArray(), 0);
             ziFont.CharDataLength = ziFont.VariableDataLength - ziFont.NameLength;
 
-            ziFont.CharData = bytes.Skip(HEADER_LENGTH + ziFont.NameLength).ToArray();
+            ziFont._charData = bytes.Skip(HEADER_LENGTH + ziFont.NameLength).ToArray();
             ziFont.BytesPerChar = (ziFont.CharacterWidth * ziFont.CharacterHeight) / 8;
 
-            var codePageId = BitConverter.ToUInt16(ziFont.Header.Skip(0x4).Take(2).ToArray(), 0);
-            var characterCount = BitConverter.ToUInt32(ziFont.Header.Skip(0x0C).Take(4).ToArray(), 0);
+            var codePageId = BitConverter.ToUInt16(ziFont._header.Skip(0x4).Take(2).ToArray(), 0);
+            var characterCount = BitConverter.ToUInt32(ziFont._header.Skip(0x0C).Take(4).ToArray(), 0);
             var calculatedCharCount = ziFont.CharDataLength / ziFont.BytesPerChar;
 
             ziFont.CodePage = CodePages.GetCodePage((CodePageIdentifier) codePageId);
 
-
             if (characterCount != calculatedCharCount) throw new Exception($"{nameof(characterCount)} and {nameof(calculatedCharCount)} doesn't match.");
 
+            ziFont.CreateBitmaps();
+
             return ziFont;
+        }
+
+        private void CreateBitmaps() {
+            CharBitmaps.Clear();
+
+            var bb = new SolidBrush(Color.Black);
+            var pr = new Pen(Color.DarkCyan);
+
+            for (int charIndex = 0; charIndex < CodePage.CharacterCount; charIndex++) {
+                var charBitmap = new Bitmap(CharacterWidth, CharacterHeight);
+                var g = Graphics.FromImage(charBitmap);
+
+                var charData = _charData.Skip(charIndex * BytesPerChar).Take(BytesPerChar).ToArray();
+                var pixels = BinaryTools.BytesToBits(charData);
+
+                var pixel = 0;
+
+                for (int y = 0; y < CharacterHeight; y++) {
+                    for (int x = 0; x < CharacterWidth; x++) {
+                        if (pixels[pixel]) g.FillRectangle(bb, x, y, 1, 1);
+
+                        pixel++;
+                    }
+                }
+
+                CharBitmaps.Add(charBitmap);
+            }
         }
 
         public static ZiFont FromCharacterBitmaps(string fontName, byte width, byte height, CodePage codePage, List<Bitmap> characters) {
@@ -139,7 +139,7 @@ namespace ZiLib {
             foreach (var cb in characters) {
                 charData.AddRange(BinaryTools.BitmapTo1BppData(cb));
             }
-            ziFont.CharData = charData.ToArray();
+            ziFont._charData = charData.ToArray();
 
             return ziFont;
         }
