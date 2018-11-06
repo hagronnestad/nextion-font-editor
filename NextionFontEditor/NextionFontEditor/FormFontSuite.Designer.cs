@@ -59,40 +59,44 @@
             // 
             // toolStrip1
             // 
+            this.toolStrip1.ImageScalingSize = new System.Drawing.Size(30, 30);
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnNewFontGenerator,
             this.btnNewFontEditor,
             this.btnNewFontPreview});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(961, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(961, 37);
             this.toolStrip1.TabIndex = 2;
             this.toolStrip1.Text = "toolStrip1";
             // 
             // btnNewFontGenerator
             // 
+            this.btnNewFontGenerator.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnNewFontGenerator.Image = ((System.Drawing.Image)(resources.GetObject("btnNewFontGenerator.Image")));
             this.btnNewFontGenerator.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnNewFontGenerator.Name = "btnNewFontGenerator";
-            this.btnNewFontGenerator.Size = new System.Drawing.Size(106, 22);
+            this.btnNewFontGenerator.Size = new System.Drawing.Size(34, 34);
             this.btnNewFontGenerator.Text = "Font Generator";
             this.btnNewFontGenerator.Click += new System.EventHandler(this.btnNewFontGenerator_Click);
             // 
             // btnNewFontEditor
             // 
+            this.btnNewFontEditor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnNewFontEditor.Image = ((System.Drawing.Image)(resources.GetObject("btnNewFontEditor.Image")));
             this.btnNewFontEditor.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnNewFontEditor.Name = "btnNewFontEditor";
-            this.btnNewFontEditor.Size = new System.Drawing.Size(85, 22);
+            this.btnNewFontEditor.Size = new System.Drawing.Size(34, 34);
             this.btnNewFontEditor.Text = "Font Editor";
             this.btnNewFontEditor.Click += new System.EventHandler(this.btnNewFontEditor_Click);
             // 
             // btnNewFontPreview
             // 
+            this.btnNewFontPreview.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnNewFontPreview.Image = ((System.Drawing.Image)(resources.GetObject("btnNewFontPreview.Image")));
             this.btnNewFontPreview.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnNewFontPreview.Name = "btnNewFontPreview";
-            this.btnNewFontPreview.Size = new System.Drawing.Size(95, 22);
+            this.btnNewFontPreview.Size = new System.Drawing.Size(34, 34);
             this.btnNewFontPreview.Text = "Font Preview";
             this.btnNewFontPreview.Click += new System.EventHandler(this.btnNewFontPreview_Click);
             // 
@@ -153,11 +157,13 @@
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "FormFontSuite";
             this.Text = "Nextion Font Suite";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Load += new System.EventHandler(this.FormFontSuite_Load);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.toolStrip1.ResumeLayout(false);

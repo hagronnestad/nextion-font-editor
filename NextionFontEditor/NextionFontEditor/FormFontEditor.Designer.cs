@@ -69,6 +69,7 @@
             this.Controls.Add(this.numChar);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.charEditor1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormFontEditor";
             this.Text = "Font Editor";
             this.Load += new System.EventHandler(this.FormFontEditor_Load);

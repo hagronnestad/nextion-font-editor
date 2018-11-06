@@ -52,6 +52,7 @@
     <Compile Include="Controls\FontListBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Extensions\FormExtensions.cs" />
     <Compile Include="FormFontEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -203,12 +204,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Icons\icons8-edit-image-16.png" />
+    <Content Include="Icons\icons8-edit-image-30.png" />
+    <Content Include="Icons\icons8-increase-font-16.png" />
+    <Content Include="Icons\icons8-increase-font-30.png" />
     <Content Include="Icons\icons8-opened-folder-16.png" />
     <Content Include="Icons\icons8-opened-folder-30.png" />
     <Content Include="Icons\icons8-preview-pane-16.png" />
     <Content Include="Icons\icons8-search-16.png" />
+    <Content Include="Icons\icons8-search-30.png" />
+    <Content Include="Icons\icons8-text-box-16.png" />
+    <Content Include="Icons\icons8-text-box-30.png" />
+    <Content Include="Icons\icons8-text-box-40.png" />
+    <Content Include="Icons\icons8-text-box-80.png" />
+    <Content Include="Icons\icons8_edit_image_16_23V_icon.ico" />
+    <Content Include="Icons\icons8_increase_font_16_mb5_icon.ico" />
     <Content Include="Icons\icons8_preview_pane_16_Vww_icon.ico" />
     <Content Include="Icons\icons8_search_16_lF9_icon.ico" />
+    <Content Include="Icons\icons8-text-box.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
