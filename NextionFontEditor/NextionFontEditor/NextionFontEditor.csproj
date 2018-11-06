@@ -70,6 +70,12 @@
     <Compile Include="FormFontGenerator.Designer.cs">
       <DependentUpon>FormFontGenerator.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormFontSuite.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormFontSuite.Designer.cs">
+      <DependentUpon>FormFontSuite.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FormFontEditor.resx">
@@ -80,6 +86,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormFontGenerator.resx">
       <DependentUpon>FormFontGenerator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormFontSuite.resx">
+      <DependentUpon>FormFontSuite.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -192,6 +201,14 @@
       <Project>{656212B8-63AB-4C9D-A654-59F54AB10EA5}</Project>
       <Name>ZiLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Icons\icons8-opened-folder-16.png" />
+    <Content Include="Icons\icons8-opened-folder-30.png" />
+    <Content Include="Icons\icons8-preview-pane-16.png" />
+    <Content Include="Icons\icons8-search-16.png" />
+    <Content Include="Icons\icons8_preview_pane_16_Vww_icon.ico" />
+    <Content Include="Icons\icons8_search_16_lF9_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

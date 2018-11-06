@@ -15,7 +15,6 @@ namespace NextionFontEditor {
 
         private void FormFontEditor_Load(object sender, EventArgs e) {
             ziFont = ZiFont.FromFile(@"Test Files\Arial_16_ascii.zi");
-            ziFont.CreateBitmaps();
 
             numChar.Maximum = ziFont.CodePage.CharacterCount - 1;
 

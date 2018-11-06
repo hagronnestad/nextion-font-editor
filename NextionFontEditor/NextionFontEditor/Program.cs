@@ -12,7 +12,7 @@ namespace NextionFontEditor {
         private static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormFontEditor());
+            Application.Run(new FormFontSuite());
         }
     }
 }

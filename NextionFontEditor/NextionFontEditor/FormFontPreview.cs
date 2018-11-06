@@ -12,10 +12,6 @@ namespace NextionFontEditor {
         }
 
         private void FormFontPreview_Load(object sender, EventArgs e) {
-            var zifont = ZiFont.FromFile(@"Test Files\Code Page Test\big5.zi");
-            zifont.CreateBitmaps();
-
-            CreateCharacterPreview(zifont);
         }
 
         private void CreateCharacterPreview(ZiFont font) {
@@ -30,6 +26,15 @@ namespace NextionFontEditor {
                 };
 
                 flowPanel.Controls.Add(p);
+            }
+        }
+
+        private void btnOpen_Click(object sender, EventArgs e) {
+            var res = ofd.ShowDialog();
+
+            if (res == DialogResult.OK) {
+                var zifont = ZiFont.FromFile(ofd.FileName);
+                CreateCharacterPreview(zifont);
             }
         }
     }
