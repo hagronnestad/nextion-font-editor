@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NextionFontEditor.Extensions;
+using System;
 using System.Windows.Forms;
 
 namespace NextionFontEditor {
@@ -35,6 +36,10 @@ namespace NextionFontEditor {
                 //WindowState = FormWindowState.Maximized
             };
             form.Show();
+        }
+
+        private void FormFontSuite_Load(object sender, EventArgs e) {
+            this.SetBevel(false);
         }
     }
 }
