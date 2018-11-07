@@ -24,6 +24,7 @@ namespace ZiLib {
         public byte FileFormatVersion => 3;
         public byte NameLength { get; set; }
         public string Name { get; set; }
+        public long FileSize { get; set; }
 
         public UInt32 VariableDataLength { get; set; }
         public UInt32 CharDataLength { get; set; }
@@ -70,6 +71,7 @@ namespace ZiLib {
             ziFont._header = bytes.Take(HEADER_LENGTH).ToArray();
             ziFont.NameLength = ziFont._header[0x11];
             ziFont.Name = Encoding.ASCII.GetString(bytes.Skip(HEADER_LENGTH).Take(ziFont.NameLength).ToArray());
+            ziFont.FileSize = bytes.Length;
 
             ziFont.CharacterWidth = ziFont._header[0x6];
             ziFont.CharacterHeight = ziFont._header[0x7];
