@@ -15,6 +15,12 @@ namespace NextionFontEditor.Controls {
 
         protected override bool DoubleBuffered => true;
 
+        protected override void OnCreateControl() {
+            base.OnCreateControl();
+
+            CharImage = new Bitmap(16, 32);
+        }
+
         protected override void OnResize(EventArgs e) {
             base.OnResize(e);
             SetSize();
@@ -27,17 +33,20 @@ namespace NextionFontEditor.Controls {
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
 
-            if (_charImage != null) {
+            if (_charImage != null && bBuffer != null && gBuffer != null) {
+                gBuffer.Clear(Color.White);
                 gBuffer.DrawImage(_charImage, 0, 0, _charImage.Width * Zoom, CharImage.Height * Zoom);
+
+                if (_showGrid) DrawGrid();
+
+                e.Graphics.DrawImage(bBuffer, 0, 0, bBuffer.Width, bBuffer.Height);
             }
 
-            if (ShowGrid) DrawGrid();
-
-            e.Graphics.DrawImage(bBuffer, 0, 0, bBuffer.Width, bBuffer.Height);
         }
 
         protected override void OnMouseClick(MouseEventArgs e) {
             base.OnMouseClick(e);
+            if (e.Button != MouseButtons.Left) return;
 
             var x = e.X / Zoom;
             var y = e.Y / Zoom;
@@ -55,6 +64,7 @@ namespace NextionFontEditor.Controls {
 
         protected override void OnMouseDown(MouseEventArgs e) {
             base.OnMouseDown(e);
+            if (e.Button != MouseButtons.Left) return;
 
             var x = e.X / Zoom;
             var y = e.Y / Zoom;
