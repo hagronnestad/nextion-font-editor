@@ -1,8 +1,12 @@
 # Nextion Font Editor
 
-Sample screenshot of the "Font Preview"-tool previewing the `Arial_40_ascii.zi` file.
+> Sample screenshot of the "Font Editor"-tool previewing the `$` character from the `Arial_40_ascii.zi` file.
 
-![Image of Yaktocat](Screenshots/01.png)
+![](Screenshots/02-thumb.png)
+
+> Sample screenshot of the "Font Preview"-tool previewing the `Arial_40_ascii.zi` file.
+
+![](Screenshots/01-thumb.png)
 
 ## Nextion .ZI Font Format Specification
 
