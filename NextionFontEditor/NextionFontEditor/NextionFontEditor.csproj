@@ -206,10 +206,13 @@
   <ItemGroup>
     <Content Include="Icons\icons8-edit-image-16.png" />
     <Content Include="Icons\icons8-edit-image-30.png" />
+    <Content Include="Icons\icons8-grid-16.png" />
     <Content Include="Icons\icons8-increase-font-16.png" />
     <Content Include="Icons\icons8-increase-font-30.png" />
     <Content Include="Icons\icons8-opened-folder-16.png" />
     <Content Include="Icons\icons8-opened-folder-30.png" />
+    <Content Include="Icons\icons8-pen-16.png" />
+    <Content Include="Icons\icons8-pen-30.png" />
     <Content Include="Icons\icons8-preview-pane-16.png" />
     <Content Include="Icons\icons8-search-16.png" />
     <Content Include="Icons\icons8-search-30.png" />
