@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NextionFontEditor")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Nextion Font Suite")]
+[assembly: AssemblyDescription("A collection of tools to view, edit and generate Nextion .zi fonts.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("NextionFontEditor")]
+[assembly: AssemblyCompany("https://github.com/hagronnestad")]
+[assembly: AssemblyProduct("Nextion Font Suite")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
