@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using ZiLib;
@@ -11,24 +12,16 @@ namespace NextionFontEditor {
             InitializeComponent();
         }
 
-        private ZiFont ziFont;
+        private ZiFont ziFont = new ZiFont();
 
         private void FormFontEditor_Load(object sender, EventArgs e) {
             cmbZoom.Items.AddRange(Enumerable.Range(1, 30).Select(x => $"{x}x").ToArray());
             cmbZoom.SelectedIndex = 9;
         }
 
-        private void charEditor1_Click(object sender, EventArgs e) {
-            pPreview.Image = charEditor1.CharImage;
-        }
-
         private void numChar_ValueChanged(object sender, EventArgs e) {
             charEditor1.CharImage = ziFont.CharBitmaps.Skip((int) numChar.Value).First();
             pPreview.Image = charEditor1.CharImage;
-        }
-
-        private void openToolStripMenuItem_Click(object sender, EventArgs e) {
-
         }
 
         private void btnOpenFont_Click(object sender, EventArgs e) {
@@ -63,6 +56,39 @@ namespace NextionFontEditor {
 
         private void btnShowGrid_Click(object sender, EventArgs e) {
             charEditor1.ShowGrid = btnShowGrid.Checked;
+        }
+
+        private void btnSave_Click(object sender, EventArgs e) {
+            var res = sfd.ShowDialog();
+
+            if (res == DialogResult.OK) {
+
+                ziFont.Save(sfd.FileName, ziFont.CodePage);
+            }
+        }
+
+        private void btnClear_Click(object sender, EventArgs e) {
+            charEditor1.Clear();
+        }
+
+        private void charEditor1_Paint(object sender, PaintEventArgs e) {
+            pPreview.Image = charEditor1.CharImage;
+        }
+
+        private void btnMoveLeft_Click(object sender, EventArgs e) {
+            charEditor1.MoveCharacterX(-1);
+        }
+
+        private void btnMoveRight_Click(object sender, EventArgs e) {
+            charEditor1.MoveCharacterX(1);
+        }
+
+        private void btnMoveUp_Click(object sender, EventArgs e) {
+            charEditor1.MoveCharacterY(-1);
+        }
+
+        private void btnMoveDown_Click(object sender, EventArgs e) {
+            charEditor1.MoveCharacterY(1);
         }
     }
 }

@@ -7,11 +7,16 @@ namespace NextionFontEditor.Controls {
 
     public class CharEditor : Control {
         private Bitmap _charImage;
+        private Graphics _charGraphics;
         private int _zoom = 10;
         private bool _showGrid = true;
 
-        private Bitmap bBuffer;
-        private Graphics gBuffer;
+        private Bitmap _bBuffer;
+        private Graphics _gBuffer;
+
+        public CharEditor() : base() {
+            BackColor = Color.WhiteSmoke;
+        }
 
         protected override bool DoubleBuffered => true;
 
@@ -33,13 +38,13 @@ namespace NextionFontEditor.Controls {
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
 
-            if (_charImage != null && bBuffer != null && gBuffer != null) {
-                gBuffer.Clear(Color.White);
-                gBuffer.DrawImage(_charImage, 0, 0, _charImage.Width * Zoom, CharImage.Height * Zoom);
+            if (_charImage != null && _bBuffer != null && _gBuffer != null) {
+                _gBuffer.Clear(Color.Transparent);
+                _gBuffer.DrawImage(_charImage, 0, 0, _charImage.Width * Zoom, CharImage.Height * Zoom);
 
                 if (_showGrid) DrawGrid();
 
-                e.Graphics.DrawImage(bBuffer, 0, 0, bBuffer.Width, bBuffer.Height);
+                e.Graphics.DrawImage(_bBuffer, 0, 0, _bBuffer.Width, _bBuffer.Height);
             }
 
         }
@@ -99,21 +104,52 @@ namespace NextionFontEditor.Controls {
             }
         }
 
+        public void Clear() {
+            if (_charGraphics == null) return;
+
+            _charGraphics.Clear(Color.Transparent);
+            Invalidate();
+            Refresh();
+        }
+
+        public void MoveCharacterX(int pixels) {
+            if (_charGraphics == null) return;
+
+            using(var b = new Bitmap(_charImage)) {
+                _charGraphics.Clear(Color.Transparent);
+                _charGraphics.DrawImage(b, pixels, 0);
+            }
+
+            Invalidate();
+            Refresh();
+        }
+
+        public void MoveCharacterY(int pixels) {
+            if (_charGraphics == null) return;
+
+            using (var b = new Bitmap(_charImage)) {
+                _charGraphics.Clear(Color.Transparent);
+                _charGraphics.DrawImage(b, 0, pixels);
+            }
+
+            Invalidate();
+            Refresh();
+        }
+
         private void CreateBuffer() {
             if (_charImage == null) return;
 
-            bBuffer = new Bitmap(_charImage.Width * Zoom, _charImage.Height * Zoom);
-            gBuffer = Graphics.FromImage(bBuffer);
-            gBuffer.Clear(Color.White);
+            _bBuffer = new Bitmap(_charImage.Width * Zoom, _charImage.Height * Zoom);
+            _gBuffer = Graphics.FromImage(_bBuffer);
 
-            gBuffer.PixelOffsetMode = PixelOffsetMode.Half;
-            gBuffer.InterpolationMode = InterpolationMode.NearestNeighbor;
-            gBuffer.SmoothingMode = SmoothingMode.None;
+            _gBuffer.PixelOffsetMode = PixelOffsetMode.Half;
+            _gBuffer.InterpolationMode = InterpolationMode.NearestNeighbor;
+            _gBuffer.SmoothingMode = SmoothingMode.None;
         }
 
         private void TogglePixel(Bitmap b, int x, int y) {
             var p = b.GetPixel(x, y);
-            b.SetPixel(x, y, p.A != 255 || p.R != 0 || p.G != 0 || p.B != 0 ? Color.Black : Color.White);
+            b.SetPixel(x, y, p.A == 255 && p.R == 0 && p.G == 0 && p.B == 0 ? Color.FromArgb(0, 255, 255, 255) : Color.FromArgb(255, 0, 0, 0));
         }
 
         private void SetSize() {
@@ -125,17 +161,18 @@ namespace NextionFontEditor.Controls {
 
         private void DrawGrid() {
             if (_charImage == null) return;
-            if (gBuffer == null) return;
+            if (_gBuffer == null) return;
 
             for (int x = 0; x < _charImage.Width; x++) {
-                gBuffer.DrawLine(Pens.LightGray, x * Zoom, 0, x * Zoom, _charImage.Height * Zoom);
+                _gBuffer.DrawLine(Pens.LightGray, x * Zoom, 0, x * Zoom, _charImage.Height * Zoom);
             }
 
             for (int y = 0; y < _charImage.Height; y++) {
-                gBuffer.DrawLine(Pens.LightGray, 0, y * Zoom, _charImage.Width * Zoom, y * Zoom);
+                _gBuffer.DrawLine(Pens.LightGray, 0, y * Zoom, _charImage.Width * Zoom, y * Zoom);
             }
 
-            gBuffer.DrawRectangle(Pens.LightGray, 1, 1, _charImage.Width * Zoom - 1, _charImage.Height * Zoom - 1);
+
+            _gBuffer.DrawRectangle(Pens.LightGray, 1, 1, _charImage.Width * Zoom - 1, _charImage.Height * Zoom - 1);
         }
 
         public Bitmap CharImage
@@ -144,6 +181,8 @@ namespace NextionFontEditor.Controls {
             set
             {
                 _charImage = value;
+                _charGraphics = Graphics.FromImage(_charImage);
+
                 CreateBuffer();
                 SetSize();
                 Invalidate();

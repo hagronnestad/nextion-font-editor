@@ -32,7 +32,15 @@ namespace ZiLib {
 
         public List<Bitmap> CharBitmaps { get; set; } = new List<Bitmap>();
 
+        //public ZiFont(byte width, byte height, CodePage codePage) {
+        //    CharacterWidth = width;
+        //    CharacterHeight = height;
+        //    CodePage = codePage;
+        //}
+
         public void Save(string fileName, CodePage codePage) {
+            _charData = CreateCharData(CharBitmaps);
+
             var file = new List<byte>();
 
             file.AddRange(MagicNumbers);
@@ -122,6 +130,16 @@ namespace ZiLib {
             }
         }
 
+        private byte[] CreateCharData(List<Bitmap> characters) {
+            var charData = new List<byte>();
+
+            foreach (var cb in characters) {
+                charData.AddRange(BinaryTools.BitmapTo1BppData(cb));
+            }
+
+            return charData.ToArray();
+        }
+
         public static ZiFont FromCharacterBitmaps(string fontName, byte width, byte height, CodePage codePage, List<Bitmap> characters) {
             var bytesPerChar = width * height / 8;
             var charDataLength = (uint) (bytesPerChar * characters.Count());
@@ -134,14 +152,16 @@ namespace ZiLib {
                 CodePage = codePage,
                 CharDataLength = charDataLength,
                 VariableDataLength = (uint) fontName.Length + charDataLength,
-                BytesPerChar = bytesPerChar
+                BytesPerChar = bytesPerChar,
             };
 
-            var charData = new List<byte>();
-            foreach (var cb in characters) {
-                charData.AddRange(BinaryTools.BitmapTo1BppData(cb));
-            }
-            ziFont._charData = charData.ToArray();
+            ziFont._charData = ziFont.CreateCharData(characters);
+
+            //var charData = new List<byte>();
+            //foreach (var cb in characters) {
+            //    charData.AddRange(BinaryTools.BitmapTo1BppData(cb));
+            //}
+            //ziFont._charData = charData.ToArray();
 
             return ziFont;
         }

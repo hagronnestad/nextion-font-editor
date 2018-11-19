@@ -23,9 +23,8 @@ namespace ZiLib {
             for (int y = 0; y < b.Height; y++) {
 
                 for (int x = 0; x < b.Width; x++) {
-
                     var pixel = b.GetPixel(x, y);
-                    pixels[(y * b.Width) + x] = (pixel.R == 0 && pixel.G == 0 && pixel.B == 0);
+                    pixels[(y * b.Width) + x] = (pixel.A == 255 && pixel.R == 0 && pixel.G == 0 && pixel.B == 0);
                 }
 
             }

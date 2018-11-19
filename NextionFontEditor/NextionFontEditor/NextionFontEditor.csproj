@@ -62,7 +62,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icons8-text-box.ico</ApplicationIcon>
@@ -243,6 +243,7 @@
     <Content Include="icons8-text-box.ico" />
     <Content Include="Icons\icons8-edit-image-16.png" />
     <Content Include="Icons\icons8-edit-image-30.png" />
+    <Content Include="Icons\icons8-erase-16.png" />
     <Content Include="Icons\icons8-grid-16.png" />
     <Content Include="Icons\icons8-increase-font-16.png" />
     <Content Include="Icons\icons8-increase-font-30.png" />
@@ -251,8 +252,13 @@
     <Content Include="Icons\icons8-pen-16.png" />
     <Content Include="Icons\icons8-pen-30.png" />
     <Content Include="Icons\icons8-preview-pane-16.png" />
+    <Content Include="Icons\icons8-save-16.png" />
     <Content Include="Icons\icons8-search-16.png" />
     <Content Include="Icons\icons8-search-30.png" />
+    <Content Include="Icons\icons8-sort-down-16.png" />
+    <Content Include="Icons\icons8-sort-left-16.png" />
+    <Content Include="Icons\icons8-sort-right-16.png" />
+    <Content Include="Icons\icons8-sort-up-16.png" />
     <Content Include="Icons\icons8-text-box-16.png" />
     <Content Include="Icons\icons8-text-box-30.png" />
     <Content Include="Icons\icons8-text-box-40.png" />

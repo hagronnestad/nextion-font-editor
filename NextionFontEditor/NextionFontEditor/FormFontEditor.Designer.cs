@@ -28,16 +28,23 @@
             this.numChar = new System.Windows.Forms.NumericUpDown();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btnOpenFont = new System.Windows.Forms.ToolStripButton();
+            this.btnSave = new System.Windows.Forms.ToolStripButton();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.charEditor1 = new NextionFontEditor.Controls.CharEditor();
             this.tsCharEditor = new System.Windows.Forms.ToolStrip();
+            this.btnShowGrid = new System.Windows.Forms.ToolStripButton();
             this.cmbZoom = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.btnShowGrid = new System.Windows.Forms.ToolStripButton();
             this.panelWrapper = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.sfd = new System.Windows.Forms.SaveFileDialog();
+            this.btnClear = new System.Windows.Forms.ToolStripButton();
+            this.btnMoveLeft = new System.Windows.Forms.ToolStripButton();
+            this.btnMoveRight = new System.Windows.Forms.ToolStripButton();
+            this.btnMoveUp = new System.Windows.Forms.ToolStripButton();
+            this.btnMoveDown = new System.Windows.Forms.ToolStripButton();
+            this.charEditor1 = new NextionFontEditor.Controls.CharEditor();
             ((System.ComponentModel.ISupportInitialize)(this.pPreview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numChar)).BeginInit();
             this.toolStrip1.SuspendLayout();
@@ -69,7 +76,8 @@
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btnOpenFont});
+            this.btnOpenFont,
+            this.btnSave});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(553, 25);
@@ -81,9 +89,18 @@
             this.btnOpenFont.Image = ((System.Drawing.Image)(resources.GetObject("btnOpenFont.Image")));
             this.btnOpenFont.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btnOpenFont.Name = "btnOpenFont";
-            this.btnOpenFont.Size = new System.Drawing.Size(83, 22);
-            this.btnOpenFont.Text = "Open Font";
+            this.btnOpenFont.Size = new System.Drawing.Size(56, 22);
+            this.btnOpenFont.Text = "Open";
             this.btnOpenFont.Click += new System.EventHandler(this.btnOpenFont_Click);
+            // 
+            // btnSave
+            // 
+            this.btnSave.Image = ((System.Drawing.Image)(resources.GetObject("btnSave.Image")));
+            this.btnSave.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(51, 22);
+            this.btnSave.Text = "Save";
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // ofd
             // 
@@ -105,31 +122,36 @@
             this.panel1.TabIndex = 4;
             this.panel1.Resize += new System.EventHandler(this.panel1_Resize);
             // 
-            // charEditor1
-            // 
-            this.charEditor1.CharImage = ((System.Drawing.Bitmap)(resources.GetObject("charEditor1.CharImage")));
-            this.charEditor1.Location = new System.Drawing.Point(53, 36);
-            this.charEditor1.Margin = new System.Windows.Forms.Padding(20);
-            this.charEditor1.Name = "charEditor1";
-            this.charEditor1.ShowGrid = true;
-            this.charEditor1.Size = new System.Drawing.Size(160, 320);
-            this.charEditor1.TabIndex = 0;
-            this.charEditor1.Text = "charEditor1";
-            this.charEditor1.Zoom = 10;
-            this.charEditor1.Click += new System.EventHandler(this.charEditor1_Click);
-            // 
             // tsCharEditor
             // 
             this.tsCharEditor.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btnShowGrid,
             this.cmbZoom,
-            this.toolStripLabel1});
+            this.toolStripLabel1,
+            this.btnClear,
+            this.btnMoveLeft,
+            this.btnMoveRight,
+            this.btnMoveUp,
+            this.btnMoveDown});
             this.tsCharEditor.Location = new System.Drawing.Point(0, 0);
             this.tsCharEditor.Name = "tsCharEditor";
             this.tsCharEditor.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.tsCharEditor.Size = new System.Drawing.Size(413, 25);
             this.tsCharEditor.TabIndex = 1;
             this.tsCharEditor.Text = "toolStrip2";
+            // 
+            // btnShowGrid
+            // 
+            this.btnShowGrid.Checked = true;
+            this.btnShowGrid.CheckOnClick = true;
+            this.btnShowGrid.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.btnShowGrid.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnShowGrid.Image = ((System.Drawing.Image)(resources.GetObject("btnShowGrid.Image")));
+            this.btnShowGrid.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnShowGrid.Name = "btnShowGrid";
+            this.btnShowGrid.Size = new System.Drawing.Size(23, 22);
+            this.btnShowGrid.Text = "Show Grid";
+            this.btnShowGrid.Click += new System.EventHandler(this.btnShowGrid_Click);
             // 
             // cmbZoom
             // 
@@ -147,19 +169,6 @@
             this.toolStripLabel1.Name = "toolStripLabel1";
             this.toolStripLabel1.Size = new System.Drawing.Size(39, 22);
             this.toolStripLabel1.Text = "Zoom";
-            // 
-            // btnShowGrid
-            // 
-            this.btnShowGrid.Checked = true;
-            this.btnShowGrid.CheckOnClick = true;
-            this.btnShowGrid.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.btnShowGrid.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnShowGrid.Image = ((System.Drawing.Image)(resources.GetObject("btnShowGrid.Image")));
-            this.btnShowGrid.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnShowGrid.Name = "btnShowGrid";
-            this.btnShowGrid.Size = new System.Drawing.Size(23, 22);
-            this.btnShowGrid.Text = "Show Grid";
-            this.btnShowGrid.Click += new System.EventHandler(this.btnShowGrid_Click);
             // 
             // panelWrapper
             // 
@@ -190,6 +199,74 @@
             this.label2.Size = new System.Drawing.Size(45, 13);
             this.label2.TabIndex = 7;
             this.label2.Text = "Preview";
+            // 
+            // sfd
+            // 
+            this.sfd.Filter = "Nextion Font Files|*.zi";
+            // 
+            // btnClear
+            // 
+            this.btnClear.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnClear.Image = ((System.Drawing.Image)(resources.GetObject("btnClear.Image")));
+            this.btnClear.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(23, 22);
+            this.btnClear.Text = "toolStripButton1";
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // btnMoveLeft
+            // 
+            this.btnMoveLeft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnMoveLeft.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveLeft.Image")));
+            this.btnMoveLeft.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnMoveLeft.Name = "btnMoveLeft";
+            this.btnMoveLeft.Size = new System.Drawing.Size(23, 22);
+            this.btnMoveLeft.Text = "toolStripButton1";
+            this.btnMoveLeft.Click += new System.EventHandler(this.btnMoveLeft_Click);
+            // 
+            // btnMoveRight
+            // 
+            this.btnMoveRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnMoveRight.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveRight.Image")));
+            this.btnMoveRight.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnMoveRight.Name = "btnMoveRight";
+            this.btnMoveRight.Size = new System.Drawing.Size(23, 22);
+            this.btnMoveRight.Text = "toolStripButton1";
+            this.btnMoveRight.Click += new System.EventHandler(this.btnMoveRight_Click);
+            // 
+            // btnMoveUp
+            // 
+            this.btnMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnMoveUp.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveUp.Image")));
+            this.btnMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnMoveUp.Name = "btnMoveUp";
+            this.btnMoveUp.Size = new System.Drawing.Size(23, 22);
+            this.btnMoveUp.Text = "toolStripButton1";
+            this.btnMoveUp.Click += new System.EventHandler(this.btnMoveUp_Click);
+            // 
+            // btnMoveDown
+            // 
+            this.btnMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnMoveDown.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveDown.Image")));
+            this.btnMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnMoveDown.Name = "btnMoveDown";
+            this.btnMoveDown.Size = new System.Drawing.Size(23, 22);
+            this.btnMoveDown.Text = "toolStripButton1";
+            this.btnMoveDown.Click += new System.EventHandler(this.btnMoveDown_Click);
+            // 
+            // charEditor1
+            // 
+            this.charEditor1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.charEditor1.CharImage = ((System.Drawing.Bitmap)(resources.GetObject("charEditor1.CharImage")));
+            this.charEditor1.Location = new System.Drawing.Point(53, 36);
+            this.charEditor1.Margin = new System.Windows.Forms.Padding(20);
+            this.charEditor1.Name = "charEditor1";
+            this.charEditor1.ShowGrid = true;
+            this.charEditor1.Size = new System.Drawing.Size(160, 320);
+            this.charEditor1.TabIndex = 0;
+            this.charEditor1.Text = "charEditor1";
+            this.charEditor1.Zoom = 10;
+            this.charEditor1.Paint += new System.Windows.Forms.PaintEventHandler(this.charEditor1_Paint);
             // 
             // FormFontEditor
             // 
@@ -237,5 +314,12 @@
         private System.Windows.Forms.Panel panelWrapper;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ToolStripButton btnSave;
+        private System.Windows.Forms.SaveFileDialog sfd;
+        private System.Windows.Forms.ToolStripButton btnClear;
+        private System.Windows.Forms.ToolStripButton btnMoveLeft;
+        private System.Windows.Forms.ToolStripButton btnMoveRight;
+        private System.Windows.Forms.ToolStripButton btnMoveUp;
+        private System.Windows.Forms.ToolStripButton btnMoveDown;
     }
 }
