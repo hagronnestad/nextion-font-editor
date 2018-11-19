@@ -118,7 +118,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 25);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(415, 427);
+            this.panel1.Size = new System.Drawing.Size(415, 471);
             this.panel1.TabIndex = 4;
             this.panel1.Resize += new System.EventHandler(this.panel1_Resize);
             // 
@@ -179,7 +179,7 @@
             this.panelWrapper.Controls.Add(this.panel1);
             this.panelWrapper.Location = new System.Drawing.Point(126, 28);
             this.panelWrapper.Name = "panelWrapper";
-            this.panelWrapper.Size = new System.Drawing.Size(415, 452);
+            this.panelWrapper.Size = new System.Drawing.Size(415, 496);
             this.panelWrapper.TabIndex = 5;
             // 
             // label1
@@ -272,7 +272,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(553, 492);
+            this.ClientSize = new System.Drawing.Size(553, 536);
+            this.Controls.Add(this.flowPanel);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panelWrapper);
