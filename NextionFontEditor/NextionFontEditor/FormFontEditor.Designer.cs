@@ -31,20 +31,20 @@
             this.btnSave = new System.Windows.Forms.ToolStripButton();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.charEditor1 = new NextionFontEditor.Controls.CharEditor();
             this.tsCharEditor = new System.Windows.Forms.ToolStrip();
             this.btnShowGrid = new System.Windows.Forms.ToolStripButton();
             this.cmbZoom = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.panelWrapper = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.sfd = new System.Windows.Forms.SaveFileDialog();
             this.btnClear = new System.Windows.Forms.ToolStripButton();
             this.btnMoveLeft = new System.Windows.Forms.ToolStripButton();
             this.btnMoveRight = new System.Windows.Forms.ToolStripButton();
             this.btnMoveUp = new System.Windows.Forms.ToolStripButton();
             this.btnMoveDown = new System.Windows.Forms.ToolStripButton();
-            this.charEditor1 = new NextionFontEditor.Controls.CharEditor();
+            this.panelWrapper = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.sfd = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.pPreview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numChar)).BeginInit();
             this.toolStrip1.SuspendLayout();
@@ -122,6 +122,20 @@
             this.panel1.TabIndex = 4;
             this.panel1.Resize += new System.EventHandler(this.panel1_Resize);
             // 
+            // charEditor1
+            // 
+            this.charEditor1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.charEditor1.CharImage = ((System.Drawing.Bitmap)(resources.GetObject("charEditor1.CharImage")));
+            this.charEditor1.Location = new System.Drawing.Point(53, 36);
+            this.charEditor1.Margin = new System.Windows.Forms.Padding(20);
+            this.charEditor1.Name = "charEditor1";
+            this.charEditor1.ShowGrid = true;
+            this.charEditor1.Size = new System.Drawing.Size(160, 320);
+            this.charEditor1.TabIndex = 0;
+            this.charEditor1.Text = "charEditor1";
+            this.charEditor1.Zoom = 10;
+            this.charEditor1.Paint += new System.Windows.Forms.PaintEventHandler(this.charEditor1_Paint);
+            // 
             // tsCharEditor
             // 
             this.tsCharEditor.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -170,6 +184,56 @@
             this.toolStripLabel1.Size = new System.Drawing.Size(39, 22);
             this.toolStripLabel1.Text = "Zoom";
             // 
+            // btnClear
+            // 
+            this.btnClear.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnClear.Image = ((System.Drawing.Image)(resources.GetObject("btnClear.Image")));
+            this.btnClear.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(23, 22);
+            this.btnClear.Text = "Clear";
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // btnMoveLeft
+            // 
+            this.btnMoveLeft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnMoveLeft.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveLeft.Image")));
+            this.btnMoveLeft.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnMoveLeft.Name = "btnMoveLeft";
+            this.btnMoveLeft.Size = new System.Drawing.Size(23, 22);
+            this.btnMoveLeft.Text = "Move left";
+            this.btnMoveLeft.Click += new System.EventHandler(this.btnMoveLeft_Click);
+            // 
+            // btnMoveRight
+            // 
+            this.btnMoveRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnMoveRight.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveRight.Image")));
+            this.btnMoveRight.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnMoveRight.Name = "btnMoveRight";
+            this.btnMoveRight.Size = new System.Drawing.Size(23, 22);
+            this.btnMoveRight.Text = "Move right";
+            this.btnMoveRight.Click += new System.EventHandler(this.btnMoveRight_Click);
+            // 
+            // btnMoveUp
+            // 
+            this.btnMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnMoveUp.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveUp.Image")));
+            this.btnMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnMoveUp.Name = "btnMoveUp";
+            this.btnMoveUp.Size = new System.Drawing.Size(23, 22);
+            this.btnMoveUp.Text = "Move up";
+            this.btnMoveUp.Click += new System.EventHandler(this.btnMoveUp_Click);
+            // 
+            // btnMoveDown
+            // 
+            this.btnMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnMoveDown.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveDown.Image")));
+            this.btnMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnMoveDown.Name = "btnMoveDown";
+            this.btnMoveDown.Size = new System.Drawing.Size(23, 22);
+            this.btnMoveDown.Text = "Move down";
+            this.btnMoveDown.Click += new System.EventHandler(this.btnMoveDown_Click);
+            // 
             // panelWrapper
             // 
             this.panelWrapper.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -203,70 +267,6 @@
             // sfd
             // 
             this.sfd.Filter = "Nextion Font Files|*.zi";
-            // 
-            // btnClear
-            // 
-            this.btnClear.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnClear.Image = ((System.Drawing.Image)(resources.GetObject("btnClear.Image")));
-            this.btnClear.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(23, 22);
-            this.btnClear.Text = "toolStripButton1";
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
-            // 
-            // btnMoveLeft
-            // 
-            this.btnMoveLeft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnMoveLeft.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveLeft.Image")));
-            this.btnMoveLeft.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnMoveLeft.Name = "btnMoveLeft";
-            this.btnMoveLeft.Size = new System.Drawing.Size(23, 22);
-            this.btnMoveLeft.Text = "toolStripButton1";
-            this.btnMoveLeft.Click += new System.EventHandler(this.btnMoveLeft_Click);
-            // 
-            // btnMoveRight
-            // 
-            this.btnMoveRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnMoveRight.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveRight.Image")));
-            this.btnMoveRight.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnMoveRight.Name = "btnMoveRight";
-            this.btnMoveRight.Size = new System.Drawing.Size(23, 22);
-            this.btnMoveRight.Text = "toolStripButton1";
-            this.btnMoveRight.Click += new System.EventHandler(this.btnMoveRight_Click);
-            // 
-            // btnMoveUp
-            // 
-            this.btnMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnMoveUp.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveUp.Image")));
-            this.btnMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnMoveUp.Name = "btnMoveUp";
-            this.btnMoveUp.Size = new System.Drawing.Size(23, 22);
-            this.btnMoveUp.Text = "toolStripButton1";
-            this.btnMoveUp.Click += new System.EventHandler(this.btnMoveUp_Click);
-            // 
-            // btnMoveDown
-            // 
-            this.btnMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnMoveDown.Image = ((System.Drawing.Image)(resources.GetObject("btnMoveDown.Image")));
-            this.btnMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnMoveDown.Name = "btnMoveDown";
-            this.btnMoveDown.Size = new System.Drawing.Size(23, 22);
-            this.btnMoveDown.Text = "toolStripButton1";
-            this.btnMoveDown.Click += new System.EventHandler(this.btnMoveDown_Click);
-            // 
-            // charEditor1
-            // 
-            this.charEditor1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.charEditor1.CharImage = ((System.Drawing.Bitmap)(resources.GetObject("charEditor1.CharImage")));
-            this.charEditor1.Location = new System.Drawing.Point(53, 36);
-            this.charEditor1.Margin = new System.Windows.Forms.Padding(20);
-            this.charEditor1.Name = "charEditor1";
-            this.charEditor1.ShowGrid = true;
-            this.charEditor1.Size = new System.Drawing.Size(160, 320);
-            this.charEditor1.TabIndex = 0;
-            this.charEditor1.Text = "charEditor1";
-            this.charEditor1.Zoom = 10;
-            this.charEditor1.Paint += new System.Windows.Forms.PaintEventHandler(this.charEditor1_Paint);
             // 
             // FormFontEditor
             // 
