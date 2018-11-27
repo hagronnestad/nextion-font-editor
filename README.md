@@ -7,8 +7,8 @@ A collection of tools to work with Nextion Fonts.
 - [x] Reverse engineering of the Nextion font format
 - [x] Font Viewer
 - [x] Font Editor
-- [/] Font generator
-- [/] Support for most code pages supported by Nextion Editor
+- [ ] Font generator
+- [ ] Support for most code pages supported by Nextion Editor
   - [x] ASCII
   - [x] ISO-8859-1
   - [ ] Others
