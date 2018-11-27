@@ -1,4 +1,17 @@
-# Nextion Font Editor
+# Nextion Font Suite
+
+A collection of tools to work with Nextion Fonts.
+
+## Roadmap
+
+- [x] Reverse engineering of the Nextion font format
+- [x] Font Viewer
+- [x] Font Editor
+- [/] Font generator
+- [/] Support for most code pages supported by Nextion Editor
+  - [x] ASCII
+  - [x] ISO-8859-1
+  - [ ] Others
 
 > Sample screenshot of the "Font Editor"-tool previewing the `$` character from the `Arial_40_ascii.zi` file.
 
