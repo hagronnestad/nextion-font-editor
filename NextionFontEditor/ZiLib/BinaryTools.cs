@@ -17,16 +17,20 @@ namespace ZiLib {
             return bits;
         }
 
-        public static byte[] BitmapTo1BppData(Bitmap b) {
+        public static byte[] BitmapTo1BppData(Bitmap b, bool invertColour=false) {
             var pixels = new bool[b.Width * b.Height];
 
+            var A = invertColour ? Color.White.A : Color.Black.A;
+            var B = invertColour ? Color.White.B : Color.Black.B;
+            var G = invertColour ? Color.White.G : Color.Black.G;
+            var R = invertColour ? Color.White.R : Color.Black.R;
             for (int y = 0; y < b.Height; y++) {
 
                 for (int x = 0; x < b.Width; x++) {
                     var pixel = b.GetPixel(x, y);
-                    pixels[(y * b.Width) + x] = (pixel.A == 255 && pixel.R == 0 && pixel.G == 0 && pixel.B == 0);
+                    pixels[(y * b.Width) + x] = (pixel.A == A && pixel.R == R && pixel.G == G && pixel.B == B);
                 }
-
+              
             }
 
             var data = new byte[b.Width * b.Height / 8];
