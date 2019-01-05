@@ -77,7 +77,7 @@ namespace NextionFontEditor {
 
                         gChar.DrawString(c.ToString(), font,
                             PreviewWB.Checked ? new SolidBrush(Color.White) : new SolidBrush(Color.Black),
-                            0, 0, StringFormat.GenericTypographic
+                            (float)numCharOffsetX.Value, (float)numCharOffsetY.Value, StringFormat.GenericTypographic
                         );
                     }
 
