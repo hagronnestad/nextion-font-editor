@@ -2,6 +2,11 @@
 
 A collection of tools to work with Nextion Fonts.
 
+| Branch | Status |
+|--------|--------|
+| master | [![Build status](https://ci.appveyor.com/api/projects/status/kmi5iikvsod53c4p?svg=true)](https://ci.appveyor.com/project/hagronnestad/nextion-font-editor) |
+
+
 ## Roadmap
 
 - [x] Reverse engineering of the Nextion font format
