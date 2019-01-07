@@ -266,6 +266,7 @@
             // 
             // sfd
             // 
+            this.sfd.DefaultExt = "zi";
             this.sfd.Filter = "Nextion Font Files|*.zi";
             // 
             // FormFontEditor

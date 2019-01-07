@@ -47,7 +47,7 @@ namespace NextionFontEditor {
             var codePage = CodePages.GetCodePage(CodePageIdentifier.ISO_8859_1);
 
             var fontName = lstFonts.SelectedItem?.ToString() ?? "";
-            var fontSize = (int)numFontSize.Value;
+            var fontSize = (int) numFontSize.Value;
 
             var size = int.Parse(cmbNextionFontSize.Text);
             var width = size / 2;
@@ -56,6 +56,11 @@ namespace NextionFontEditor {
             var font = new Font(fontName, fontSize, GraphicsUnit.Pixel);
 
             var pPreviews = new List<Bitmap>();
+
+            var bLightCoral = new SolidBrush(Color.LightCoral);
+            var bLightGreen = new SolidBrush(Color.LightGreen);
+            var bWhite = new SolidBrush(Color.White);
+            var bBlack = new SolidBrush(Color.Black);
 
             foreach (var c in codePage.Characters) {
                 var bPreview = new Bitmap(width, height);
@@ -67,23 +72,22 @@ namespace NextionFontEditor {
 
                     var bChar = new Bitmap(sChar.Width, sChar.Height);
 
-                    using (var gChar = CreateGraphics(bChar))
-                    {
+                    using (var gChar = CreateGraphics(bChar)) {
                         var sb = PreviewTest.Checked ?
-                            bChar.Width > bPreview.Width ? new SolidBrush(Color.LightCoral) : new SolidBrush(Color.LightGreen) :
-                            PreviewBW.Checked ? new SolidBrush(Color.White) : new SolidBrush(Color.Black);
+                            bChar.Width > bPreview.Width ? bLightCoral : bLightGreen :
+                            PreviewBW.Checked ? bWhite : bBlack;
 
                         gChar.FillRectangle(sb, 0, 0, sChar.Width, sChar.Height);
 
                         gChar.DrawString(c.ToString(), font,
-                            PreviewWB.Checked ? new SolidBrush(Color.White) : new SolidBrush(Color.Black),
-                            (float)numCharOffsetX.Value, (float)numCharOffsetY.Value, StringFormat.GenericTypographic
+                            PreviewWB.Checked ? bWhite : bBlack,
+                            (float) numCharOffsetX.Value, (float) numCharOffsetY.Value, StringFormat.GenericTypographic
                         );
                     }
 
                     gPreview.FillRectangle(PreviewTest.Checked ?
-                            bChar.Width > bPreview.Width ? new SolidBrush(Color.LightCoral) : new SolidBrush(Color.LightGreen) :
-                            PreviewBW.Checked ? new SolidBrush(Color.White) : new SolidBrush(Color.Black),
+                            bChar.Width > bPreview.Width ? bLightCoral : bLightGreen :
+                            PreviewBW.Checked ? bWhite : bBlack,
                             0, 0, width, height);
 
                     if (bChar.Width > bPreview.Width) {
@@ -96,9 +100,10 @@ namespace NextionFontEditor {
 
                 pPreviews.Add(bPreview);
             }
-            panelPreview.BackColor = PreviewTest.Checked ? Color.Transparent : PreviewBW.Checked ? Color.White : Color.Black;
+
             panelPreview.SuspendLayout();
             panelPreview.Controls.Clear();
+            panelPreview.BackColor = PreviewTest.Checked ? Color.Transparent : PreviewBW.Checked ? Color.White : Color.Black;
             panelPreview.Controls.AddRange(
                 pPreviews.Select(x => new PictureBox() {
                     Width = width,
@@ -108,7 +113,7 @@ namespace NextionFontEditor {
                 }).ToArray());
             panelPreview.ResumeLayout();
 
-          ziFont = ZiFont.FromCharacterBitmaps(fontName+" "+ cmbNextionFontSize.Text, (byte) width, (byte) height, codePage, pPreviews, PreviewWB.Checked);
+            ziFont = ZiFont.FromCharacterBitmaps(fontName + " " + cmbNextionFontSize.Text, (byte) width, (byte) height, codePage, pPreviews, PreviewWB.Checked);
         }
 
         private int GetMaxFontSizeForRect(string text, String fontName, int fontSize, SizeF rect) {
