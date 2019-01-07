@@ -67,6 +67,8 @@
   <PropertyGroup>
     <ApplicationIcon>icons8-text-box.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />

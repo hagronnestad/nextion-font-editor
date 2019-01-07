@@ -37,20 +37,26 @@ namespace ZiLib {
         //    CharacterHeight = height;
         //    CodePage = codePage;
         //}
-
-        public void Save(string fileName, CodePage codePage) {
+        public void Save(string fileName, CodePage codePage)
+        {
+            CodePage = codePage;
             _charData = CreateCharData(CharBitmaps);
+            Save(fileName);
+        }
+
+            public void Save(string fileName) {
+  //          _charData = CreateCharData(CharBitmaps);
 
             var file = new List<byte>();
 
             file.AddRange(MagicNumbers);
-            file.AddRange(BitConverter.GetBytes((ushort) codePage.CodePageIdentifier));
+            file.AddRange(BitConverter.GetBytes((ushort) CodePage.CodePageIdentifier));
             file.Add(CharacterWidth);
             file.Add(CharacterHeight);
-            file.Add((byte) (codePage.IsMultibyte ? codePage.FirstByteStart : 0));
-            file.Add((byte) (codePage.IsMultibyte ? codePage.FirstByteEnd : 0));
-            file.Add((byte) (codePage.IsMultibyte ? codePage.SecondByteStart : codePage.FirstByteStart));
-            file.Add((byte) (codePage.IsMultibyte ? codePage.SecondByteEnd : codePage.FirstByteEnd));
+            file.Add((byte) (CodePage.IsMultibyte ? CodePage.FirstByteStart : 0));
+            file.Add((byte) (CodePage.IsMultibyte ? CodePage.FirstByteEnd : 0));
+            file.Add((byte) (CodePage.IsMultibyte ? CodePage.SecondByteStart : CodePage.FirstByteStart));
+            file.Add((byte) (CodePage.IsMultibyte ? CodePage.SecondByteEnd : CodePage.FirstByteEnd));
             file.AddRange(BitConverter.GetBytes(CodePage.CharacterCount));
             file.Add(FileFormatVersion);
             file.Add(NameLength);
@@ -130,17 +136,17 @@ namespace ZiLib {
             }
         }
 
-        private byte[] CreateCharData(List<Bitmap> characters) {
+        private byte[] CreateCharData(List<Bitmap> characters, bool invertColour=false) {
             var charData = new List<byte>();
 
             foreach (var cb in characters) {
-                charData.AddRange(BinaryTools.BitmapTo1BppData(cb));
+                charData.AddRange(BinaryTools.BitmapTo1BppData(cb, invertColour));
             }
 
             return charData.ToArray();
         }
 
-        public static ZiFont FromCharacterBitmaps(string fontName, byte width, byte height, CodePage codePage, List<Bitmap> characters) {
+        public static ZiFont FromCharacterBitmaps(string fontName, byte width, byte height, CodePage codePage, List<Bitmap> characters, bool invertColour = false) {
             var bytesPerChar = width * height / 8;
             var charDataLength = (uint) (bytesPerChar * characters.Count());
 
@@ -155,7 +161,7 @@ namespace ZiLib {
                 BytesPerChar = bytesPerChar,
             };
 
-            ziFont._charData = ziFont.CreateCharData(characters);
+            ziFont._charData = ziFont.CreateCharData(characters, invertColour);
 
             //var charData = new List<byte>();
             //foreach (var cb in characters) {
