@@ -5,11 +5,12 @@ This is a reverse engineered specification of the Nextion font format. Use at ow
 
 The Nextion Font Format is a proprietary font format used by the Nextion Editor HMI software. Nextion Editor has a built in "Font Generator"-tool which converts standard fonts into .zi files that is compatible with the Nextion HMI displays.
 
-| Information           |                       |
-|-----------------------|-----------------------|
-| **Software**          | Nextion Editor V0.53  |
-| **File extension**    | .zi                   |
-| **Example file**      | Arial_40_ascii.zi     |
+| Information             |                       |
+|-------------------------|-----------------------|
+| **Software**            | Nextion Editor V0.53  |
+| **File extension**      | .zi                   |
+| **File format version** | ZI version 3          |
+| **Example file**        | Arial_40_ascii.zi     |
 
 ## Code pages / character encoding reference
 
@@ -61,7 +62,7 @@ The Nextion Font Format is a proprietary font format used by the Nextion Editor 
 | 0x0000000A | 1      | `20`                                             | byte   | 32, ' ' (ASCII)     | Code page start / multibyte second byte start                                         |
 | 0x0000000B | 1      | `7E`                                             | byte   | 126, '~' (ASCII)    | Code page end / multibyte second byte end                                             |
 | 0x0000000C | 4      | `5F 00 00 00`                                    | uint32 | 95                  | Number of characters in file                                                          |
-| 0x00000010 | 1      | `03`                                             | byte   | 3                   | File Format Version?                                                                  |
+| 0x00000010 | 1      | `03`                                             | byte   | 3                   | File Format Version                                                                   |
 | 0x00000011 | 1      | `0E`                                             | byte   | 14                  | Length of font name                                                                   |
 | 0x00000012 | 1      | `0E`                                             | byte   | 14                  | Also length of font name? Always the same value as 0x11                               |
 | 0x00000013 | 1      | `00`                                             | byte   | 0                   | Reserved                                                                              |
