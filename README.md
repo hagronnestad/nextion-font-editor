@@ -9,12 +9,15 @@ A collection of tools to work with Nextion Fonts.
 
 ## Roadmap
 
-- [x] Reverse engineering of the Nextion font format
+#### Prioritized tasks
+- [ ] Reverse engineering of the new Nextion font format supporting anti-aliasing and variable width fonts (TJC USART HMI version 0.55)
+- [ ] Support for anti-aliased and variable width fonts for (TJC USART HMI version 0.55)
+
+#### Less prioritized tasks
+- [x] Reverse engineering of the Nextion font format version 3 for Nextion Editor V0.53
 - [x] Font Viewer
 - [x] Font Editor
 - [x] Font generator
-- [ ] Reverse engineering of the new Nextion font format supporting anti-aliasing and variable width fonts (TJC USART HMI version 0.55)
-- [ ] Support for anti-aliased and variable width fonts for (TJC USART HMI version 0.55)
 - [ ] Support for most code pages supported by Nextion Editor
   - [x] ASCII
   - [x] ISO-8859-1
