@@ -14,6 +14,7 @@ namespace NextionFontEditor {
         public FormFontGenerator() {
             InitializeComponent();
         }
+        private ZiFont ziFont = new ZiFont();
 
         private void FormFontGenerator_Load(object sender, EventArgs e) {
             InitializeNextionFontSizesList();
@@ -56,6 +57,11 @@ namespace NextionFontEditor {
 
             var pPreviews = new List<Bitmap>();
 
+            var bLightCoral = new SolidBrush(Color.LightCoral);
+            var bLightGreen = new SolidBrush(Color.LightGreen);
+            var bWhite = new SolidBrush(Color.White);
+            var bBlack = new SolidBrush(Color.Black);
+
             foreach (var c in codePage.Characters) {
                 var bPreview = new Bitmap(width, height);
 
@@ -67,17 +73,22 @@ namespace NextionFontEditor {
                     var bChar = new Bitmap(sChar.Width, sChar.Height);
 
                     using (var gChar = CreateGraphics(bChar)) {
-                        var sb = bChar.Width > bPreview.Width ? new SolidBrush(Color.LightCoral) : new SolidBrush(Color.LightGreen);
+                        var sb = PreviewTest.Checked ?
+                            bChar.Width > bPreview.Width ? bLightCoral : bLightGreen :
+                            PreviewBW.Checked ? bWhite : bBlack;
 
                         gChar.FillRectangle(sb, 0, 0, sChar.Width, sChar.Height);
 
                         gChar.DrawString(c.ToString(), font,
-                            new SolidBrush(Color.Black),
-                            0, 0, StringFormat.GenericTypographic
+                            PreviewWB.Checked ? bWhite : bBlack,
+                            (float) numCharOffsetX.Value, (float) numCharOffsetY.Value, StringFormat.GenericTypographic
                         );
                     }
 
-                    gPreview.FillRectangle(new SolidBrush(Color.White), 0, 0, width, height);
+                    gPreview.FillRectangle(PreviewTest.Checked ?
+                            bChar.Width > bPreview.Width ? bLightCoral : bLightGreen :
+                            PreviewBW.Checked ? bWhite : bBlack,
+                            0, 0, width, height);
 
                     if (bChar.Width > bPreview.Width) {
                         gPreview.DrawImage(bChar, 0, 0, width, height);
@@ -92,6 +103,7 @@ namespace NextionFontEditor {
 
             panelPreview.SuspendLayout();
             panelPreview.Controls.Clear();
+            panelPreview.BackColor = PreviewTest.Checked ? Color.Transparent : PreviewBW.Checked ? Color.White : Color.Black;
             panelPreview.Controls.AddRange(
                 pPreviews.Select(x => new PictureBox() {
                     Width = width,
@@ -101,8 +113,7 @@ namespace NextionFontEditor {
                 }).ToArray());
             panelPreview.ResumeLayout();
 
-            var newZiFont = ZiFont.FromCharacterBitmaps("test", (byte) width, (byte) height, codePage, pPreviews);
-            newZiFont.Save("test.zi", codePage);
+            ziFont = ZiFont.FromCharacterBitmaps(fontName + " " + cmbNextionFontSize.Text, (byte) width, (byte) height, codePage, pPreviews, PreviewWB.Checked);
         }
 
         private int GetMaxFontSizeForRect(string text, String fontName, int fontSize, SizeF rect) {
@@ -158,6 +169,21 @@ namespace NextionFontEditor {
         }
 
         private void numDbs_ValueChanged(object sender, EventArgs e) {
+            CreatePreview();
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            sfd.FileName = ziFont.Name;
+            var res = sfd.ShowDialog();
+            if (res == DialogResult.OK)
+            {
+                ziFont.Save(sfd.FileName);
+            }
+        }
+
+        private void PreviewTest_CheckedChanged(object sender, EventArgs e)
+        {
             CreatePreview();
         }
     }
