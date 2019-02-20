@@ -92,6 +92,8 @@ Next the file contains a fixed size lookup table for each character to the actua
 The Character map size is 10 * <Number of characters in file> as found in offset 0x0000000C.
 Each character entry is 10 bytes long:
 
+| Offset     | Length | Data                                             | Type   | Value               | Description                                                      |
+|------------|-------:|--------------------------------------------------|--------|--------------------:|------------------------------------------------------------------|
 | 0x0000003D | 2      | `20 00`                                  | uint32 | space               | Code page character                                                        |
 | 0x0000003F | 2      | `08 00`                                  | uint32 | 8                   | Variable character width                                |
 | 0x00000041 | 1      | `00`                                     | byte   | 0                   | ?           |
