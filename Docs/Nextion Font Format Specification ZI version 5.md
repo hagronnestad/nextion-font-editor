@@ -4,7 +4,7 @@ Use at own risk.
 
 ## General information
 
-The Nextion Font Format is a proprietary font format used by the Nextion Editor HMI software. Nextion Editor has a built in "Font Generator"-tool which converts standard fonts into .zi files that is compatible with the Nextion HMI displays.
+The Nextion Font Format is a proprietary font format used by the Nextion/USART Editor HMI software. The editor has a built in "Font Generator"-tool which converts standard fonts into .zi files that is compatible with the Nextion and TJC HMI displays.
 
 | Information             |                       |
 |-------------------------|-----------------------|
@@ -15,7 +15,7 @@ The Nextion Font Format is a proprietary font format used by the Nextion Editor 
 
 ## Code pages / character encoding reference
 
-*to be verified*
+*to be verified* Likely the same as v3.
 
 | Code page / encoding  | Value                 | Number of characters  |
 |-----------------------|-----------------------|-----------------------|
@@ -47,7 +47,7 @@ The Nextion Font Format is a proprietary font format used by the Nextion Editor 
 
 ### Fixed header
 
-**Length:** 0x1C (28)
+**Length:** 0x2C (44)
 
 ```
 0x00000000: 04 FF 00 0A 01 00 14 28 00 00 20 7E 5F 00 00 00
@@ -56,8 +56,9 @@ The Nextion Font Format is a proprietary font format used by the Nextion Editor 
 
 | Offset     | Length | Data                                             | Type   | Value               | Description                                                                           |
 |------------|-------:|--------------------------------------------------|--------|--------------------:|---------------------------------------------------------------------------------------|
-| 0x00000000 | 4      | `04 FF 00 0A` *                                  | byte[] |                     | File signature / magic numbers                                                        |
-| 0x00000004 | 2      | `01 00`                                          | uint16 | 1                   | Code page / character encoding (possible values listed in the reference table)        |
+| 0x00000000 | 3      | `04 FF 00` *                                  | byte[] |                     | File signature / magic numbers                                                        |
+| 0x00000003 | 1      | `0A`                                  | byte | 10                    | Orientation (10 = 0° Vertical, 11 = 90° Horizontal, 12 = 180° Vertical, 13 = 270° Hprizontal)       |
+| 0x00000004 | 2      | `01 00`                                          | uint16 | 1                   | Encoding & State                                                                      |
 | 0x00000006 | 1      | `00`                                             | byte   | 0                   | Character width = 0 for variable width fonts                                          |
 | 0x00000007 | 1      | `28`                                             | byte   | 40                  | Character height                                                                      |
 | 0x00000008 | 1      | `00`                                             | byte   | 0                   | Code page multibyte - first byte start                                                |
@@ -65,17 +66,25 @@ The Nextion Font Format is a proprietary font format used by the Nextion Editor 
 | 0x0000000A | 1      | `20`                                             | byte   | 32, ' ' (ASCII)     | Code page start / multibyte second byte start                                         |
 | 0x0000000B | 1      | `7E`                                             | byte   | 126, '~' (ASCII)    | Code page end / multibyte second byte end                                             |
 | 0x0000000C | 4      | `5F 00 00 00`                                    | uint32 | 95                  | Number of characters in file                                                          |
-| 0x00000010 | 1      | `05`                                             | byte   | 5                   | File Format Version                                                                   |
+| 0x00000010 | 1      | `05`                                             | byte   | 5                   | Font File Version                                                                     |
 | 0x00000011 | 1      | `11`                                             | byte   | 17                  | Length of font name                                                                   |
-| 0x00000012 | 1      | `00`                                             | byte   | 0                   | ~~~~Also length of font name? Always the same value as 0x11 ~~                        |
-| 0x00000013 | 1      | `00`                                             | byte   | 0                   | Reserved                                                                              |
+| 0x00000012 | 2      | `00 00`                                          | uint16 | 0                   | ~~~~Also length of font name? Always the same value as 0x11 ~~                        |
 | 0x00000014 | 4      | `2A 25 00 00`                                    | uint32 | 9514                | Total length of font name and character data                                          |
-| 0x00000018 | 4      | `00 00 00 00`                                    | uint32 | 0                   | Reserved                                                                              |
+| 0x00000018 | 4      | `2C 00 00 00`                                    | uint32 | 0                   | Start of Data Address (= Font Name location)                                          |
+| 0x0000001C | 1      | `00`                                             | byte   | 0                   | Character width = 0 for variable width fonts                                          |
+| 0x0000001D | 1      | `28`                                             | byte   | 40                  | Character height                                                                      |
+| 0x0000001E | 1      | `00`                                             | byte   | 0                   | Code page multibyte - first byte start                                                |
+| 0x00000021 | 1      | `00`                                             | byte   | 0                   | Reserved                                                                              |
+| 0x00000022 | 2      | `00 00`                                          | uint16 | 0                   | Reserved                                                                              |
+| 0x00000024 | 4      | `00 00 00 00`                                    | uint32 | 0                   | Reserved                                                                              |
+| 0x00000028 | 4      | `00 00 00 00`                                    | uint32 | 0                   | Reserved                                                                              |
+| 0x0000002C | #      | ``                                    | byte[] | 0                   | Fontname                                                                              |
+| 0x0000003D | 2      | `20 00`                                          | uint16 | space               | Start of Character Map **(see below)**                                                |
 
 > **\* The file signature/magic bytes for a .zi file containing the `BIG5` code page is different from all other files. For `BIG5` the magic bytes are `04 7E 22 0A`. Which means that the second and third byte might be variable and have some meaning beyond being magic numbers.**
 
 ### Font name
-Variable length font name. In this case the font name is `0x11 (17)` bytes long as seen in offset `0x00000011`.
+Variable length font name. In this case the font name is `0x11 (17)` bytes long as seen in offset `0x00000011`. The start of the fontname is indicated by offset `0x00000018` and should be `0x0000002C` since the header size is fixed.
 
 ```
 0x00000010: 03 0E 0E 00 2A 25 00 00 00 00 00 00 41 72 69 61
@@ -88,40 +97,27 @@ Variable length font name. In this case the font name is `0x11 (17)` bytes long 
 
 ### Character Map
 
-Next the file contains a fixed size lookup table for each character to the actual pixel data.
-The Character map size is 10 * <Number of characters in file> as found in offset 0x0000000C.
+Next the file contains a fixed size lookup table for each character with pointers to the actual location of the pixel data.
+The Character map length is 10 * **&lt;Number of characters in file&gt;** as found in offset `0x0000000C`.
 Each character entry is 10 bytes long:
 
 | Offset     | Length | Data                                             | Type   | Value               | Description                                                      |
 |------------|-------:|--------------------------------------------------|--------|--------------------:|------------------------------------------------------------------|
-| 0x0000003D | 2      | `20 00`                                  | uint32 | space               | Code page character                                                        |
-| 0x0000003F | 2      | `08 00`                                  | uint32 | 8                   | Variable character width                                |
-| 0x00000041 | 1      | `00`                                     | byte   | 0                   | ?           |
-| 0x00000042 | 2      | `B6 03`                                  | uint32 | 950                 | Start byte of the character data, as an offset from the start of the charactermap (in this case 0x3D)      |
-| 0x00000044 | 1      | `00`                                     | byte   | 0                   | ?      |
-| 0x00000045 | 2      | `06 00`                                  | uint32 | 6                   | Length of the character data           |
+| 0x0000003D | 2      | `20 00`                                  | uint16 | space               | Character of the Code page                                                         |
+| 0x0000003F | 1      | `08`                                     | byte | 8                   | Character width                                |
+| 0x00000040 | 1      | `00`                                     | byte   | 0                   | Character length?          |
+| 0x00000041 | 1      | `00`                                     | byte   | 0                   | Character rotation?          |
+| 0x00000042 | 3      | `B6 03 00`                               | byte[3] | 950                 | Start byte of the character data, as an offset from the start of the charactermap (in this case 0x3D)      |
+| 0x00000045 | 2      | `06 00`                                  | uint16 | 6                   | Length of the character data           |
 |  |       |                                   |  |                    |            |
-| 0x00000047 | 2      | `21 00`                                  | uint32 | !                   | **next character in lookup table**       |
+| 0x00000047 |  #      | `21 00`                                  | uint16 | !                   | **next character in lookup table**       |
 
 
-The length of each character is calculated like this: `character width * character height / 8`. In our example we get; `20 * 40 / 8` which gives us `100` bytes per character. Characters are monochrome, which means that each bit in the `100` bytes gives us one pixel. `20 * 40 = 800 pixels`.
-
-Example data for one character. This is the exclamation mark character (`!`), which is the second character in the file. I skipped the first one, beacuse that is the space character which is blank.
-
-```
-0x00000080:                                           00 00
-0x00000090: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000000a0: 00 00 00 00 01 E0 00 1E 00 01 E0 00 1E 00 01 E0
-0x000000b0: 00 1E 00 00 E0 00 0E 00 00 E0 00 0E 00 00 E0 00
-0x000000c0: 0E 00 00 E0 00 0E 00 00 E0 00 0E 00 00 00 00 00
-0x000000d0: 00 01 E0 00 1E 00 01 E0 00 00 00 00 00 00 00 00
-0x000000e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0x000000f0: 00 00
-```
 ### Character Data
 
-The rest of the file contains the remaining characters supported by the font.
+The rest of the file contains the binary representation of each character with variable lengths.
+The actual format of the characters is yet to be determined.
 
 ### Character data example for a 16 pixels tall exclamation mark (`!`) character
 
-This example shows how to read the pixel data for a character. The height of character is `16` pixels, which means it is `8` pixels wide. This gives us a total of `128` pixels. This also means that each of the `16` bytes contains the data for one line of pixels.
+To be investigated.
