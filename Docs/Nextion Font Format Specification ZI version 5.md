@@ -100,7 +100,8 @@ Each character entry is 10 bytes long:
 | 0x00000042 | 2      | `B6 03`                                  | uint32 | 950                 | Start byte of the character data, as an offset from the start of the charactermap (in this case 0x3D)      |
 | 0x00000044 | 1      | `00`                                     | byte   | 0                   | ?      |
 | 0x00000045 | 2      | `06 00`                                  | uint32 | 6                   | Length of the character data           |
-| 0x00000047 | 2      | `21 00`                                  | uint32 | !                   | <next character in lookup table>       |
+|  |       |                                   |  |                    |            |
+| 0x00000047 | 2      | `21 00`                                  | uint32 | !                   | **next character in lookup table**       |
 
 
 The length of each character is calculated like this: `character width * character height / 8`. In our example we get; `20 * 40 / 8` which gives us `100` bytes per character. Characters are monochrome, which means that each bit in the `100` bytes gives us one pixel. `20 * 40 = 800 pixels`.
