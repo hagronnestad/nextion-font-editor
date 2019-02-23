@@ -68,7 +68,7 @@ The Nextion Font Format is a proprietary font format used by the Nextion/USART E
 | 0x0000000C | 4      | `5F 00 00 00`                                    | uint32 | 95                  | Number of characters in file                                                          |
 | 0x00000010 | 1      | `05`                                             | byte   | 5                   | Font File Version                                                                     |
 | 0x00000011 | 1      | `11`                                             | byte   | 17                  | Length of font name                                                                   |
-| 0x00000012 | 2      | `00 00`                                          | uint16 | 0                   | ~~Also length of font name? Always the same value as 0x11 ~~                        |
+| 0x00000012 | 2      | `00 00`                                          | uint16 | 0                   | ~~Also length of font name? Always the same value as 0x11~~                        |
 | 0x00000014 | 4      | `2A 25 00 00`                                    | uint32 | 9514                | Total length of font name and character data                                          |
 | 0x00000018 | 4      | `2C 00 00 00`                                    | uint32 | 0                   | Start of Data Address (= Font Name location)                                          |
 | 0x0000001C | 1      | `00`                                             | byte   | 0                   | Character width = 0 for variable width fonts                                          |
@@ -131,7 +131,7 @@ To be determined
 
 #### Anti-aliased - `0x03` start byte
 
-There are 8 possible shades of alpha represented by 3 bits. `0b000` being completely transparent to `0b111` being completely opaque.
+There are 8 possible shades of alpha represented by 3 bits: `0b000` being completely transparent to `0b111` being completely opaque.
 
 Each byte in the character data *-excluding the first start byte-* contains 8 bits in the format YZdddddd, where YZ is the drawing mode followed by 6 data bits.
 
