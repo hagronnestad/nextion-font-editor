@@ -116,32 +116,36 @@ Each character entry is 10 bytes long:
 ### Character Data
 
 The rest of the file contains the binary representation of each character with variable lengths.
+The start position and length of each character can be derived from the character map above.
 
-The **first** byte of the character data indicates the encoding of the rest of the character data:
+The **first** byte of the character data indicates the encoding of the rest of that character data:
 `0x01` for black/white or `0x03` for 3-bit anti-aliased.
+Following this start byte are the actual compressed bits defining the appearance of the character.
+
 
 #### Black & White
 
-Following the `0x01` start byte are the actual compressed bits defining the appearance of the character.
+`0x01` start byte.
 
 To be determined
 
-#### Anti-aliased
+#### Anti-aliased - `0x03` start byte
 
-Following the `0x03` start byte are the actual compressed bits defining the appearance of the character.
-There are 8 possible shades of alpha. `0b000` being completely transparent to `0b111` being completely opaque.
+There are 8 possible shades of alpha represented by 3 bits. `0b000` being completely transparent to `0b111` being completely opaque.
 
-Each byte contains the bits in format YZdddddd, where YZ is the drawing mode followed by 6 data bits.
+Each byte in the character data *-excluding the first start byte-* contains 8 bits in the format YZdddddd, where YZ is the drawing mode followed by 6 data bits.
 
 - 4 Black & White drawing modes : Y = 0
-* YZ = 00 0xxxxx : Repeat transparent pixel xxxxx times
-* YZ = 00 1xxxxx : Repeat opaque pixel xxxxx times
-* YZ = 01 0xxxxx : Repeat transparent pixel xxxxx times, followed by **1** opaque pixel
-* YZ = 01 1xxxxx : Repeat transparent pixel xxxxx times, followed by **2** opaque pixels
+
+  * YZ = 00 0xxxxx : Repeat transparent pixel xxxxx times
+  * YZ = 00 1xxxxx : Repeat opaque pixel xxxxx times
+  * YZ = 01 0xxxxx : Repeat transparent pixel xxxxx times, followed by **1** opaque pixel
+  * YZ = 01 1xxxxx : Repeat transparent pixel xxxxx times, followed by **2** opaque pixels
 
 - 2 Alpha drawing modes : Y = 1
-* YZ = 10 xxxccc : Repeat transparent pixel xxx times, followed by 1 alpha pixel defined by 3 bits
-* YZ = 11 cccddd : 2 diffrent alpha pixels, each 3 bits
+
+  * YZ = 10 xxxccc : Repeat transparent pixel xxx times, followed by 1 alpha pixel defined by 3 bits
+  * YZ = 11 cccddd : 2 diffrent alpha pixels, each 3 bits
 
 ### Character data example for a 16 pixels tall exclamation mark (`!`) character
 
