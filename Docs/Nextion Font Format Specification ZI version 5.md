@@ -137,15 +137,15 @@ Each byte in the character data *-excluding the first start byte-* contains 8 bi
 
 - 4 Black & White drawing modes : Y = 0
 
-  * YZ = 00 0xxxxx : Repeat transparent pixel xxxxx times
-  * YZ = 00 1xxxxx : Repeat opaque pixel xxxxx times
-  * YZ = 01 0xxxxx : Repeat transparent pixel xxxxx times, followed by **1** opaque pixel
-  * YZ = 01 1xxxxx : Repeat transparent pixel xxxxx times, followed by **2** opaque pixels
+  [x] YZ = 00 0xxxxx : Repeat transparent pixel xxxxx times
+  [x] YZ = 00 1xxxxx : Repeat opaque pixel xxxxx times
+  [ ] YZ = 01 0xxxxx : Repeat transparent pixel xxxxx times, followed by **1** opaque pixel
+  [ ] YZ = 01 1xxxxx : Repeat transparent pixel xxxxx times, followed by **2** opaque pixels
 
 - 2 Alpha drawing modes : Y = 1
 
-  * YZ = 10 xxxccc : Repeat transparent pixel xxx times, followed by 1 alpha pixel defined by 3 bits
-  * YZ = 11 cccddd : 2 diffrent alpha pixels, each 3 bits
+  [ ] YZ = 10 xxxccc : Repeat transparent pixel xxx times, followed by 1 alpha pixel defined by 3 bits
+  [x] YZ = 11 cccddd : 2 different alpha pixels, each 3 bits
 
 ### Character data example for a 16 pixels tall exclamation mark (`!`) character
 
