@@ -57,18 +57,18 @@ The Nextion Font Format is a proprietary font format used by the Nextion/USART E
 | Offset     | Length | Data                                             | Type   | Value               | Description                                                                           |
 |------------|-------:|--------------------------------------------------|--------|--------------------:|---------------------------------------------------------------------------------------|
 | 0x00000000 | 3      | `04 FF 00` *                                  | byte[] |                     | File signature / magic numbers                                                        |
-| 0x00000003 | 1      | `0A`                                  | byte | 10                    | Orientation (10 = 0° Vertical, 11 = 90° Horizontal, 12 = 180° Vertical, 13 = 270° Hprizontal)       |
-| 0x00000004 | 2      | `01 00`                                          | uint16 | 1                   | Encoding & State                                                                      |
+| 0x00000003 | 1      | `0A`                                  | byte | 10                    | Orientation (10 = Vertical)       |
+| 0x00000004 | 2      | `01 00`                                          | uint16 | 1                   | Encoding                                                                       |
 | 0x00000006 | 1      | `00`                                             | byte   | 0                   | Character width = 0 for variable width fonts                                          |
 | 0x00000007 | 1      | `28`                                             | byte   | 40                  | Character height                                                                      |
-| 0x00000008 | 1      | `00`                                             | byte   | 0                   | Code page multibyte - first byte start                                                |
-| 0x00000009 | 1      | `00`                                             | byte   | 0                   | Code page multibyte - first byte end                                                  |
-| 0x0000000A | 1      | `20`                                             | byte   | 32, ' ' (ASCII)     | Code page start / multibyte second byte start                                         |
-| 0x0000000B | 1      | `7E`                                             | byte   | 126, '~' (ASCII)    | Code page end / multibyte second byte end                                             |
+| 0x00000008 | 1      | `00`                                             | byte   | 0                   | Code page start - multibyte first byte                                                |
+| 0x00000009 | 1      | `00`                                             | byte   | 0                   | Code page end - multibyte first byte                                                  |
+| 0x0000000A | 1      | `20`                                             | byte   | 32, ' ' (ASCII)     | Code page start - multibyte second byte                                         |
+| 0x0000000B | 1      | `7E`                                             | byte   | 126, '~' (ASCII)    | Code page end - multibyte second byte                                             |
 | 0x0000000C | 4      | `5F 00 00 00`                                    | uint32 | 95                  | Number of characters in file                                                          |
 | 0x00000010 | 1      | `05`                                             | byte   | 5                   | Font File Version                                                                     |
 | 0x00000011 | 1      | `11`                                             | byte   | 17                  | Length of font name                                                                   |
-| 0x00000012 | 2      | `00 00`                                          | uint16 | 0                   | ~~~~Also length of font name? Always the same value as 0x11 ~~                        |
+| 0x00000012 | 2      | `00 00`                                          | uint16 | 0                   | ~~Also length of font name? Always the same value as 0x11 ~~                        |
 | 0x00000014 | 4      | `2A 25 00 00`                                    | uint32 | 9514                | Total length of font name and character data                                          |
 | 0x00000018 | 4      | `2C 00 00 00`                                    | uint32 | 0                   | Start of Data Address (= Font Name location)                                          |
 | 0x0000001C | 1      | `00`                                             | byte   | 0                   | Character width = 0 for variable width fonts                                          |
@@ -116,7 +116,32 @@ Each character entry is 10 bytes long:
 ### Character Data
 
 The rest of the file contains the binary representation of each character with variable lengths.
-The actual format of the characters is yet to be determined.
+
+The **first** byte of the character data indicates the encoding of the rest of the character data:
+`0x01` for black/white or `0x03` for 3-bit anti-aliased.
+
+#### Black & White
+
+Following the `0x01` start byte are the actual compressed bits defining the appearance of the character.
+
+To be determined
+
+#### Anti-aliased
+
+Following the `0x03` start byte are the actual compressed bits defining the appearance of the character.
+There are 8 possible shades of alpha. `0b000` being completely transparent to `0b111` being completely opaque.
+
+Each byte contains the bits in format YZdddddd, where YZ is the drawing mode followed by 6 data bits.
+
+- 4 Black & White drawing modes : Y = 0
+* YZ = 00 0xxxxx : Repeat transparent pixel xxxxx times
+* YZ = 00 1xxxxx : Repeat opaque pixel xxxxx times
+* YZ = 01 0xxxxx : Repeat transparent pixel xxxxx times, followed by **1** opaque pixel
+* YZ = 01 1xxxxx : Repeat transparent pixel xxxxx times, followed by **2** opaque pixels
+
+- 2 Alpha drawing modes : Y = 1
+* YZ = 10 xxxccc : Repeat transparent pixel xxx times, followed by 1 alpha pixel defined by 3 bits
+* YZ = 11 cccddd : 2 diffrent alpha pixels, each 3 bits
 
 ### Character data example for a 16 pixels tall exclamation mark (`!`) character
 
