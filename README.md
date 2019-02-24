@@ -10,6 +10,9 @@ A collection of tools to work with Nextion Fonts.
 ## Roadmap
 
 #### Prioritized tasks
+
+**Work on these items is taking place in the v5support branch**
+
 - [ ] Reverse engineering of the new Nextion font format supporting anti-aliasing and variable width fonts (TJC USART HMI version 0.55)
 - [ ] Support for anti-aliased and variable width fonts for (TJC USART HMI version 0.55)
 
