@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using ZiLib;
+using ZiLib.FileVersion.V5;
 
 namespace NextionFontEditor {
 
@@ -24,12 +25,12 @@ namespace NextionFontEditor {
             flowPanel.Controls.Add(p);
         }
 
-        private void CreateCharacterPreview(ZiFont font) {
+        private void CreateCharacterPreview(ZiFontV5 font) {
             flowPanel.Controls.Clear();
 
             foreach (var b in font.CharBitmaps.Take(300)) {
                 var p = new PictureBox() {
-                    Width = font.CharacterWidth + 2,
+                    Width = b.Width,// font.CharacterWidth + 2,
                     Height = font.CharacterHeight + 2,
                     Image = b,
                     BorderStyle = BorderStyle.FixedSingle,
@@ -44,7 +45,7 @@ namespace NextionFontEditor {
             var res = ofd.ShowDialog();
 
             if (res == DialogResult.OK) {
-                var zifont = ZiFont.FromFile(ofd.FileName);
+                var zifont = ZiFontV5.FromFile(ofd.FileName);
                 CreateCharacterPreview(zifont);
 
                 lblFile.Text = Path.GetFileName(ofd.FileName);
@@ -57,7 +58,7 @@ namespace NextionFontEditor {
 
                 lblFileSize.Text = zifont.FileSize.ToString();
                 lblFileVersion.Text = zifont.FileFormatVersion.ToString();
-                lblBytesPerChar.Text = zifont.BytesPerChar.ToString();
+                //lblBytesPerChar.Text = zifont.BytesPerChar.ToString();
             }
         }
     }

@@ -46,6 +46,10 @@
     <Compile Include="CodePage.cs" />
     <Compile Include="CodePageIdentifier.cs" />
     <Compile Include="CodePages.cs" />
+    <Compile Include="Extensions\BitmapExtensions.cs" />
+    <Compile Include="FileVersion\V5\CharMapEntry.cs" />
+    <Compile Include="FontOrientation.cs" />
+    <Compile Include="FileVersion\V5\ZiFontV5.cs" />
     <Compile Include="ZiFont.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
