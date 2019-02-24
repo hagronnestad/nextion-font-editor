@@ -159,6 +159,9 @@
     <None Include="Test Files\Arial_32_ASCII_AA_v5.zi">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Test Files\Arial_32_ASCII_v5.zi">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Test Files\Arial_32_iso-8859-1.zi">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
