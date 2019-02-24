@@ -6,10 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using ZiLib.Extensions;
+using ZiLib.FileVersion.Common;
 
 namespace ZiLib.FileVersion.V5 {
 
-    public class ZiFontV5 {
+    public class ZiFontV5 : IZiFont {
         private static readonly byte[] MagicNumbers = new byte[] { 0x04, 0xFF, 0x00 };
         private static readonly byte[] MagicNumbersBig5 = new byte[] { 0x04, 0x7E, 0x22 }; // The two middle bytes might not be static
 
@@ -30,7 +31,7 @@ namespace ZiLib.FileVersion.V5 {
 
         public CodePage CodePage { get; set; }
 
-        public byte FileFormatVersion => 5;
+        public byte Version { get; set; } = 5;
         public byte FileNameLength { get; set; }
         public string Name { get; set; }
         public long FileSize { get; set; }
@@ -59,7 +60,7 @@ namespace ZiLib.FileVersion.V5 {
             file.Add((byte) (CodePage.IsMultibyte ? CodePage.SecondByteStart : CodePage.FirstByteStart));
             file.Add((byte) (CodePage.IsMultibyte ? CodePage.SecondByteEnd : CodePage.FirstByteEnd));
             file.AddRange(BitConverter.GetBytes(CodePage.CharacterCount));
-            file.Add(FileFormatVersion);
+            file.Add(Version);
             file.Add(FileNameLength);
             file.Add(0x00); // Reserved
             file.AddRange(BitConverter.GetBytes(VariableDataLength)); // Length of font name and data
@@ -119,8 +120,6 @@ namespace ZiLib.FileVersion.V5 {
 
             ziFont.CodePage = CodePages.GetCodePage((CodePageIdentifier) codePageId);
 
-            //ziFont.CreateBitmaps();
-
             var charMapData = bytes.Skip(HEADER_LENGTH + ziFont.FileNameLength).Take(10 * (int) ziFont.CharacterCount).ToArray();
 
             for (int i = 0; i < charMapData.Length; i += 10) {
@@ -128,6 +127,8 @@ namespace ZiLib.FileVersion.V5 {
                 var c = new CharMapEntry {
                     Code = BitConverter.ToUInt16(charMapData, i),
                     Width = charMapData[i + 2],
+                    KerningLeft = charMapData[i + 3],
+                    KerningRight = charMapData[i + 4],
                     DataAddressOffset = BitConverter.ToUInt32(new byte[] { charMapData[i + 5], charMapData[i + 6], charMapData[i + 7], 0x00 }, 0),
                     Length = BitConverter.ToUInt16(charMapData, i + 8)
                 };
@@ -144,94 +145,171 @@ namespace ZiLib.FileVersion.V5 {
         private void CreateBitmaps() {
             CharBitmaps.Clear();
 
-            for (int charIndex = 0; charIndex < 30; charIndex++) {
+            for (int charIndex = 0; charIndex < CharacterCount; charIndex++) {
 
-                var charDataChar2 = bytes.Skip(HEADER_LENGTH + FileNameLength + (int) CharacterEntries[charIndex].DataAddressOffset).Take(CharacterEntries[charIndex].Length).ToArray();
+                var charData = bytes.Skip(HEADER_LENGTH + FileNameLength + (int) CharacterEntries[charIndex].DataAddressOffset).Take(CharacterEntries[charIndex].Length).ToArray();
 
-                var b = new Bitmap(CharacterEntries[charIndex].Width, CharacterHeight);
+                var b = new Bitmap(CharacterEntries[charIndex].TotalWidth, CharacterHeight);
 
                 var pixelNumber = 0;
 
-                foreach (var item in charDataChar2.Skip(1)) {
-                    var drawingMode = item >> 6;
-                    var drawingMode2 = (item & 0b00100000) >> 5;
-                    var number = (item & 0b00011111);
+                foreach (var item in charData.Skip(1)) {
 
                     // B & W
-                    //if (charDataChar2[0] == 1) {
+                    if (charData[0] == 1) {
 
-                    if (drawingMode == 0) {
+                        var drawingMode = item >> 5;
+                        var number = (item & 0b00011111);
 
-                        if (drawingMode2 == 0) {
+                        switch (drawingMode) {
+                            case 0:
+                                for (int p = 0; p < number; p++) {
+                                    b.SetPixelNumber(pixelNumber, Color.Transparent);
+
+                                    pixelNumber++;
+                                }
+                                break;
+
+                            case 1:
+                                for (int p = 0; p < number; p++) {
+                                    b.SetPixelNumber(pixelNumber, Color.Black);
+
+                                    pixelNumber++;
+                                }
+                                break;
+
+                            case 2:
+                                for (int p = 0; p < number; p++) {
+                                    b.SetPixelNumber(pixelNumber, Color.Transparent);
+
+                                    pixelNumber++;
+                                }
+
+                                b.SetPixelNumber(pixelNumber, Color.Black);
+                                pixelNumber++;
+
+                                break;
+
+                            case 3:
+                                for (int p = 0; p < number; p++) {
+                                    b.SetPixelNumber(pixelNumber, Color.Transparent);
+
+                                    pixelNumber++;
+                                }
+
+                                b.SetPixelNumber(pixelNumber, Color.Black);
+                                pixelNumber++;
+
+                                b.SetPixelNumber(pixelNumber, Color.Black);
+                                pixelNumber++;
+
+                                break;
+
+                            case 4:
+                                for (int p = 0; p < number; p++) {
+                                    b.SetPixelNumber(pixelNumber, Color.Transparent);
+
+                                    pixelNumber++;
+                                }
+
+                                b.SetPixelNumber(pixelNumber, Color.Black);
+                                pixelNumber++;
+
+                                b.SetPixelNumber(pixelNumber, Color.Black);
+                                pixelNumber++;
+
+                                b.SetPixelNumber(pixelNumber, Color.Black);
+                                pixelNumber++;
+
+                                break;
+
+                            case 5:
+                                for (int p = 0; p < number; p++) {
+                                    b.SetPixelNumber(pixelNumber, Color.Black);
+
+                                    pixelNumber++;
+                                }
+
+                                b.SetPixelNumber(pixelNumber, Color.Transparent);
+                                pixelNumber++;
+
+                                break;
+
+                            case 6:
+                                for (int p = 0; p < number; p++) {
+                                    b.SetPixelNumber(pixelNumber, Color.Black);
+
+                                    pixelNumber++;
+                                }
+
+                                b.SetPixelNumber(pixelNumber, Color.Transparent);
+                                pixelNumber++;
+
+                                b.SetPixelNumber(pixelNumber, Color.Transparent);
+                                pixelNumber++;
+
+                                break;
+
+                            case 7:
+                                for (int p = 0; p < number; p++) {
+                                    b.SetPixelNumber(pixelNumber, Color.Black);
+
+                                    pixelNumber++;
+                                }
+
+                                b.SetPixelNumber(pixelNumber, Color.Transparent);
+                                pixelNumber++;
+
+                                b.SetPixelNumber(pixelNumber, Color.Transparent);
+                                pixelNumber++;
+
+                                b.SetPixelNumber(pixelNumber, Color.Transparent);
+                                pixelNumber++;
+
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+
+                    //// Alpha
+                    if (charData[0] == 3) {
+
+                        var drawingMode = item >> 6;
+                        var drawingMode2 = (item & 0b00100000) >> 5;
+                        var number = (item & 0b00011111);
+
+                        if (drawingMode == 2) {
+
+                            number = (item & 0b00111000) >> 3;
+                            var alpha = (item & 0b00000111);
+
                             for (int p = 0; p < number; p++) {
                                 b.SetPixelNumber(pixelNumber, Color.Transparent);
 
                                 pixelNumber++;
                             }
-                        }
 
-                        if (drawingMode2 == 1) {
-                            for (int p = 0; p < number; p++) {
-                                b.SetPixelNumber(pixelNumber, Color.Black);
-
-                                pixelNumber++;
-                            }
-                        }
-
-                    }
-
-                    if (drawingMode == 1) {
-
-                        for (int p = 0; p < number; p++) {
-                            b.SetPixelNumber(pixelNumber, Color.Transparent);
-
+                            b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 8) * alpha, Color.Black));
                             pixelNumber++;
                         }
 
-                        b.SetPixelNumber(pixelNumber, Color.Black);
-                        pixelNumber++;
+                        if (drawingMode == 3) {
 
-                        if (drawingMode2 == 1) {
-                            b.SetPixelNumber(pixelNumber, Color.Black);
+                            var alpha1 = (item & 0b00111000) >> 3;
+                            var alpha2 = (item & 0b00000111);
+
+                            // should be alpha
+                            b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 8) * alpha1, Color.Black));
                             pixelNumber++;
-                        }
 
-                    }
-                    //}
-
-                    //// Alpha
-                    //if (charDataChar2[0] == 3) {
-
-                    if (drawingMode == 2) {
-
-                        number = (item & 0b00111000) >> 3;
-                        var alpha = (item & 0b00000111);
-
-                        for (int p = 0; p < number; p++) {
-                            b.SetPixelNumber(pixelNumber, Color.Transparent);
-
+                            // should be alpha
+                            b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 8) * alpha2, Color.Black));
                             pixelNumber++;
+
                         }
-
-                        b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 8) * alpha, Color.Black));
-                        pixelNumber++;
                     }
-
-                    if (drawingMode == 3) {
-
-                        var alpha1 = (item & 0b00111000) >> 3;
-                        var alpha2 = (item & 0b00000111);
-
-                        // should be alpha
-                        b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 8) * alpha1, Color.Black));
-                        pixelNumber++;
-
-                        // should be alpha
-                        b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 8) * alpha2, Color.Black));
-                        pixelNumber++;
-
-                    }
-                    //}
 
                 }
 

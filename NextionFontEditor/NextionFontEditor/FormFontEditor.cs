@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using ZiLib;
+using ZiLib.FileVersion.V3;
 
 namespace NextionFontEditor {
 
@@ -12,7 +11,7 @@ namespace NextionFontEditor {
             InitializeComponent();
         }
 
-        private ZiFont ziFont = new ZiFont();
+        private ZiFontV3 ziFont = new ZiFontV3();
 
         private void FormFontEditor_Load(object sender, EventArgs e) {
             cmbZoom.Items.AddRange(Enumerable.Range(1, 30).Select(x => $"{x}x").ToArray());
@@ -28,7 +27,7 @@ namespace NextionFontEditor {
             var res = ofd.ShowDialog();
 
             if (res == DialogResult.OK) {
-                ziFont = ZiFont.FromFile(ofd.FileName);
+                ziFont = ZiFontV3.FromFile(ofd.FileName);
 
                 numChar.Maximum = ziFont.CodePage.CharacterCount - 1;
 

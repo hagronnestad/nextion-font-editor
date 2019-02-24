@@ -1,4 +1,4 @@
-﻿namespace ZiLib {
+﻿namespace ZiLib.FileVersion.Common {
 
     public class CodePage {
         public CodePageIdentifier CodePageIdentifier { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace ZiLib {
+﻿namespace ZiLib.FileVersion.Common {
 
     public enum CodePageIdentifier : ushort {
         ASCII = 0x01,
