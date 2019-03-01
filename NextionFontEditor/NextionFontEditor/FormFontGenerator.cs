@@ -23,7 +23,7 @@ namespace NextionFontEditor {
         }
 
         private void InitializeNextionFontSizesList() {
-            for (int i = 8; i <= 255; i += 8) {
+            for (int i = 8; i <= 255; i += 2) {
                 cmbNextionFontSize.Items.Add(i);
             }
 
