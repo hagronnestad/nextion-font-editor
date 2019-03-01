@@ -6,6 +6,12 @@ A collection of tools to work with Nextion Fonts.
 |--------|--------|
 | master | [![Build status](https://ci.appveyor.com/api/projects/status/kmi5iikvsod53c4p?svg=true)](https://ci.appveyor.com/project/hagronnestad/nextion-font-editor) |
 
+## Binaries
+| Version | Link |
+|---------|------|
+| Stable  | https://github.com/hagronnestad/nextion-font-editor/releases                     |
+| Latest  | https://ci.appveyor.com/project/hagronnestad/nextion-font-editor/build/artifacts |
+
 
 ## Roadmap
 
