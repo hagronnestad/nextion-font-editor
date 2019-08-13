@@ -30,9 +30,9 @@ namespace NextionFontEditor {
 
             foreach (var b in font.CharBitmaps.Take(300)) {
                 var p = new PictureBox() {
-                    Width = b.Width,
+                    Width = b.Bmp.Width,
                     Height = font.CharacterHeight + 2,
-                    Image = b,
+                    Image = b.Bmp,
                     BorderStyle = BorderStyle.FixedSingle,
                     BackColor = Color.White
                 };

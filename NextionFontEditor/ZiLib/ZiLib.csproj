@@ -43,12 +43,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryTools.cs" />
+    <Compile Include="FileVersion\Common\CharBitmap.cs" />
     <Compile Include="FileVersion\Common\CodePage.cs" />
     <Compile Include="FileVersion\Common\CodePageIdentifier.cs" />
     <Compile Include="FileVersion\Common\CodePages.cs" />
     <Compile Include="Extensions\BitmapExtensions.cs" />
     <Compile Include="FileVersion\Common\ZiFont.cs" />
     <Compile Include="FileVersion\V5\CharMapEntry.cs" />
+    <Compile Include="FileVersion\V5\CompressedByte.cs" />
     <Compile Include="FileVersion\V5\FontOrientation.cs" />
     <Compile Include="FileVersion\V5\ZiFontV5.cs" />
     <Compile Include="Interfaces\IZiFont.cs" />

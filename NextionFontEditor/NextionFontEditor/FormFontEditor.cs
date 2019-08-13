@@ -11,7 +11,7 @@ namespace NextionFontEditor {
             InitializeComponent();
         }
 
-        private ZiFontV3 ziFont = new ZiFontV3();
+        private ZiLib.IZiFont ziFont;
 
         private void FormFontEditor_Load(object sender, EventArgs e) {
             cmbZoom.Items.AddRange(Enumerable.Range(1, 30).Select(x => $"{x}x").ToArray());
@@ -19,7 +19,7 @@ namespace NextionFontEditor {
         }
 
         private void numChar_ValueChanged(object sender, EventArgs e) {
-            charEditor1.CharImage = ziFont.CharBitmaps.Skip((int) numChar.Value).First();
+            charEditor1.CharImage = ziFont.CharBitmaps.Skip((int) numChar.Value).First().Bmp;
             pPreview.Image = charEditor1.CharImage;
         }
 
@@ -27,11 +27,11 @@ namespace NextionFontEditor {
             var res = ofd.ShowDialog();
 
             if (res == DialogResult.OK) {
-                ziFont = ZiFontV3.FromFile(ofd.FileName);
+                ziFont = ZiLib.FileVersion.Common.ZiFont.FromFile(ofd.FileName);
 
                 numChar.Maximum = ziFont.CodePage.CharacterCount - 1;
 
-                charEditor1.CharImage = ziFont.CharBitmaps.Skip(1).First();
+                charEditor1.CharImage = ziFont.CharBitmaps.Skip(1).First().Bmp;
                 numChar.Value = 1;
             }
         }
@@ -88,6 +88,16 @@ namespace NextionFontEditor {
 
         private void btnMoveDown_Click(object sender, EventArgs e) {
             charEditor1.MoveCharacterY(1);
+        }
+
+        private void CharEditor1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Panel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

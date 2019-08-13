@@ -32,7 +32,7 @@ namespace ZiLib.FileVersion.V3 {
         public UInt32 CharDataLength { get; set; }
         public int BytesPerChar { get; set; }
 
-        public List<Bitmap> CharBitmaps { get; set; } = new List<Bitmap>();
+        public List<CharBitmap> CharBitmaps { get; set; } = new List<CharBitmap>();
 
         //public ZiFont(byte width, byte height, CodePage codePage) {
         //    CharacterWidth = width;
@@ -116,9 +116,9 @@ namespace ZiLib.FileVersion.V3 {
             var bb = new SolidBrush(Color.Black);
             var pr = new Pen(Color.DarkCyan);
 
-            for (int charIndex = 0; charIndex < CodePage.CharacterCount; charIndex++) {
-                var charBitmap = new Bitmap(CharacterWidth, CharacterHeight);
-                var g = Graphics.FromImage(charBitmap);
+            for (ushort charIndex = 0; charIndex < CodePage.CharacterCount; charIndex++) {
+                var charBitmap = new CharBitmap(charIndex, CharacterWidth, CharacterHeight);
+                var g = Graphics.FromImage(charBitmap.Bmp);
 
                 var charData = _charData.Skip(charIndex * BytesPerChar).Take(BytesPerChar).ToArray();
                 var pixels = BinaryTools.BytesToBits(charData);
@@ -137,11 +137,11 @@ namespace ZiLib.FileVersion.V3 {
             }
         }
 
-        private byte[] CreateCharData(List<Bitmap> characters, bool invertColour = false) {
+        private byte[] CreateCharData(List<CharBitmap> characters, bool invertColour = false) {
             var charData = new List<byte>();
 
             foreach (var cb in characters) {
-                charData.AddRange(BinaryTools.BitmapTo1BppData(cb, invertColour));
+                charData.AddRange(BinaryTools.BitmapTo1BppData(cb.Bmp, invertColour));
             }
 
             return charData.ToArray();
@@ -162,7 +162,7 @@ namespace ZiLib.FileVersion.V3 {
                 BytesPerChar = bytesPerChar,
             };
 
-            ziFont._charData = ziFont.CreateCharData(characters, invertColour);
+            //ziFont._charData = ziFont.CreateCharData(characters, invertColour);
 
             //var charData = new List<byte>();
             //foreach (var cb in characters) {

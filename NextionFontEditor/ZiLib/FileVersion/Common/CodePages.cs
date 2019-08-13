@@ -12,13 +12,17 @@ namespace ZiLib.FileVersion.Common {
             var bytes = Enumerable.Range(start, count).Select(x => (byte) x).ToArray();
             var characters = Encoding.ASCII.GetChars(bytes);
 
+            return new CodePage(CodePageIdentifier.ASCII);
+
+            /*
             return new CodePage {
                 CodePageIdentifier = CodePageIdentifier.ASCII,
-                FirstByteStart = start,
-                FirstByteEnd = start + count,
+                FirstByteStart = (byte)start,
+                FirstByteEnd = (byte)(start + count),
                 CharacterCount = count,
                 Characters = characters
             };
+            */
         }
 
         public static CodePage CreateIso_8859_1() {
@@ -28,21 +32,25 @@ namespace ZiLib.FileVersion.Common {
             var encoding = Encoding.GetEncoding("ISO-8859-1");
             var characters = encoding.GetChars(bytes);
 
+            return new CodePage(CodePageIdentifier.ISO_8859_1);
+
+            /*
             return new CodePage {
                 CodePageIdentifier = CodePageIdentifier.ISO_8859_1,
-                FirstByteStart = start,
-                FirstByteEnd = start + count,
+                FirstByteStart = (byte)start,
+                FirstByteEnd = (byte)(start + count),
                 CharacterCount = count,
                 Characters = characters
             };
+            */
         }
 
         // This one is not working correctly, characters doesn't match the Font Generator in Nextion Editor
         public static CodePage CreateBig5() {
-            var firstByteStart = 0xA0;
-            var firstByteEnd = 0xF9;
-            var secondByteStart = 0x40;
-            var secondByteEnd = 0xFE;
+            var firstByteStart = (byte)0xA0;
+            var firstByteEnd = (byte)0xF9;
+            var secondByteStart = (byte)0x40;
+            var secondByteEnd = (byte)0xFE;
 
             var bytes = new List<byte>();
 
@@ -56,6 +64,9 @@ namespace ZiLib.FileVersion.Common {
             var encoding = Encoding.GetEncoding("big5");
             var characters = encoding.GetChars(bytes.ToArray());
 
+            return new CodePage(CodePageIdentifier.BIG5);
+
+            /*
             return new CodePage {
                 CodePageIdentifier = CodePageIdentifier.BIG5,
                 FirstByteStart = firstByteStart,
@@ -65,6 +76,7 @@ namespace ZiLib.FileVersion.Common {
                 CharacterCount = 0,
                 Characters = characters
             };
+            */
         }
 
         public static CodePage GetCodePage(CodePageIdentifier codePage) {

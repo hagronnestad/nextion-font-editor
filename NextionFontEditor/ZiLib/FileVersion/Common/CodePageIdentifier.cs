@@ -6,8 +6,8 @@ using System.ComponentModel;
 namespace ZiLib
 {
 
-    public enum CodePageIdentifier : ushort
-    {
+     public enum CodePageIdentifier : byte
+     {
         [Description("ascii")]
         ASCII = 0x01,
         [Description("gb2312")]

@@ -48,5 +48,33 @@ namespace ZiLib {
 
             return data;
         }
+
+        public static byte[] BitmapTo3BppData(Bitmap b, bool invertColour = false)
+        {
+            var pixels = new byte[b.Width * b.Height];
+
+            for (int y = 0; y < b.Height; y++)
+            {
+
+                for (int x = 0; x < b.Width; x++)
+                {
+
+                    var pixel = b.GetPixel(x, y);
+                    pixels[(y * b.Width) + x] = (byte)((pixel.R + 2 * pixel.G + pixel.B) / 4 * pixel.A / 255);    // Weighted Color2Grayscale;
+
+                    if (!invertColour)
+                    {
+                        pixels[(y * b.Width) + x] = (byte)(255 - pixels[(y * b.Width) + x]);
+                    }
+
+                    // convert to 3 bits
+                    pixels[(y * b.Width) + x] = (byte)(pixels[(y * b.Width) + x] >> 5);
+
+                }
+
+            }
+
+            return pixels;
+        }
     }
 }

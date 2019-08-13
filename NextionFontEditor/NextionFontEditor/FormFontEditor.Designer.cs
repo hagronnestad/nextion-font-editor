@@ -31,7 +31,6 @@
             this.btnSave = new System.Windows.Forms.ToolStripButton();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.charEditor1 = new NextionFontEditor.Controls.CharEditor();
             this.tsCharEditor = new System.Windows.Forms.ToolStrip();
             this.btnShowGrid = new System.Windows.Forms.ToolStripButton();
             this.cmbZoom = new System.Windows.Forms.ToolStripComboBox();
@@ -45,6 +44,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
+            this.charEditor1 = new NextionFontEditor.Controls.CharEditor();
             ((System.ComponentModel.ISupportInitialize)(this.pPreview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numChar)).BeginInit();
             this.toolStrip1.SuspendLayout();
@@ -108,33 +108,20 @@
             // 
             // panel1
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.AutoScroll = true;
             this.panel1.AutoScrollMargin = new System.Drawing.Size(20, 20);
+            this.panel1.AutoSize = true;
             this.panel1.BackColor = System.Drawing.SystemColors.ControlDark;
             this.panel1.Controls.Add(this.charEditor1);
-            this.panel1.Location = new System.Drawing.Point(0, 25);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(415, 471);
+            this.panel1.Padding = new System.Windows.Forms.Padding(100, 0, 0, 0);
+            this.panel1.Size = new System.Drawing.Size(413, 494);
             this.panel1.TabIndex = 4;
+            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.Panel1_Paint);
             this.panel1.Resize += new System.EventHandler(this.panel1_Resize);
-            // 
-            // charEditor1
-            // 
-            this.charEditor1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.charEditor1.CharImage = ((System.Drawing.Bitmap)(resources.GetObject("charEditor1.CharImage")));
-            this.charEditor1.Location = new System.Drawing.Point(53, 36);
-            this.charEditor1.Margin = new System.Windows.Forms.Padding(20);
-            this.charEditor1.Name = "charEditor1";
-            this.charEditor1.ShowGrid = true;
-            this.charEditor1.Size = new System.Drawing.Size(160, 320);
-            this.charEditor1.TabIndex = 0;
-            this.charEditor1.Text = "charEditor1";
-            this.charEditor1.Zoom = 10;
-            this.charEditor1.Paint += new System.Windows.Forms.PaintEventHandler(this.charEditor1_Paint);
             // 
             // tsCharEditor
             // 
@@ -236,8 +223,6 @@
             // 
             // panelWrapper
             // 
-            this.panelWrapper.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.panelWrapper.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelWrapper.Controls.Add(this.tsCharEditor);
             this.panelWrapper.Controls.Add(this.panel1);
@@ -268,6 +253,21 @@
             // 
             this.sfd.DefaultExt = "zi";
             this.sfd.Filter = "Nextion Font Files|*.zi";
+            // 
+            // charEditor1
+            // 
+            this.charEditor1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.charEditor1.CharImage = ((System.Drawing.Bitmap)(resources.GetObject("charEditor1.CharImage")));
+            this.charEditor1.Location = new System.Drawing.Point(53, 36);
+            this.charEditor1.Margin = new System.Windows.Forms.Padding(20);
+            this.charEditor1.Name = "charEditor1";
+            this.charEditor1.ShowGrid = true;
+            this.charEditor1.Size = new System.Drawing.Size(160, 320);
+            this.charEditor1.TabIndex = 0;
+            this.charEditor1.Text = "charEditor1";
+            this.charEditor1.Zoom = 10;
+            this.charEditor1.Click += new System.EventHandler(this.CharEditor1_Click);
+            this.charEditor1.Paint += new System.Windows.Forms.PaintEventHandler(this.charEditor1_Paint);
             // 
             // FormFontEditor
             // 
