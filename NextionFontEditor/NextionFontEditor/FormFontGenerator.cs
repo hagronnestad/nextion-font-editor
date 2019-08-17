@@ -46,7 +46,7 @@ namespace NextionFontEditor {
         }
 
         private void CreatePreview() {
-            var codePage = CodePages.GetCodePage(CodePageIdentifier.ISO_8859_1);
+            var codePage = new CodePage(ZiLib.CodePageIdentifier.ISO_8859_1);
 
             var fontName = lstFonts.SelectedItem?.ToString() ?? "";
             var fontSize = (int) numFontSize.Value;
