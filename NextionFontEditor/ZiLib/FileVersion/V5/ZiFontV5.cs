@@ -11,8 +11,7 @@ using ZiLib.FileVersion.Common;
 namespace ZiLib.FileVersion.V5 {
 
     public class ZiFontV5 : IZiFont {
-        private static readonly byte[] MagicNumbers = new byte[] { 0x04, 0xFF, 0x00 };
-        private static readonly byte[] MagicNumbersBig5 = new byte[] { 0x04, 0x7E, 0x22 }; // The two middle bytes might not be static
+        private static readonly byte[] MagicNumbers = new byte[] { 0x04 };
 
         private const int HEADER_LENGTH = 0x2C; // 44
         private const UInt32 FontDataStartAddress = 0x2C;
@@ -47,45 +46,83 @@ namespace ZiLib.FileVersion.V5 {
             Save(fileName);
         }
 
-        public void Save(string fileName) {
+        public void Save(string fileName)
+        {
             var file = new List<byte>();
+            var encodingName = CodePage.CodePageIdentifier.GetDescription();
+            var encodingNameLength = encodingName.Length;
+            var charData = new List<byte>();
 
             file.AddRange(MagicNumbers);
-            file.Add((byte) Orientation);
-            file.AddRange(BitConverter.GetBytes((ushort) CodePage.CodePageIdentifier));
+            file.Add((byte)CodePage.FirstByteSkipAfter);
+            file.Add((byte)CodePage.FirstByteSkipCount);
+            file.Add((byte)Orientation);
+            file.Add((byte)CodePage.CodePageIdentifier);        // Just one byte for the codepage id
+            // The next byte is not part of the codepageid, but has a different meaning: 
+            // 0x00 for single byte // 0x01 for double bute // In V6: also 0x02 for a subset of characters instead of a full codepage
+            if (CodePage.Encoding.IsSingleByte)
+            {
+                file.Add(0x00);
+            }
+            else
+            {
+                file.Add(0x01);
+            }
             file.Add(CharacterWidth);
             file.Add(CharacterHeight);
-            file.Add((byte) (CodePage.IsMultibyte ? CodePage.FirstByteStart : 0));
-            file.Add((byte) (CodePage.IsMultibyte ? CodePage.FirstByteEnd : 0));
-            file.Add((byte) (CodePage.IsMultibyte ? CodePage.SecondByteStart : CodePage.FirstByteStart));
-            file.Add((byte) (CodePage.IsMultibyte ? CodePage.SecondByteEnd : CodePage.FirstByteEnd));
+            file.Add((byte)CodePage.FirstByteStart);
+            file.Add((byte)CodePage.FirstByteEnd);
+            file.Add((byte)CodePage.SecondByteStart);
+            file.Add((byte)CodePage.SecondByteEnd);
             file.AddRange(BitConverter.GetBytes(CodePage.CharacterCount));
             file.Add(Version);
-            file.Add(FileNameLength);
-            file.Add(0x00); // Reserved
-            file.AddRange(BitConverter.GetBytes(VariableDataLength)); // Length of font name and data
+            file.Add((byte)(FileNameLength + encodingNameLength));
+            file.AddRange(BitConverter.GetBytes((ushort)0));            // Reserved 2 bytes
+            file.AddRange(BitConverter.GetBytes(VariableDataLength));   // Length of font name and data
             file.AddRange(BitConverter.GetBytes(FontDataStartAddress));
-            file.Add(0x00); // Character width (0 = variable width font)
-            file.Add(0x00); // Character height
-            file.Add(0x00); // Code page multibyte - first byte start ???
-            file.Add(0x00); // Reserved
+            file.Add((byte)CodePage.SecondByteSkipAfter);
+            file.Add((byte)CodePage.SecondByteSkipCount);
+            file.Add(0x01); // AntiAlias
+            file.Add(0x01); // VariableWidth
+            file.Add(FileNameLength);
+            file.Add(0x00); // 0x01 : Chardata is 8 byte aligned or 0x00 chardata is 1 byte aligned
 
-            file.Add(0x00); // Reserved
-            file.Add(0x00); // Reserved
-
-            file.Add(0x00); // Reserved
-            file.Add(0x00); // Reserved
-            file.Add(0x00); // Reserved
-            file.Add(0x00); // Reserved
+            file.AddRange(BitConverter.GetBytes((ushort)0)); // Reserved 2 bytes
 
             file.Add(0x00); // Reserved
             file.Add(0x00); // Reserved
             file.Add(0x00); // Reserved
             file.Add(0x00); // Reserved
+
+            file.AddRange(BitConverter.GetBytes(0u)); // Reserved 4 bytes
 
             file.AddRange(Encoding.ASCII.GetBytes(Name));
-            file.AddRange(_charData);
+            file.AddRange(Encoding.ASCII.GetBytes(encodingName));
 
+            var offset = CharacterCount * 10u;
+            for (int i = 0; i < CharacterCount; i++)
+            {
+                byte[] bytes = BinaryTools.BitmapTo3BppData(CharBitmaps.Skip(i).First(), false);
+                var chent = CharacterEntries.Skip(i).First();
+                chent.DataAddressOffset = offset;
+                chent.Length = (ushort)bytes.Length;
+
+                offset += chent.Length;
+                file.AddRange(BitConverter.GetBytes(chent.Code));
+                file.Add(chent.Width);
+                file.Add(chent.KerningLeft);
+                file.Add(chent.KerningRight);
+
+                var offsetbytes = BitConverter.GetBytes(chent.DataAddressOffset);
+                file.Add(offsetbytes[0]);
+                file.Add(offsetbytes[1]);
+                file.Add(offsetbytes[2]);
+                file.AddRange(BitConverter.GetBytes(chent.Length));
+                charData.AddRange(bytes);
+            }
+
+            _charData = charData.ToArray();
+            file.AddRange(_charData);
             File.WriteAllBytes(fileName, file.ToArray());
         }
 
@@ -214,7 +251,7 @@ namespace ZiLib.FileVersion.V5 {
                             pixelNumber++;
                         }
 
-                        b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 8) * alpha, Color.Black));
+                        b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 7) * alpha, Color.Black));
                         pixelNumber++;
                     }
 
@@ -224,11 +261,11 @@ namespace ZiLib.FileVersion.V5 {
                         var alpha2 = (item & 0b00000111);
 
                         // should be alpha
-                        b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 8) * alpha1, Color.Black));
+                        b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 7) * alpha1, Color.Black));
                         pixelNumber++;
 
                         // should be alpha
-                        b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 8) * alpha2, Color.Black));
+                        b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 7) * alpha2, Color.Black));
                         pixelNumber++;
 
                     }
@@ -244,8 +281,11 @@ namespace ZiLib.FileVersion.V5 {
         private byte[] CreateCharData(List<Bitmap> characters, bool invertColour = false) {
             var charData = new List<byte>();
 
-            foreach (var cb in characters) {
-                charData.AddRange(BinaryTools.BitmapTo1BppData(cb, invertColour));
+            for (int i = 0; i < CharacterCount; i++)
+            {
+                byte[] bytes = BinaryTools.BitmapTo3BppData(characters[i], invertColour);
+                charData.AddRange(bytes);
+
             }
 
             return charData.ToArray();
@@ -276,11 +316,15 @@ namespace ZiLib.FileVersion.V5 {
             return ziFont;
         }
 
-        public static bool VerifyHeader(byte[] header) {
-            if (header.Take(MagicNumbers.Length).SequenceEqual(MagicNumbers)) return true;
-            if (header.Take(MagicNumbersBig5.Length).SequenceEqual(MagicNumbersBig5)) return true;
+        public static bool VerifyHeader(byte[] header)
+        {
+            if (header.Length < HEADER_LENGTH) return false;
+            if (!header.Take(MagicNumbers.Length).SequenceEqual(MagicNumbers)) return false;
 
-            return false;
+            if (!Enum.IsDefined(typeof(FontOrientation), header[3])) return false;
+            if (!Enum.IsDefined(typeof(CodePageIdentifier), header[4])) return false;
+
+            return true;
         }
     }
 }
