@@ -22,6 +22,7 @@ namespace ZiLib.FileVersion.Common {
                     return ZiFontV3.FromFile(fileName);
 
                 case 5:
+                case 6:
                     return ZiFontV5.FromFile(fileName);
             }
 
