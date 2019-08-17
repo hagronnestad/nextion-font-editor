@@ -118,7 +118,7 @@ namespace ZiLib.FileVersion.V5 {
             var codePageId = BitConverter.ToUInt16(ziFont._header.Skip(0x4).Take(2).ToArray(), 0);
             ziFont.CharacterCount = BitConverter.ToUInt32(ziFont._header.Skip(0x0C).Take(4).ToArray(), 0);
 
-            ziFont.CodePage = CodePages.GetCodePage((CodePageIdentifier) codePageId);
+            ziFont.CodePage = new CodePage((CodePageIdentifier) codePageId);
 
             var charMapData = bytes.Skip(HEADER_LENGTH + ziFont.FileNameLength).Take(10 * (int) ziFont.CharacterCount).ToArray();
 
