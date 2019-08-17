@@ -49,9 +49,7 @@
     <Compile Include="Extensions\BitmapExtensions.cs" />
     <Compile Include="FileVersion\Common\ZiFont.cs" />
     <Compile Include="FileVersion\V5\CharMapEntry.cs" />
-    <Compile Include="FileVersion\Common\FontOrientation.cs" />
-    <Compile Include="FileVersion\V5\BinaryTools.cs" />
-    <Compile Include="FileVersion\V5\CompressedByte.cs" />
+    <Compile Include="FileVersion\V5\FontOrientation.cs" />
     <Compile Include="FileVersion\V5\ZiFontV5.cs" />
     <Compile Include="Interfaces\IZiFont.cs" />
     <Compile Include="FileVersion\V3\ZiFontV3.cs" />
