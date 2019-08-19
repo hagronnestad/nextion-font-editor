@@ -2,16 +2,22 @@
 
 A collection of tools to work with Nextion Fonts.
 
+### Builds
 | Branch | Status |
 |--------|--------|
 | master | [![Build status](https://ci.appveyor.com/api/projects/status/kmi5iikvsod53c4p?svg=true)](https://ci.appveyor.com/project/hagronnestad/nextion-font-editor) |
 
-## Binaries
+### Binaries
 | Version | Link |
 |---------|------|
 | Stable  | https://github.com/hagronnestad/nextion-font-editor/releases                     |
 | Latest  | https://ci.appveyor.com/project/hagronnestad/nextion-font-editor/build/artifacts |
 
+### Contributors
+| User | Feature | Pull request |
+|--------|--------|--------|
+| [@jyberg](https://github.com/jyberg) | Font generator | [#2](https://github.com/hagronnestad/nextion-font-editor/pull/2) |
+| [@fvanroie](https://github.com/fvanroie) | .ZI v5/v6 support | [#7](https://github.com/hagronnestad/nextion-font-editor/pull/7) |
 
 ## Roadmap
 
