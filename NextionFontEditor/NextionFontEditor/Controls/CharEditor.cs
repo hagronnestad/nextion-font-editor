@@ -40,7 +40,14 @@ namespace NextionFontEditor.Controls {
 
             if (_charImage != null && _bBuffer != null && _gBuffer != null) {
                 _gBuffer.Clear(Color.Transparent);
-                _gBuffer.DrawImage(_charImage, 0, 0, _charImage.Width * Zoom, CharImage.Height * Zoom);
+
+                if (_charImage.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
+                {
+                    _gBuffer.DrawImage(_charImage, 0, 0, _charImage.Width * Zoom, CharImage.Height * Zoom);
+                }
+                else
+                {
+                }
 
                 if (_showGrid) DrawGrid();
 
@@ -153,14 +160,18 @@ namespace NextionFontEditor.Controls {
         }
 
         private void SetSize() {
+            Visible = false;
             if (_charImage == null) return;
+            if (_charImage.PixelFormat == System.Drawing.Imaging.PixelFormat.Undefined) return;
 
             Width = _charImage.Width * Zoom;
             Height = _charImage.Height * Zoom;
+            Visible = true;
         }
 
         private void DrawGrid() {
             if (_charImage == null) return;
+            if (_charImage.PixelFormat == System.Drawing.Imaging.PixelFormat.Undefined) return;
             if (_gBuffer == null) return;
 
             for (int x = 0; x < _charImage.Width; x++) {
@@ -181,9 +192,11 @@ namespace NextionFontEditor.Controls {
             set
             {
                 _charImage = value;
-                _charGraphics = Graphics.FromImage(_charImage);
-
-                CreateBuffer();
+                if (_charImage.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
+                {
+                    _charGraphics = Graphics.FromImage(_charImage);
+                    CreateBuffer();
+                }
                 SetSize();
                 Invalidate();
             }
