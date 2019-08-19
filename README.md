@@ -6,12 +6,18 @@ A collection of tools to work with Nextion Fonts.
 |--------|--------|
 | master | [![Build status](https://ci.appveyor.com/api/projects/status/kmi5iikvsod53c4p?svg=true)](https://ci.appveyor.com/project/hagronnestad/nextion-font-editor) |
 
+## Binaries
+| Version | Link |
+|---------|------|
+| Stable  | https://github.com/hagronnestad/nextion-font-editor/releases                     |
+| Latest  | https://ci.appveyor.com/project/hagronnestad/nextion-font-editor/build/artifacts |
+
 
 ## Roadmap
 
 #### Prioritized tasks
-- [x] Reverse engineering of the new Nextion font format supporting anti-aliasing and variable width fonts (TJC USART HMI version 0.55)
-- [ ] Support for anti-aliased and variable width fonts for (TJC USART HMI version 0.55)
+- [x] Reverse engineering of the new Nextion font format (v5/v6)
+- [x] Support for anti-aliased and variable width fonts (v5/v6)
 
 #### Less prioritized tasks
 - [x] Reverse engineering of the Nextion font format version 3 for Nextion Editor V0.53
