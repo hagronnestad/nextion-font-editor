@@ -43,11 +43,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryTools.cs" />
-    <Compile Include="CodePage.cs" />
-    <Compile Include="CodePageIdentifier.cs" />
-    <Compile Include="CodePages.cs" />
-    <Compile Include="ZiFont.cs" />
+    <Compile Include="FileVersion\Common\CodePage.cs" />
+    <Compile Include="FileVersion\Common\CodePageIdentifier.cs" />
+    <Compile Include="FileVersion\Common\CodePages.cs" />
+    <Compile Include="Extensions\BitmapExtensions.cs" />
+    <Compile Include="FileVersion\Common\ZiFont.cs" />
+    <Compile Include="FileVersion\V5\CharMapEntry.cs" />
+    <Compile Include="FileVersion\Common\FontOrientation.cs" />
+    <Compile Include="FileVersion\V5\BinaryTools.cs" />
+    <Compile Include="FileVersion\V5\CompressedByte.cs" />
+    <Compile Include="FileVersion\V5\ZiFontV5.cs" />
+    <Compile Include="Interfaces\IZiFont.cs" />
+    <Compile Include="FileVersion\V3\ZiFontV3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Text;
 
-namespace ZiLib {
-
+namespace ZiLib.FileVersion.Common {
+    /*
     public class CodePages {
 
         public static CodePage CreateAscii() {
@@ -81,5 +81,5 @@ namespace ZiLib {
 
             return null;
         }
-    }
+    }*/
 }

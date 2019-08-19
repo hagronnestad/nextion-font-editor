@@ -4,10 +4,11 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using ZiLib.FileVersion.Common;
 
-namespace ZiLib {
+namespace ZiLib.FileVersion.V3 {
 
-    public class ZiFont {
+    public class ZiFontV3 : IZiFont {
         private static readonly byte[] MagicNumbers = new byte[] { 0x04, 0xFF, 0x00, 0x0A };
         private static readonly byte[] MagicNumbersBig5 = new byte[] { 0x04, 0x7E, 0x22, 0x0A }; // The two middle bytes might not be static
 
@@ -18,10 +19,11 @@ namespace ZiLib {
 
         public byte CharacterWidth { get; set; }
         public byte CharacterHeight { get; set; }
+        public UInt32 CharacterCount { get; set; }
 
         public CodePage CodePage { get; set; }
 
-        public byte FileFormatVersion => 3;
+        public byte Version { get; set; } = 3;
         public byte NameLength { get; set; }
         public string Name { get; set; }
         public long FileSize { get; set; }
@@ -37,15 +39,14 @@ namespace ZiLib {
         //    CharacterHeight = height;
         //    CodePage = codePage;
         //}
-        public void Save(string fileName, CodePage codePage)
-        {
+        public void Save(string fileName, CodePage codePage) {
             CodePage = codePage;
             _charData = CreateCharData(CharBitmaps);
             Save(fileName);
         }
 
-            public void Save(string fileName) {
-  //          _charData = CreateCharData(CharBitmaps);
+        public void Save(string fileName) {
+            //          _charData = CreateCharData(CharBitmaps);
 
             var file = new List<byte>();
 
@@ -58,7 +59,7 @@ namespace ZiLib {
             file.Add((byte) (CodePage.IsMultibyte ? CodePage.SecondByteStart : CodePage.FirstByteStart));
             file.Add((byte) (CodePage.IsMultibyte ? CodePage.SecondByteEnd : CodePage.FirstByteEnd));
             file.AddRange(BitConverter.GetBytes(CodePage.CharacterCount));
-            file.Add(FileFormatVersion);
+            file.Add(Version);
             file.Add(NameLength);
             file.Add(NameLength);
             file.Add(0x00); // Reserved
@@ -73,14 +74,14 @@ namespace ZiLib {
             File.WriteAllBytes(fileName, file.ToArray());
         }
 
-        public static ZiFont FromFile(string fileName) {
+        public static ZiFontV3 FromFile(string fileName) {
             return FromBytes(File.ReadAllBytes(fileName));
         }
 
-        public static ZiFont FromBytes(byte[] bytes) {
+        public static ZiFontV3 FromBytes(byte[] bytes) {
             if (!VerifyHeader(bytes)) return null;
 
-            var ziFont = new ZiFont();
+            var ziFont = new ZiFontV3();
 
             ziFont._header = bytes.Take(HEADER_LENGTH).ToArray();
             ziFont.NameLength = ziFont._header[0x11];
@@ -100,7 +101,7 @@ namespace ZiLib {
             var characterCount = BitConverter.ToUInt32(ziFont._header.Skip(0x0C).Take(4).ToArray(), 0);
             var calculatedCharCount = ziFont.CharDataLength / ziFont.BytesPerChar;
 
-            ziFont.CodePage = CodePages.GetCodePage((CodePageIdentifier) codePageId);
+            ziFont.CodePage = new CodePage((CodePageIdentifier) codePageId);
 
             if (characterCount != calculatedCharCount) throw new Exception($"{nameof(characterCount)} and {nameof(calculatedCharCount)} doesn't match.");
 
@@ -136,7 +137,7 @@ namespace ZiLib {
             }
         }
 
-        private byte[] CreateCharData(List<Bitmap> characters, bool invertColour=false) {
+        private byte[] CreateCharData(List<Bitmap> characters, bool invertColour = false) {
             var charData = new List<byte>();
 
             foreach (var cb in characters) {
@@ -146,11 +147,11 @@ namespace ZiLib {
             return charData.ToArray();
         }
 
-        public static ZiFont FromCharacterBitmaps(string fontName, byte width, byte height, CodePage codePage, List<Bitmap> characters, bool invertColour = false) {
+        public static ZiFontV3 FromCharacterBitmaps(string fontName, byte width, byte height, CodePage codePage, List<Bitmap> characters, bool invertColour = false) {
             var bytesPerChar = width * height / 8;
             var charDataLength = (uint) (bytesPerChar * characters.Count());
 
-            var ziFont = new ZiFont {
+            var ziFont = new ZiFontV3 {
                 Name = fontName,
                 NameLength = (byte) fontName.Length,
                 CharacterWidth = width,

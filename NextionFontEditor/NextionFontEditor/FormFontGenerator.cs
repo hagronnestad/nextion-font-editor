@@ -5,7 +5,8 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
 using System.Windows.Forms;
-using ZiLib;
+using ZiLib.FileVersion.Common;
+using ZiLib.FileVersion.V3;
 
 namespace NextionFontEditor {
 
@@ -14,7 +15,8 @@ namespace NextionFontEditor {
         public FormFontGenerator() {
             InitializeComponent();
         }
-        private ZiFont ziFont = new ZiFont();
+
+        private ZiFontV3 ziFont = new ZiFontV3();
 
         private void FormFontGenerator_Load(object sender, EventArgs e) {
             InitializeNextionFontSizesList();
@@ -44,7 +46,7 @@ namespace NextionFontEditor {
         }
 
         private void CreatePreview() {
-            var codePage = CodePages.GetCodePage(CodePageIdentifier.ISO_8859_1);
+            var codePage = new CodePage(ZiLib.CodePageIdentifier.ISO_8859_1);
 
             var fontName = lstFonts.SelectedItem?.ToString() ?? "";
             var fontSize = (int) numFontSize.Value;
@@ -113,7 +115,7 @@ namespace NextionFontEditor {
                 }).ToArray());
             panelPreview.ResumeLayout();
 
-            ziFont = ZiFont.FromCharacterBitmaps(fontName + " " + cmbNextionFontSize.Text, (byte) width, (byte) height, codePage, pPreviews, PreviewWB.Checked);
+            ziFont = ZiFontV3.FromCharacterBitmaps(fontName + " " + cmbNextionFontSize.Text, (byte) width, (byte) height, codePage, pPreviews, PreviewWB.Checked);
         }
 
         private int GetMaxFontSizeForRect(string text, String fontName, int fontSize, SizeF rect) {
@@ -172,18 +174,15 @@ namespace NextionFontEditor {
             CreatePreview();
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
-        {
+        private void btnSave_Click(object sender, EventArgs e) {
             sfd.FileName = ziFont.Name;
             var res = sfd.ShowDialog();
-            if (res == DialogResult.OK)
-            {
+            if (res == DialogResult.OK) {
                 ziFont.Save(sfd.FileName);
             }
         }
 
-        private void PreviewTest_CheckedChanged(object sender, EventArgs e)
-        {
+        private void PreviewTest_CheckedChanged(object sender, EventArgs e) {
             CreatePreview();
         }
     }
