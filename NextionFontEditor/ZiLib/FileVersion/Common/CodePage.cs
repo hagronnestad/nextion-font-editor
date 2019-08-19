@@ -23,12 +23,7 @@ namespace ZiLib.FileVersion.Common {
         public bool IsMultibyte => !Encoding.IsSingleByte; // SecondByteStart.HasValue && SecondByteEnd.HasValue;
     
         public Encoding Encoding { get; }
-
     //  public byte MultiByteMode { get; }    // Use Encoding.IsSingleByte
-
-
-    //  public CodePage () {
-    //  }
 
         public CodePage(CodePageIdentifier codePageid)
         {
@@ -171,8 +166,8 @@ namespace ZiLib.FileVersion.Common {
         {
             var characters = new List<char>();
 
-            SecondByteStart = FirstByteStart = SecondByteSkipCount = FirstByteSkipCount = 0;
-            SecondByteEnd = FirstByteEnd = SecondByteSkipAfter = FirstByteSkipAfter = 255;
+            FirstByteStart = SecondByteSkipCount = FirstByteSkipCount = 0;
+            SecondByteStart = SecondByteEnd = FirstByteEnd = SecondByteSkipAfter = FirstByteSkipAfter = 255;
 
             // Outer Loop
             for (int i = SecondByteStart; i <= SecondByteEnd; i++)
