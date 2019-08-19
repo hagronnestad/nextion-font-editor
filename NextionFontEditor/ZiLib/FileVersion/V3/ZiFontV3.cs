@@ -101,7 +101,7 @@ namespace ZiLib.FileVersion.V3 {
             var characterCount = BitConverter.ToUInt32(ziFont._header.Skip(0x0C).Take(4).ToArray(), 0);
             var calculatedCharCount = ziFont.CharDataLength / ziFont.BytesPerChar;
 
-            ziFont.CodePage = CodePages.GetCodePage((CodePageIdentifier) codePageId);
+            ziFont.CodePage = new CodePage((CodePageIdentifier) codePageId);
 
             if (characterCount != calculatedCharCount) throw new Exception($"{nameof(characterCount)} and {nameof(calculatedCharCount)} doesn't match.");
 

@@ -11,7 +11,7 @@ namespace NextionFontEditor {
             InitializeComponent();
         }
 
-        private ZiFontV3 ziFont = new ZiFontV3();
+        private ZiLib.IZiFont ziFont;
 
         private void FormFontEditor_Load(object sender, EventArgs e) {
             cmbZoom.Items.AddRange(Enumerable.Range(1, 30).Select(x => $"{x}x").ToArray());
@@ -27,7 +27,7 @@ namespace NextionFontEditor {
             var res = ofd.ShowDialog();
 
             if (res == DialogResult.OK) {
-                ziFont = ZiFontV3.FromFile(ofd.FileName);
+                ziFont = ZiLib.FileVersion.Common.ZiFont.FromFile(ofd.FileName);
 
                 numChar.Maximum = ziFont.CodePage.CharacterCount - 1;
 
