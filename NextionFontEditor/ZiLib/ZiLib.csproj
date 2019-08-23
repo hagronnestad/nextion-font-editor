@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryTools.cs" />
+    <Compile Include="FileVersion\Common\CodePageMode.cs" />
     <Compile Include="FileVersion\Common\CodePage.cs" />
     <Compile Include="FileVersion\Common\CodePageIdentifier.cs" />
     <Compile Include="FileVersion\Common\CodePages.cs" />

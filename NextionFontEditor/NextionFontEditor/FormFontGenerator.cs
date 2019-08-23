@@ -64,12 +64,13 @@ namespace NextionFontEditor {
             var bWhite = new SolidBrush(Color.White);
             var bBlack = new SolidBrush(Color.Black);
 
-            foreach (var c in codePage.Characters) {
+            foreach (var cp in codePage.CodePoints) {
                 var bPreview = new Bitmap(width, height);
+                var txt = codePage.Encoding.GetString(BitConverter.GetBytes(cp));
 
                 using (var gPreview = CreateGraphics(bPreview)) {
 
-                    var sChar = gPreview.MeasureString(c.ToString(), font, new PointF(0, 0), StringFormat.GenericTypographic).ToSize();
+                    var sChar = gPreview.MeasureString(txt, font, new PointF(0, 0), StringFormat.GenericTypographic).ToSize();
                     if (sChar.Width == 0) sChar.Width = 1;
 
                     var bChar = new Bitmap(sChar.Width, sChar.Height);
@@ -81,7 +82,7 @@ namespace NextionFontEditor {
 
                         gChar.FillRectangle(sb, 0, 0, sChar.Width, sChar.Height);
 
-                        gChar.DrawString(c.ToString(), font,
+                        gChar.DrawString(txt, font,
                             PreviewWB.Checked ? bWhite : bBlack,
                             (float) numCharOffsetX.Value, (float) numCharOffsetY.Value, StringFormat.GenericTypographic
                         );

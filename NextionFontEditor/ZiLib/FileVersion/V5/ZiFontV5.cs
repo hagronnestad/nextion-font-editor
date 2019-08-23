@@ -51,54 +51,11 @@ namespace ZiLib.FileVersion.V5 {
             var file = new List<byte>();
             var encodingName = CodePage.CodePageIdentifier.GetDescription();
             var encodingNameLength = encodingName.Length;
+            FileNameLength = (byte)Name.Length;
             var charData = new List<byte>();
+            var indexData = new List<byte>();
 
-            file.AddRange(MagicNumbers);
-            file.Add((byte)CodePage.FirstByteSkipAfter);
-            file.Add((byte)CodePage.FirstByteSkipCount);
-            file.Add((byte)Orientation);
-            file.Add((byte)CodePage.CodePageIdentifier);        // Just one byte for the codepage id
-            // The next byte is not part of the codepageid, but has a different meaning: 
-            // 0x00 for single byte // 0x01 for double bute // In V6: also 0x02 for a subset of characters instead of a full codepage
-            if (CodePage.Encoding.IsSingleByte)
-            {
-                file.Add(0x00);
-            }
-            else
-            {
-                file.Add(0x01);
-            }
-            file.Add(CharacterWidth);
-            file.Add(CharacterHeight);
-            file.Add((byte)CodePage.FirstByteStart);
-            file.Add((byte)CodePage.FirstByteEnd);
-            file.Add((byte)CodePage.SecondByteStart);
-            file.Add((byte)CodePage.SecondByteEnd);
-            file.AddRange(BitConverter.GetBytes(CodePage.CharacterCount));
-            file.Add(Version);
-            file.Add((byte)(FileNameLength + encodingNameLength));
-            file.AddRange(BitConverter.GetBytes((ushort)0));            // Reserved 2 bytes
-            file.AddRange(BitConverter.GetBytes(VariableDataLength));   // Length of font name and data
-            file.AddRange(BitConverter.GetBytes(FontDataStartAddress));
-            file.Add((byte)CodePage.SecondByteSkipAfter);
-            file.Add((byte)CodePage.SecondByteSkipCount);
-            file.Add(0x01); // AntiAlias
-            file.Add(0x01); // VariableWidth
-            file.Add(FileNameLength);
-            file.Add(0x00); // 0x01 : Chardata is 8 byte aligned or 0x00 chardata is 1 byte aligned
-
-            file.AddRange(BitConverter.GetBytes((ushort)0)); // Reserved 2 bytes
-
-            file.Add(0x00); // Reserved
-            file.Add(0x00); // Reserved
-            file.Add(0x00); // Reserved
-            file.Add(0x00); // Reserved
-
-            file.AddRange(BitConverter.GetBytes(0u)); // Reserved 4 bytes
-
-            file.AddRange(Encoding.ASCII.GetBytes(Name));
-            file.AddRange(Encoding.ASCII.GetBytes(encodingName));
-
+            // Update Character Data and Character Indexes
             var offset = CharacterCount * 10u;
             for (int i = 0; i < CharacterCount; i++)
             {
@@ -107,19 +64,70 @@ namespace ZiLib.FileVersion.V5 {
                 chent.DataAddressOffset = offset;
                 chent.Length = (ushort)bytes.Length;
 
-                offset += chent.Length;
-                file.AddRange(BitConverter.GetBytes(chent.Code));
-                file.Add(chent.Width);
-                file.Add(chent.KerningLeft);
-                file.Add(chent.KerningRight);
+                indexData.AddRange(BitConverter.GetBytes(chent.Code));
+                indexData.Add(chent.Width);
+                indexData.Add(chent.KerningLeft);
+                indexData.Add(chent.KerningRight);
 
                 var offsetbytes = BitConverter.GetBytes(chent.DataAddressOffset);
-                file.Add(offsetbytes[0]);
-                file.Add(offsetbytes[1]);
-                file.Add(offsetbytes[2]);
-                file.AddRange(BitConverter.GetBytes(chent.Length));
+                indexData.Add(offsetbytes[0]);
+                indexData.Add(offsetbytes[1]);
+                indexData.Add(offsetbytes[2]);
+                indexData.AddRange(BitConverter.GetBytes(chent.Length));
+
+                offset += chent.Length;
                 charData.AddRange(bytes);
             }
+            VariableDataLength = (uint)(offset + FileNameLength + encodingNameLength);
+
+            file.AddRange(MagicNumbers);
+            file.Add(CodePage.FirstByteSkipAfter);
+            file.Add(CodePage.FirstByteSkipCount);
+            file.Add((byte)Orientation);
+            file.Add((byte)CodePage.CodePageIdentifier);        // Just one byte for the codepage id
+
+            // The next byte is not part of the codepageid, but has a different meaning: It's The CharacterSet Mode
+            if (CharacterCount == CodePage.CharacterCount)
+            {
+                file.Add((byte)(CodePage.Encoding.IsSingleByte ? CodePageMode.SINGLE_BYTE_FULL_CHARSET : CodePageMode.DOUBLE_BYTE_FULL_CHARSET));
+            }
+            else
+            {
+                file.Add((byte)CodePageMode.CHARACTER_SUBSET);
+                Version = 6;        // Version 6 font required
+            }
+
+            file.Add(CharacterWidth);
+            file.Add(CharacterHeight);
+            file.Add(CodePage.SecondByteStart);
+            file.Add(CodePage.SecondByteEnd);
+            file.Add(CodePage.FirstByteStart);
+            file.Add(CodePage.FirstByteEnd);
+            file.AddRange(BitConverter.GetBytes(CharacterCount));
+            file.Add(Version);
+            file.Add((byte)(FileNameLength + encodingNameLength));
+            file.AddRange(BitConverter.GetBytes((ushort)0));            // Reserved 2 bytes
+            file.AddRange(BitConverter.GetBytes(VariableDataLength));   // Length of font name and data
+            file.AddRange(BitConverter.GetBytes(FontDataStartAddress));
+            file.Add(CodePage.SecondByteSkipAfter);
+            file.Add(CodePage.SecondByteSkipCount);
+            file.Add(0x01); // AntiAlias
+            file.Add(0x01); // VariableWidth
+            file.Add(FileNameLength);
+            file.Add(0x00); // 0x01 : Chardata is 8 byte aligned or 0x00 chardata is 1 byte aligned
+
+            file.AddRange(BitConverter.GetBytes((ushort)0)); // Reserved 2 bytes
+
+            // Version 5 = 0 - Version 6 = Total Number of characters in the codepage
+            file.AddRange(BitConverter.GetBytes(Version == 5 ? 0u : (uint)CodePage.CharacterCount));
+
+            file.AddRange(BitConverter.GetBytes(0u)); // Reserved 4 bytes
+
+            // Variable Length : Fontname and Encoding Name
+            file.AddRange(Encoding.ASCII.GetBytes(Name));
+            file.AddRange(Encoding.ASCII.GetBytes(encodingName));
+
+            file.AddRange(indexData.ToArray());
 
             _charData = charData.ToArray();
             file.AddRange(_charData);
@@ -152,7 +160,7 @@ namespace ZiLib.FileVersion.V5 {
 
             ziFont._charData = bytes.Skip((int) dataStartAddress + ziFont.FileNameLength).ToArray();
 
-            var codePageId = BitConverter.ToUInt16(ziFont._header.Skip(0x4).Take(2).ToArray(), 0);
+            var codePageId = ziFont._header[0x4];
             ziFont.CharacterCount = BitConverter.ToUInt32(ziFont._header.Skip(0x0C).Take(4).ToArray(), 0);
 
             ziFont.CodePage = new CodePage((CodePageIdentifier) codePageId);
@@ -179,18 +187,33 @@ namespace ZiLib.FileVersion.V5 {
             return ziFont;
         }
 
-        private void CreateBitmaps() {
+        private void CreateBitmaps()
+        {
             CharBitmaps.Clear();
 
-            for (int charIndex = 0; charIndex < CharacterCount; charIndex++) {
+            for (ushort charIndex = 0; charIndex < CharacterCount; charIndex++)
+            {
 
-                var charData = bytes.Skip(HEADER_LENGTH + FileNameLength + (int) CharacterEntries[charIndex].DataAddressOffset).Take(CharacterEntries[charIndex].Length).ToArray();
+                var charData = bytes.Skip(HEADER_LENGTH + FileNameLength + (int)CharacterEntries[charIndex].DataAddressOffset).Take(CharacterEntries[charIndex].Length).ToArray();
 
+
+                //Kerning[0] = kerningL;
+                //Kerning[1] = kerningR;
+                if ((CharacterEntries[charIndex].TotalWidth == 0) || (CharacterHeight == 0))
+                {
+                    var bm = new Bitmap(1, 1);
+                    bm.Dispose();           // Make it undefined initially
+                    CharBitmaps.Add(bm);
+                    continue;              // to next character
+                }
                 var b = new Bitmap(CharacterEntries[charIndex].TotalWidth, CharacterHeight);
+                //b.Tag = charData;
 
                 var pixelNumber = 0;
+                var bitdepth = charData.First();
 
-                foreach (var item in charData.Skip(1)) {
+                foreach (var item in charData.Skip(1))
+                {
                     var drawingMode = item >> 6;
                     var drawingMode2 = (item & 0b00100000) >> 5;
                     var number = (item & 0b00011111);
@@ -198,18 +221,23 @@ namespace ZiLib.FileVersion.V5 {
                     // B & W
                     //if (charDataChar2[0] == 1) {
 
-                    if (drawingMode == 0) {
+                    if (drawingMode == 0)
+                    {
 
-                        if (drawingMode2 == 0) {
-                            for (int p = 0; p < number; p++) {
+                        if (drawingMode2 == 0)
+                        {
+                            for (int p = 0; p < number; p++)
+                            {
                                 b.SetPixelNumber(pixelNumber, Color.Transparent);
 
                                 pixelNumber++;
                             }
                         }
 
-                        if (drawingMode2 == 1) {
-                            for (int p = 0; p < number; p++) {
+                        if (drawingMode2 == 1)
+                        {
+                            for (int p = 0; p < number; p++)
+                            {
                                 b.SetPixelNumber(pixelNumber, Color.Black);
 
                                 pixelNumber++;
@@ -218,9 +246,11 @@ namespace ZiLib.FileVersion.V5 {
 
                     }
 
-                    if (drawingMode == 1) {
+                    if (drawingMode == 1)
+                    {
 
-                        for (int p = 0; p < number; p++) {
+                        for (int p = 0; p < number; p++)
+                        {
                             b.SetPixelNumber(pixelNumber, Color.Transparent);
 
                             pixelNumber++;
@@ -229,7 +259,8 @@ namespace ZiLib.FileVersion.V5 {
                         b.SetPixelNumber(pixelNumber, Color.Black);
                         pixelNumber++;
 
-                        if (drawingMode2 == 1) {
+                        if (drawingMode2 == 1)
+                        {
                             b.SetPixelNumber(pixelNumber, Color.Black);
                             pixelNumber++;
                         }
@@ -240,34 +271,83 @@ namespace ZiLib.FileVersion.V5 {
                     //// Alpha
                     //if (charDataChar2[0] == 3) {
 
-                    if (drawingMode == 2) {
+                    if (drawingMode == 2)
+                    {
 
-                        number = (item & 0b00111000) >> 3;
-                        var alpha = (item & 0b00000111);
+                        if (bitdepth == 1)
+                        {
+                            for (int p = 0; p < number; p++)
+                            {
+                                b.SetPixelNumber(pixelNumber, Color.Transparent);
 
-                        for (int p = 0; p < number; p++) {
-                            b.SetPixelNumber(pixelNumber, Color.Transparent);
+                                pixelNumber++;
+                            }
 
+                            b.SetPixelNumber(pixelNumber, Color.Black);
+                            pixelNumber++;
+                            b.SetPixelNumber(pixelNumber, Color.Black);
+                            pixelNumber++;
+                            b.SetPixelNumber(pixelNumber, Color.Black);
+                            pixelNumber++;
+
+                            if (drawingMode2 == 1)
+                            {
+                                b.SetPixelNumber(pixelNumber, Color.Black);
+                                pixelNumber++;
+                            }
+                        }
+                        else
+                        {
+                            number = (item & 0b00111000) >> 3;
+                            var alpha = (item & 0b00000111);
+
+                            for (int p = 0; p < number; p++)
+                            {
+                                b.SetPixelNumber(pixelNumber, Color.Transparent);
+
+                                pixelNumber++;
+                            }
+
+                            b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 7) * alpha, Color.Black));
                             pixelNumber++;
                         }
-
-                        b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 7) * alpha, Color.Black));
-                        pixelNumber++;
                     }
 
-                    if (drawingMode == 3) {
+                    if (drawingMode == 3)
+                    {
 
-                        var alpha1 = (item & 0b00111000) >> 3;
-                        var alpha2 = (item & 0b00000111);
+                        if (bitdepth == 1)
+                        {
+                            var whites = (item & 0b00111000) >> 3;
+                            var blacks = (item & 0b00000111);
 
-                        // should be alpha
-                        b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 7) * alpha1, Color.Black));
-                        pixelNumber++;
+                            for (int p = 0; p < whites; p++)
+                            {
+                                b.SetPixelNumber(pixelNumber, Color.Transparent);
 
-                        // should be alpha
-                        b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 7) * alpha2, Color.Black));
-                        pixelNumber++;
+                                pixelNumber++;
+                            }
 
+                            for (int p = 0; p < blacks; p++)
+                            {
+                                b.SetPixelNumber(pixelNumber, Color.Black);
+
+                                pixelNumber++;
+                            }
+                        }
+                        else
+                        {
+                            var alpha1 = (item & 0b00111000) >> 3;
+                            var alpha2 = (item & 0b00000111);
+
+                            // should be alpha
+                            b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 7) * alpha1, Color.Black));
+                            pixelNumber++;
+
+                            // should be alpha
+                            b.SetPixelNumber(pixelNumber, Color.FromArgb((255 / 7) * alpha2, Color.Black));
+                            pixelNumber++;
+                        }
                     }
                     //}
 
@@ -278,18 +358,20 @@ namespace ZiLib.FileVersion.V5 {
 
         }
 
-        private byte[] CreateCharData(List<Bitmap> characters, bool invertColour = false) {
+        private byte[] CreateCharData(List<Bitmap> characters, bool invertColour = false)
+        {
             var charData = new List<byte>();
 
             for (int i = 0; i < CharacterCount; i++)
             {
                 byte[] bytes = BinaryTools.BitmapTo3BppData(characters[i], invertColour);
+                //CharacterEntries[i].DataAddressOffset = 0;
                 charData.AddRange(bytes);
-
             }
 
             return charData.ToArray();
         }
+
 
         public static ZiFontV5 FromCharacterBitmaps(string fontName, byte width, byte height, CodePage codePage, List<Bitmap> characters, bool invertColour = false) {
             var bytesPerChar = width * height / 8;

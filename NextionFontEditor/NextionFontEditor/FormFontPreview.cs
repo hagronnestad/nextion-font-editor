@@ -29,15 +29,33 @@ namespace NextionFontEditor {
             flowPanel.Controls.Clear();
 
             foreach (var b in font.CharBitmaps.Take(300)) {
-                var p = new PictureBox() {
-                    Width = b.Width+2,
-                    Height = font.CharacterHeight + 2,
-                    Image = b,
-                    BorderStyle = BorderStyle.FixedSingle,
-                    BackColor = Color.White
-                };
+                if (b.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
+                {
+                    var p = new PictureBox()
+                    {
+                        Width = b.Width + 2,
+                        Height = font.CharacterHeight + 2,
+                        Image = b,
+                        BorderStyle = BorderStyle.FixedSingle,
+                        BackColor = Color.White
+                    };
 
-                flowPanel.Controls.Add(p);
+                    flowPanel.Controls.Add(p);
+                }
+                else
+                {
+                    var img = new Bitmap(font.CharacterHeight + 2, 2);
+                    var p = new PictureBox()
+                    {
+                        Width = 2,
+                        Height = font.CharacterHeight + 2,
+                        Image = img,
+                        BorderStyle = BorderStyle.FixedSingle,
+                        BackColor = Color.White
+                    };
+
+                    flowPanel.Controls.Add(p);
+                }
             }
         }
 
