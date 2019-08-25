@@ -26,12 +26,12 @@ namespace ZiLib.FileVersion.V5 {
         public byte CharacterHeight { get; set; }
         public UInt32 CharacterCount { get; set; }
 
-        public List<CharMapEntry> CharacterEntries = new List<CharMapEntry>();
+        public List<CharMapEntry> CharacterEntries { get; set; } = new List<CharMapEntry>();
 
         public CodePage CodePage { get; set; }
 
         public byte Version { get; set; } = 5;
-        public byte FileNameLength { get; set; }
+        public byte FileNameLength => (byte)Name.Length;
         public string Name { get; set; }
         public long FileSize { get; set; }
 
@@ -51,7 +51,6 @@ namespace ZiLib.FileVersion.V5 {
             var file = new List<byte>();
             var encodingName = CodePage.CodePageIdentifier.GetDescription();
             var encodingNameLength = encodingName.Length;
-            FileNameLength = (byte)Name.Length;
             var charData = new List<byte>();
             var indexData = new List<byte>();
 
@@ -146,19 +145,19 @@ namespace ZiLib.FileVersion.V5 {
             ziFont.bytes = bytes;
 
             ziFont._header = bytes.Take(HEADER_LENGTH).ToArray();
-            ziFont.FileNameLength = ziFont._header[0x11];
-            ziFont.Name = Encoding.ASCII.GetString(bytes.Skip(HEADER_LENGTH).Take(ziFont.FileNameLength).ToArray());
+            var fileNameLength = ziFont._header[0x11];
+            ziFont.Name = Encoding.ASCII.GetString(bytes.Skip(HEADER_LENGTH).Take(fileNameLength).ToArray());
             ziFont.FileSize = bytes.Length;
 
             ziFont.CharacterWidth = ziFont._header[0x6];
             ziFont.CharacterHeight = ziFont._header[0x7];
 
             ziFont.VariableDataLength = BitConverter.ToUInt32(ziFont._header.Skip(0x14).Take(4).ToArray(), 0);
-            ziFont.CharDataLength = ziFont.VariableDataLength - ziFont.FileNameLength;
+            ziFont.CharDataLength = ziFont.VariableDataLength - fileNameLength;
 
             var dataStartAddress = BitConverter.ToUInt32(ziFont._header.Skip(0x18).Take(4).ToArray(), 0);
 
-            ziFont._charData = bytes.Skip((int) dataStartAddress + ziFont.FileNameLength).ToArray();
+            ziFont._charData = bytes.Skip((int) dataStartAddress + fileNameLength).ToArray();
 
             var codePageId = ziFont._header[0x4];
             ziFont.CharacterCount = BitConverter.ToUInt32(ziFont._header.Skip(0x0C).Take(4).ToArray(), 0);
@@ -379,7 +378,7 @@ namespace ZiLib.FileVersion.V5 {
 
             var ziFont = new ZiFontV5 {
                 Name = fontName,
-                FileNameLength = (byte) fontName.Length,
+                //FileNameLength = (byte) fontName.Length,
                 CharacterWidth = width,
                 CharacterHeight = height,
                 CodePage = codePage,

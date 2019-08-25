@@ -11,7 +11,8 @@ namespace NextionFontEditor {
         /// </summary>
         [STAThread]
         private static void Main() {
-            //var f = ZiFontV5.FromFile(@"Test Files\Arial_32_ASCII_AA_v5.zi");
+           //ZiFont f;
+            //var f = ZiLib.FileVersion.Common.ZiFont.FromFile(@"Test Files\Arial_32_ASCII_AA_v5.zi");
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

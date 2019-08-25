@@ -116,7 +116,7 @@ namespace ZiLib.FileVersion.V3 {
             var bb = new SolidBrush(Color.Black);
             var pr = new Pen(Color.DarkCyan);
 
-            for (int charIndex = 0; charIndex < CodePage.CharacterCount; charIndex++) {
+            for (ushort charIndex = 0; charIndex < CodePage.CharacterCount; charIndex++) {
                 var charBitmap = new Bitmap(CharacterWidth, CharacterHeight);
                 var g = Graphics.FromImage(charBitmap);
 
@@ -162,7 +162,7 @@ namespace ZiLib.FileVersion.V3 {
                 BytesPerChar = bytesPerChar,
             };
 
-            ziFont._charData = ziFont.CreateCharData(characters, invertColour);
+            //ziFont._charData = ziFont.CreateCharData(characters, invertColour);
 
             //var charData = new List<byte>();
             //foreach (var cb in characters) {
