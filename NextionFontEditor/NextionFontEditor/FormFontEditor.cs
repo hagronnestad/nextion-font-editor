@@ -19,8 +19,21 @@ namespace NextionFontEditor {
         }
 
         private void numChar_ValueChanged(object sender, EventArgs e) {
+            if (ziFont == null) {
+                numChar.Value = 0;
+                return;
+            }
+
+            if (numChar.Value >= ziFont.CharBitmaps.Count) {
+                numChar.Value = 0;
+            }
+            charEditor1.CharImage = ziFont.CharBitmaps.Skip((int)numChar.Value).First();
+
             charEditor1.CharImage = ziFont.CharBitmaps.Skip((int) numChar.Value).First();
-            pPreview.Image = charEditor1.CharImage;
+            if (charEditor1.CharImage.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined) {
+                pPreview.Image = charEditor1.CharImage;
+            } else {
+            }
         }
 
         private void btnOpenFont_Click(object sender, EventArgs e) {
@@ -71,7 +84,13 @@ namespace NextionFontEditor {
         }
 
         private void charEditor1_Paint(object sender, PaintEventArgs e) {
-            pPreview.Image = charEditor1.CharImage;
+            if (charEditor1.CharImage.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
+            {
+                pPreview.Image = charEditor1.CharImage;
+            }
+            else
+            {
+            }
         }
 
         private void btnMoveLeft_Click(object sender, EventArgs e) {
@@ -88,6 +107,16 @@ namespace NextionFontEditor {
 
         private void btnMoveDown_Click(object sender, EventArgs e) {
             charEditor1.MoveCharacterY(1);
+        }
+
+        private void CharEditor1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Panel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

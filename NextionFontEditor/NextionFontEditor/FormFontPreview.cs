@@ -68,7 +68,7 @@ namespace NextionFontEditor {
 
                 lblFile.Text = Path.GetFileName(ofd.FileName);
                 lblFontName.Text = zifont.Name;
-                lblCodePage.Text = zifont.CodePage.CodePageIdentifier.ToString();
+                lblCodePage.Text = zifont.CodePage.CodePageIdentifier.GetDescription();
 
                 lblWidth.Text = zifont.CharacterWidth.ToString();
                 lblHeight.Text = zifont.CharacterHeight.ToString();
@@ -78,6 +78,16 @@ namespace NextionFontEditor {
                 lblFileVersion.Text = zifont.Version.ToString();
                 //lblBytesPerChar.Text = zifont.BytesPerChar.ToString();
             }
+        }
+
+        private void LblCodePage_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FlowPanel_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

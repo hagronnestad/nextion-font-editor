@@ -3,83 +3,95 @@ using System.Linq;
 using System.Text;
 
 namespace ZiLib.FileVersion.Common {
-    /*
-    public class CodePages {
+    ///*
+    //public class CodePages {
 
-        public static CodePage CreateAscii() {
-            var start = 32;
-            var count = 95;
-            var bytes = Enumerable.Range(start, count).Select(x => (byte) x).ToArray();
-            var characters = Encoding.ASCII.GetChars(bytes);
+    //    public static CodePage CreateAscii() {
+    //        var start = 32;
+    //        var count = 95;
+    //        var bytes = Enumerable.Range(start, count).Select(x => (byte) x).ToArray();
+    //        var characters = Encoding.ASCII.GetChars(bytes);
 
-            return new CodePage {
-                CodePageIdentifier = CodePageIdentifier.ASCII,
-                FirstByteStart = start,
-                FirstByteEnd = start + count,
-                CharacterCount = count,
-                Characters = characters
-            };
-        }
+    //        return new CodePage(CodePageIdentifier.ASCII);
 
-        public static CodePage CreateIso_8859_1() {
-            var start = 32;
-            var count = 224;
-            var bytes = Enumerable.Range(start, count).Select(x => (byte) x).ToArray();
-            var encoding = Encoding.GetEncoding("ISO-8859-1");
-            var characters = encoding.GetChars(bytes);
+    //        /*
+    //        return new CodePage {
+    //            CodePageIdentifier = CodePageIdentifier.ASCII,
+    //            FirstByteStart = (byte)start,
+    //            FirstByteEnd = (byte)(start + count),
+    //            CharacterCount = count,
+    //            Characters = characters
+    //        };
+    //        */
+    //    }
 
-            return new CodePage {
-                CodePageIdentifier = CodePageIdentifier.ISO_8859_1,
-                FirstByteStart = start,
-                FirstByteEnd = start + count,
-                CharacterCount = count,
-                Characters = characters
-            };
-        }
+    //    public static CodePage CreateIso_8859_1() {
+    //        var start = 32;
+    //        var count = 224;
+    //        var bytes = Enumerable.Range(start, count).Select(x => (byte) x).ToArray();
+    //        var encoding = Encoding.GetEncoding("ISO-8859-1");
+    //        var characters = encoding.GetChars(bytes);
 
-        // This one is not working correctly, characters doesn't match the Font Generator in Nextion Editor
-        public static CodePage CreateBig5() {
-            var firstByteStart = 0xA0;
-            var firstByteEnd = 0xF9;
-            var secondByteStart = 0x40;
-            var secondByteEnd = 0xFE;
+    //        return new CodePage(CodePageIdentifier.ISO_8859_1);
 
-            var bytes = new List<byte>();
+    //        /*
+    //        return new CodePage {
+    //            CodePageIdentifier = CodePageIdentifier.ISO_8859_1,
+    //            FirstByteStart = (byte)start,
+    //            FirstByteEnd = (byte)(start + count),
+    //            CharacterCount = count,
+    //            Characters = characters
+    //        };
+    //        */
+    //    }
 
-            for (int i = firstByteStart; i <= firstByteEnd; i++) {
-                for (int j = secondByteStart; j <= secondByteEnd; j++) {
-                    bytes.Add((byte) i);
-                    bytes.Add((byte) j);
-                }
-            }
+    //    // This one is not working correctly, characters doesn't match the Font Generator in Nextion Editor
+    //    public static CodePage CreateBig5() {
+    //        var firstByteStart = (byte)0xA0;
+    //        var firstByteEnd = (byte)0xF9;
+    //        var secondByteStart = (byte)0x40;
+    //        var secondByteEnd = (byte)0xFE;
 
-            var encoding = Encoding.GetEncoding("big5");
-            var characters = encoding.GetChars(bytes.ToArray());
+    //        var bytes = new List<byte>();
 
-            return new CodePage {
-                CodePageIdentifier = CodePageIdentifier.BIG5,
-                FirstByteStart = firstByteStart,
-                FirstByteEnd = firstByteEnd,
-                SecondByteStart = secondByteStart,
-                SecondByteEnd = secondByteEnd,
-                CharacterCount = 0,
-                Characters = characters
-            };
-        }
+    //        for (int i = firstByteStart; i <= firstByteEnd; i++) {
+    //            for (int j = secondByteStart; j <= secondByteEnd; j++) {
+    //                bytes.Add((byte) i);
+    //                bytes.Add((byte) j);
+    //            }
+    //        }
 
-        public static CodePage GetCodePage(CodePageIdentifier codePage) {
-            switch (codePage) {
-                case CodePageIdentifier.ASCII:
-                    return CreateAscii();
+    //        var encoding = Encoding.GetEncoding("big5");
+    //        var characters = encoding.GetChars(bytes.ToArray());
 
-                case CodePageIdentifier.ISO_8859_1:
-                    return CreateIso_8859_1();
+    //        return new CodePage(CodePageIdentifier.BIG5);
 
-                case CodePageIdentifier.BIG5:
-                    return CreateBig5();
-            }
+    //        /*
+    //        return new CodePage {
+    //            CodePageIdentifier = CodePageIdentifier.BIG5,
+    //            FirstByteStart = firstByteStart,
+    //            FirstByteEnd = firstByteEnd,
+    //            SecondByteStart = secondByteStart,
+    //            SecondByteEnd = secondByteEnd,
+    //            CharacterCount = 0,
+    //            Characters = characters
+    //        };
+    //        */
+    //    }
 
-            return null;
-        }
-    }*/
+    //    public static CodePage GetCodePage(CodePageIdentifier codePage) {
+    //        switch (codePage) {
+    //            case CodePageIdentifier.ASCII:
+    //                return CreateAscii();
+
+    //            case CodePageIdentifier.ISO_8859_1:
+    //                return CreateIso_8859_1();
+
+    //            case CodePageIdentifier.BIG5:
+    //                return CreateBig5();
+    //        }
+
+    //        return null;
+    //    }
+    //}*/
 }
