@@ -40,7 +40,7 @@ namespace ZiLib.FileVersion.V5
                 case 2:
                     return (byte)((drawmode << 6) | (1 << 5) | (byte)times);
                 default:
-                    throw new ArgumentException(String.Format("{0} is not a valid number of additional blacks", additionalblackpixels), "blacks");
+                    throw new ArgumentException(string.Format("{0} is not a valid number of additional blacks", additionalblackpixels), "blacks");
             } // switch
         }
 
@@ -130,15 +130,15 @@ namespace ZiLib.FileVersion.V5
                     {
                         colors.Add(Color.White);
                     }
-                    colors.Add(CompressedByte.ToColor((byte)color));
+                    colors.Add(ToColor((byte)color));
                     break;
 
                 case 0b110:
                 case 0b111:
                     var color1 = (b & 0b111000) >> 3;
                     var color2 = b & 0b111;
-                    colors.Add(CompressedByte.ToColor((byte)color1));
-                    colors.Add(CompressedByte.ToColor((byte)color2));
+                    colors.Add(ToColor((byte)color1));
+                    colors.Add(ToColor((byte)color2));
                     break;
 
                 default:
@@ -225,12 +225,12 @@ namespace ZiLib.FileVersion.V5
                     {
                         // add 2 colors if this is not the last byte
                         // there are more bytes, encode 2 colors: 11 fff sss
-                        data.Add(CompressedByte.AlphaColors(color, bytes[pos++]));  // and advance extra position  
+                        data.Add(AlphaColors(color, bytes[pos++]));  // and advance extra position  
                     }
                     else
                     {
                         // its the last byte, so encode only 1 colors: 10 000 ccc
-                        data.Add(CompressedByte.RepeatedWhites((uint)0, color));
+                        data.Add(RepeatedWhites((uint)0, color));
                     }
                     continue; // to the next byte
                 }
@@ -246,7 +246,7 @@ namespace ZiLib.FileVersion.V5
                 // Repeated blacks
                 if (color == 7)
                 {
-                    data.Add(CompressedByte.RepeatedBlacks(times));
+                    data.Add(RepeatedBlacks(times));
                     continue; // to the next byte
                 }
 
@@ -256,7 +256,7 @@ namespace ZiLib.FileVersion.V5
                 if (pos >= length)
                 {
                     // its the last byte, so encode only the transparencies
-                    data.Add(CompressedByte.RepeatedWhites(times));
+                    data.Add(RepeatedWhites(times));
                     continue; // to the next byte
                 }
 
@@ -276,10 +276,10 @@ namespace ZiLib.FileVersion.V5
                     switch (blacks)
                     {
                         case 1:
-                            data.Add(CompressedByte.RepeatedWhites(times, blacks));
+                            data.Add(RepeatedWhites(times, blacks));
                             break;
                         case 2:
-                            data.Add(CompressedByte.RepeatedWhites(times, blacks));
+                            data.Add(RepeatedWhites(times, blacks));
                             break;
                         default:
                             throw new ArgumentException(String.Format("{0} is not a valid number of blacks", blacks), "blacks");
@@ -293,14 +293,14 @@ namespace ZiLib.FileVersion.V5
                 if (times < 8)
                 {
                     // Only encode an extra color if repetition is less then 8 times (3-bits)
-                    data.Add(CompressedByte.RepeatedWhites(times, nextcolor));
+                    data.Add(RepeatedWhites(times, nextcolor));
                     pos += 1 /* extra color */ ;
 
                 }
                 else
                 {
                     // Transparent repetition is 8 or more times
-                    data.Add(CompressedByte.RepeatedWhites(times));
+                    data.Add(RepeatedWhites(times));
                 }
 
             } // while

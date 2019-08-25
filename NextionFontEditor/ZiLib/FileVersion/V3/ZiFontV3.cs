@@ -19,7 +19,7 @@ namespace ZiLib.FileVersion.V3 {
 
         public byte CharacterWidth { get; set; }
         public byte CharacterHeight { get; set; }
-        public UInt32 CharacterCount { get; set; }
+        public uint CharacterCount { get; set; }
 
         public CodePage CodePage { get; set; }
 
@@ -28,8 +28,8 @@ namespace ZiLib.FileVersion.V3 {
         public string Name { get; set; }
         public long FileSize { get; set; }
 
-        public UInt32 VariableDataLength { get; set; }
-        public UInt32 CharDataLength { get; set; }
+        public uint VariableDataLength { get; set; }
+        public uint CharDataLength { get; set; }
         public int BytesPerChar { get; set; }
 
         public List<Bitmap> CharBitmaps { get; set; } = new List<Bitmap>();
@@ -114,7 +114,6 @@ namespace ZiLib.FileVersion.V3 {
             CharBitmaps.Clear();
 
             var bb = new SolidBrush(Color.Black);
-            var pr = new Pen(Color.DarkCyan);
 
             for (ushort charIndex = 0; charIndex < CodePage.CharacterCount; charIndex++) {
                 var charBitmap = new Bitmap(CharacterWidth, CharacterHeight);

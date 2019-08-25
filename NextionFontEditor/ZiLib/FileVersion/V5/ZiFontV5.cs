@@ -14,7 +14,7 @@ namespace ZiLib.FileVersion.V5 {
         private static readonly byte[] MagicNumbers = new byte[] { 0x04 };
 
         private const int HEADER_LENGTH = 0x2C; // 44
-        private const UInt32 FontDataStartAddress = 0x2C;
+        private const uint FontDataStartAddress = 0x2C;
 
         public byte[] bytes { get; set; }
         private byte[] _header { get; set; }
@@ -24,7 +24,7 @@ namespace ZiLib.FileVersion.V5 {
 
         public byte CharacterWidth { get; set; } // 0 = variable width font
         public byte CharacterHeight { get; set; }
-        public UInt32 CharacterCount { get; set; }
+        public uint CharacterCount { get; set; }
 
         public List<CharMapEntry> CharacterEntries { get; set; } = new List<CharMapEntry>();
 
@@ -35,8 +35,8 @@ namespace ZiLib.FileVersion.V5 {
         public string Name { get; set; }
         public long FileSize { get; set; }
 
-        public UInt32 VariableDataLength { get; set; }
-        public UInt32 CharDataLength { get; set; }
+        public uint VariableDataLength { get; set; }
+        public uint CharDataLength { get; set; }
 
         public List<Bitmap> CharBitmaps { get; set; } = new List<Bitmap>();
 

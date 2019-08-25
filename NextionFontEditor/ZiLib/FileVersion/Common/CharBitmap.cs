@@ -1,20 +1,18 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Windows;
-//using System.Windows.Forms;
 using System.Collections.Generic;
-using System.Text;
 using ZiLib.FileVersion.V5;
+using System.Drawing.Text;
+using System.Drawing.Drawing2D;
 
 namespace ZiLib
 {
     public class CharBitmap
     {
         // The Character Index
-        public UInt16 CodePoint { get; set; }
+        public ushort CodePoint { get; set; }
         private byte[] _charData { get; set; }
 
         // The Bitmap image of the character
@@ -315,7 +313,7 @@ namespace ZiLib
             if (((Path.GetExtension(fontname) == ".ttf") || (Path.GetExtension(fontname) == ".otf")) && (File.Exists(fontname)))
             {
 
-                var pfc = new System.Drawing.Text.PrivateFontCollection();
+                var pfc = new PrivateFontCollection();
                 pfc.AddFontFile(fontname);
 
                 font = new Font(pfc.Families[0], fontsize, style, GraphicsUnit.Pixel);
@@ -356,11 +354,11 @@ namespace ZiLib
                 var graphics = Graphics.FromImage(Bmp);
 
                 //Adjust for high quality
-                graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;  // AntiAlias // HighQuality
-                graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit; //AntiAliasGridFit; //    (B/W = SingleBitPerPixelGridFit)
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                graphics.SmoothingMode = SmoothingMode.AntiAlias;  // AntiAlias // HighQuality
+                graphics.TextRenderingHint = TextRenderingHint.AntiAliasGridFit; //AntiAliasGridFit; //    (B/W = SingleBitPerPixelGridFit)
 
                 var brushBg = Brushes.White;
                 var brushFg = Brushes.Black;

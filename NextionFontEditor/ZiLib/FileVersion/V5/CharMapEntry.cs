@@ -1,14 +1,12 @@
-﻿using System;
-
-namespace ZiLib.FileVersion.V5 {
+﻿namespace ZiLib.FileVersion.V5 {
 
     public struct CharMapEntry {
-        public UInt16 Code;
+        public ushort Code;
         public byte Width;
         public byte KerningLeft;
         public byte KerningRight;
-        public UInt32 DataAddressOffset; // Offset from start of entry
-        public UInt16 Length;
+        public uint DataAddressOffset; // Offset from start of entry
+        public ushort Length;
 
         public int TotalWidth => Width + KerningLeft + KerningRight;
     }

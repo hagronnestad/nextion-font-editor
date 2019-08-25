@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using System.Collections.Generic;
-using System.Linq;
 using ZiLib.FileVersion.V5;
 
 namespace ZiLib {

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.ComponentModel;
-
-namespace ZiLib
+﻿namespace ZiLib
 {
     public enum CodePageMode : byte
     {
