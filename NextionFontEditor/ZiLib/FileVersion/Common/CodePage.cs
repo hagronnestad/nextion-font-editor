@@ -20,7 +20,7 @@ namespace ZiLib.FileVersion.Common
         public byte SecondByteSkipCount { get; set; }
 
         public int CharacterCount { get; set; }
-        public char[] Characters { get; set; }
+        public ushort[] CodePoints { get; set; }
 
         public bool IsMultibyte => !Encoding.IsSingleByte; // SecondByteStart.HasValue && SecondByteEnd.HasValue;
 
@@ -98,7 +98,7 @@ namespace ZiLib.FileVersion.Common
 
         private void CreateSingleByte(byte start, byte count, CodePageIdentifier codepageid)
         {
-            var characters = Enumerable.Range(start, count).Select(x => (char)x).ToArray();
+            var characters = Enumerable.Range(start, count).Select(x => (ushort)x).ToArray();
 
             FirstByteStart = start;
             FirstByteEnd = (byte)(start + count);
@@ -109,15 +109,15 @@ namespace ZiLib.FileVersion.Common
             FirstByteSkipCount = SecondByteSkipCount = 0x00;
 
             CodePageIdentifier = codepageid;
-            Characters = characters.ToArray();
-            CharacterCount = Characters.Length;
+            CodePoints = characters.ToArray();
+            CharacterCount = CodePoints.Length;
         }
 
         private void CreateDoubleByte(byte outerStart, byte outerEnd, byte innerStart, byte innerEnd,
                                      byte outerSkip, byte outerCount, byte innerSkip, byte innerCount,
                                      CodePageIdentifier codepageid)
         {
-            var characters = new List<char>();
+            var characters = new List<ushort>();
 
             // Outer Loop
             for (int i = outerStart; i <= outerEnd; i++)
@@ -159,14 +159,14 @@ namespace ZiLib.FileVersion.Common
             FirstByteSkipCount = innerCount;
 
             CodePageIdentifier = codepageid;
-            Characters = characters.ToArray();
-            CharacterCount = Characters.Length;
+            CodePoints = characters.ToArray();
+            CharacterCount = CodePoints.Length;
         }
 
         // The TJC/Nextion UTF-8 is actually Unicode encoding
         private void CreateUnicode(CodePageIdentifier codepageid)
         {
-            var characters = new List<char>();
+            var characters = new List<ushort>();
 
             SecondByteStart = FirstByteStart = SecondByteSkipCount = FirstByteSkipCount = 0;
             SecondByteEnd = FirstByteEnd = SecondByteSkipAfter = FirstByteSkipAfter = 255;
@@ -183,9 +183,10 @@ namespace ZiLib.FileVersion.Common
                 }
             }
 
+            SecondByteStart = 255;
             CodePageIdentifier = codepageid;
-            Characters = characters.ToArray();
-            CharacterCount = Characters.Length;
+            CodePoints = characters.ToArray();
+            CharacterCount = CodePoints.Length;
         }
     }
 }
