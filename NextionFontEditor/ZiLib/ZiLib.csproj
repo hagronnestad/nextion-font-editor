@@ -34,6 +34,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,8 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryTools.cs" />
+    <Compile Include="FileVersion\Common\Character.cs" />
     <Compile Include="FileVersion\Common\CodePageMode.cs" />
-    <Compile Include="FileVersion\Common\CharBitmap.cs" />
     <Compile Include="FileVersion\Common\CodePage.cs" />
     <Compile Include="FileVersion\Common\CodePageIdentifier.cs" />
     <Compile Include="FileVersion\Common\CodePages.cs" />

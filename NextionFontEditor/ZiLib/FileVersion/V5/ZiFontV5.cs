@@ -198,7 +198,7 @@ namespace ZiLib.FileVersion.V5 {
                 );
                 ziFont.Characters[i/10]=(ch);
 
-                Debug.WriteLine($"i: {i} code: {c.Code} width: {c.Width} dataOffset: {c.DataAddressOffset} length: {c.Length}");
+                Debug.WriteLine($"i: {i} code: {ch.CodePoint} width: {ch.GetBitmap().Width} dataOffset: n/a length: {ch.GetCharacterData().Length}");
             }
 
             //ziFont.CreateBitmaps();
