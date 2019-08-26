@@ -38,6 +38,8 @@ namespace ZiLib.FileVersion.V5 {
         public uint VariableDataLength { get; set; }
         public uint CharDataLength { get; set; }
 
+        public Character[] Characters { get; set; } = new Character[0];
+
         public List<Bitmap> CharBitmaps { get; set; } = new List<Bitmap>();
 
         public void Save(string fileName, CodePage codePage) {
@@ -161,13 +163,14 @@ namespace ZiLib.FileVersion.V5 {
 
             var codePageId = ziFont._header[0x4];
             ziFont.CharacterCount = BitConverter.ToUInt32(ziFont._header.Skip(0x0C).Take(4).ToArray(), 0);
+            ziFont.Characters = new Character[ziFont.CharacterCount];
 
             ziFont.CodePage = new CodePage((CodePageIdentifier) codePageId);
 
             var charMapData = bytes.Skip(HEADER_LENGTH + ziFont.FileNameLength).Take(10 * (int) ziFont.CharacterCount).ToArray();
 
             for (int i = 0; i < charMapData.Length; i += 10) {
-
+                /*
                 var c = new CharMapEntry {
                     Code = BitConverter.ToUInt16(charMapData, i),
                     Width = charMapData[i + 2],
@@ -177,11 +180,28 @@ namespace ZiLib.FileVersion.V5 {
                     Length = BitConverter.ToUInt16(charMapData, i + 8)
                 };
                 ziFont.CharacterEntries.Add(c);
+                */
+                var dataAddressOffset = BitConverter.ToUInt32(new byte[] { charMapData[i + 5], charMapData[i + 6], charMapData[i + 7], 0x00 }, 0);
+                var dataLength = BitConverter.ToUInt16(charMapData, i + 8);
+
+                var data = new byte[dataLength];
+                Array.Copy(bytes, HEADER_LENGTH + ziFont.FileNameLength + dataAddressOffset, data, 0, dataLength);
+
+                var ch = new Character
+                (
+                    data,
+                    BitConverter.ToUInt16(charMapData, i),
+                    charMapData[i + 2],
+                    ziFont.CharacterHeight,
+                    charMapData[i + 3],
+                    charMapData[i + 4]
+                );
+                ziFont.Characters[i/10]=(ch);
 
                 Debug.WriteLine($"i: {i} code: {c.Code} width: {c.Width} dataOffset: {c.DataAddressOffset} length: {c.Length}");
             }
 
-            ziFont.CreateBitmaps();
+            //ziFont.CreateBitmaps();
 
             return ziFont;
         }
@@ -407,5 +427,60 @@ namespace ZiLib.FileVersion.V5 {
 
             return true;
         }
+
+        public void AddCharacter(ushort codepoint, byte[] chardata, byte width, byte kerningL, byte kerningR) {
+            Character[] newCharacters = new Character[Characters.Length + 1];
+
+            int i = 0;
+            int j = 0;
+            while (i < Characters.Length)
+            {
+                if (Characters[i].CodePoint == (int)codepoint)
+                {
+                    return;
+                }
+
+                if (Characters[i].CodePoint > (int)codepoint)
+                {
+                    break;
+                }
+
+                newCharacters[j] = Characters[i];
+                i++;
+                j++;
+            }
+
+            newCharacters[j] = new Character(chardata, codepoint, width, CharacterHeight, kerningL, kerningR);
+            j++;
+
+            while (i < Characters.Length)
+            {
+                newCharacters[j] = Characters[i];
+                i++;
+                j++;
+            }
+
+            Characters = newCharacters;
+        }
+
+        public void RemoveCharacter(int index) {
+            Character[] newCharacters = new Character[Characters.Length - 1];
+
+            int i = 0;
+            int j = 0;
+            while (i < Characters.Length)
+            {
+                if (i != index)
+                {
+                    newCharacters[j] = Characters[i];
+                    j++;
+                }
+
+                i++;
+            }
+
+            Characters = newCharacters;
+        }
+
     }
 }

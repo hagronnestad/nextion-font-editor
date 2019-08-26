@@ -17,8 +17,9 @@ namespace ZiLib {
         long FileSize { get; set; }
 
         List<Bitmap> CharBitmaps { get; set; }
-
+        Character[] Characters { get; set; }
         void Save(string fileName, CodePage codepage);
- 
+        void AddCharacter(ushort codepoint, byte[] bytes, byte width, byte kerningL=0, byte kerningR=0);
+        void RemoveCharacter(int index);
     }
 }

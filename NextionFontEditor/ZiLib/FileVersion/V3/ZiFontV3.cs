@@ -32,6 +32,8 @@ namespace ZiLib.FileVersion.V3 {
         public uint CharDataLength { get; set; }
         public int BytesPerChar { get; set; }
 
+        public Character[] Characters { get; set; } = new Character[0];
+
         public List<Bitmap> CharBitmaps { get; set; } = new List<Bitmap>();
 
         //public ZiFont(byte width, byte height, CodePage codePage) {
@@ -114,8 +116,9 @@ namespace ZiLib.FileVersion.V3 {
             CharBitmaps.Clear();
 
             var bb = new SolidBrush(Color.Black);
+            var pr = new Pen(Color.DarkCyan);
 
-            for (ushort charIndex = 0; charIndex < CodePage.CharacterCount; charIndex++) {
+            for (int charIndex = 0; charIndex < CodePage.CharacterCount; charIndex++) {
                 var charBitmap = new Bitmap(CharacterWidth, CharacterHeight);
                 var g = Graphics.FromImage(charBitmap);
 
@@ -161,7 +164,7 @@ namespace ZiLib.FileVersion.V3 {
                 BytesPerChar = bytesPerChar,
             };
 
-            //ziFont._charData = ziFont.CreateCharData(characters, invertColour);
+            ziFont._charData = ziFont.CreateCharData(characters, invertColour);
 
             //var charData = new List<byte>();
             //foreach (var cb in characters) {
@@ -181,5 +184,11 @@ namespace ZiLib.FileVersion.V3 {
 
             return false;
         }
-    }
+        public void AddCharacter(ushort index, byte[] bytes, byte width, byte kerningL = 0, byte kerningR = 0) {
+        }
+
+        public void RemoveCharacter(int index) {
+        }
+  }
+
 }
