@@ -10,6 +10,7 @@ namespace NextionFontEditor.Controls {
         private Graphics _charGraphics;
         private int _zoom = 10;
         private bool _showGrid = true;
+        private bool _showKerning = true;
 
         private Bitmap _bBuffer;
         private Graphics _gBuffer;
@@ -40,18 +41,34 @@ namespace NextionFontEditor.Controls {
 
             if (_charImage != null && _bBuffer != null && _gBuffer != null) {
                 _gBuffer.Clear(Color.Transparent);
-
-                if (_charImage.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
-                {
-                    _gBuffer.DrawImage(_charImage, 0, 0, _charImage.Width * Zoom, CharImage.Height * Zoom);
-                }
-                else
-                {
-                }
+                _gBuffer.DrawImage(_charImage, 0, 0, _charImage.Width * Zoom, CharImage.Height * Zoom);
 
                 if (_showGrid) DrawGrid();
 
-                e.Graphics.DrawImage(_bBuffer, 0, 0, _bBuffer.Width, _bBuffer.Height);
+                /* Kerning updates */
+                if (_showKerning) DrawKerning();
+
+                SolidBrush bgBrush = new SolidBrush(SystemColors.ControlDark);
+                e.Graphics.FillRectangle(bgBrush, 0, 0, _charImage.Width * Zoom, 5);
+                e.Graphics.FillRectangle(bgBrush, 0, _charImage.Height * Zoom+5, _charImage.Width * Zoom, 5);
+
+                SolidBrush fgBrush = new SolidBrush(Color.Red);
+                Rectangle rect = new Rectangle(2 * Zoom - 5,-5, 10, 10);
+                e.Graphics.FillPie(fgBrush, rect, 90, 90);
+                fgBrush = new SolidBrush(Color.Red);
+                rect = new Rectangle(2 * Zoom - 5, -5, 10, 10);
+                rect = new Rectangle(2 * Zoom - 5, _charImage.Height * Zoom-5, 10, 10);
+                e.Graphics.FillPie(fgBrush, rect, 90, -90);
+
+                fgBrush = new SolidBrush(Color.Red);
+                rect = new Rectangle(2 * Zoom - 4, 0, 8, 6);
+                e.Graphics.FillPie(fgBrush, rect, 270, 90);
+                fgBrush = new SolidBrush(Color.Red);
+                rect = new Rectangle(2 * Zoom - 4, _charImage.Height * Zoom + 4, 8, 6);
+                e.Graphics.FillPie(fgBrush, rect, 270, 90);
+
+
+                e.Graphics.DrawImage(_bBuffer, 0, 5, _bBuffer.Width, _bBuffer.Height);
             }
 
         }
@@ -115,6 +132,11 @@ namespace NextionFontEditor.Controls {
             if (_charGraphics == null) return;
 
             _charGraphics.Clear(Color.Transparent);
+
+            _charImage.Tag = true;   // Bitmap is dirty or has changed
+            var ts = (ToolStrip)this.Parent.Parent.Controls["tsCharEditor"];
+            ts.Items["btnRevertCharacter"].Enabled = true;
+
             Invalidate();
             Refresh();
         }
@@ -126,6 +148,9 @@ namespace NextionFontEditor.Controls {
                 _charGraphics.Clear(Color.Transparent);
                 _charGraphics.DrawImage(b, pixels, 0);
             }
+            _charImage.Tag = true;   // Bitmap is dirty or has changed
+            var ts = (ToolStrip)this.Parent.Parent.Controls["tsCharEditor"];
+            ts.Items["btnRevertCharacter"].Enabled = true;
 
             Invalidate();
             Refresh();
@@ -138,6 +163,9 @@ namespace NextionFontEditor.Controls {
                 _charGraphics.Clear(Color.Transparent);
                 _charGraphics.DrawImage(b, 0, pixels);
             }
+            _charImage.Tag = true;   // Bitmap is dirty or has changed
+            var ts = (ToolStrip)this.Parent.Parent.Controls["tsCharEditor"];
+            ts.Items["btnRevertCharacter"].Enabled = true;
 
             Invalidate();
             Refresh();
@@ -157,21 +185,21 @@ namespace NextionFontEditor.Controls {
         private void TogglePixel(Bitmap b, int x, int y) {
             var p = b.GetPixel(x, y);
             b.SetPixel(x, y, p.A == 255 && p.R == 0 && p.G == 0 && p.B == 0 ? Color.FromArgb(0, 255, 255, 255) : Color.FromArgb(255, 0, 0, 0));
+
+            _charImage.Tag = true;   // Bitmap is dirty or has changed
+            var ts = (ToolStrip)this.Parent.Parent.Controls["tsCharEditor"];
+            ts.Items["btnRevertCharacter"].Enabled = true;
         }
 
         private void SetSize() {
-            Visible = false;
             if (_charImage == null) return;
-            if (_charImage.PixelFormat == System.Drawing.Imaging.PixelFormat.Undefined) return;
 
             Width = _charImage.Width * Zoom;
-            Height = _charImage.Height * Zoom;
-            Visible = true;
+            Height = _charImage.Height * Zoom + 10;
         }
 
         private void DrawGrid() {
             if (_charImage == null) return;
-            if (_charImage.PixelFormat == System.Drawing.Imaging.PixelFormat.Undefined) return;
             if (_gBuffer == null) return;
 
             for (int x = 0; x < _charImage.Width; x++) {
@@ -186,17 +214,33 @@ namespace NextionFontEditor.Controls {
             _gBuffer.DrawRectangle(Pens.LightGray, 1, 1, _charImage.Width * Zoom - 1, _charImage.Height * Zoom - 1);
         }
 
+        private void DrawKerning()
+        {
+            if (_charImage == null) return;
+            if (_gBuffer == null) return;
+
+            if (2> 0) {
+                var x = 2;
+                _gBuffer.DrawLine(Pens.Red, x * Zoom, 0, x * Zoom, _charImage.Height * Zoom);              
+            }
+
+            if (3> 0)
+            {
+                var x = 9;
+                _gBuffer.DrawLine(Pens.Red, x * Zoom, 0, x * Zoom, _charImage.Height * Zoom);
+            }
+
+        }
+
         public Bitmap CharImage
         {
             get => _charImage;
             set
             {
                 _charImage = value;
-                if (_charImage.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
-                {
-                    _charGraphics = Graphics.FromImage(_charImage);
-                    CreateBuffer();
-                }
+                _charGraphics = Graphics.FromImage(_charImage);
+
+                CreateBuffer();
                 SetSize();
                 Invalidate();
             }
