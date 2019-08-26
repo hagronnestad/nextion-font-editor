@@ -96,6 +96,12 @@
     <Compile Include="FormFontEditor.Designer.cs">
       <DependentUpon>FormFontEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormAddCharacters.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAddCharacters.Designer.cs">
+      <DependentUpon>FormAddCharacters.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormFontPreview.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -119,6 +125,9 @@
     <EmbeddedResource Include="FormFontEditor.resx">
       <DependentUpon>FormFontEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormAddCharacters.resx">
+      <DependentUpon>FormAddCharacters.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormFontPreview.resx">
       <DependentUpon>FormFontPreview.cs</DependentUpon>
     </EmbeddedResource>
@@ -136,6 +145,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="NextionFontEditor_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
@@ -295,5 +305,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
