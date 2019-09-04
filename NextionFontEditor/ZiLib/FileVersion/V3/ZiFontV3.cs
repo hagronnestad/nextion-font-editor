@@ -19,7 +19,7 @@ namespace ZiLib.FileVersion.V3 {
 
         public byte CharacterWidth { get; set; }
         public byte CharacterHeight { get; set; }
-        public uint CharacterCount { get; set; }
+        public int CharacterCount => Characters.Length;
 
         public CodePage CodePage { get; set; }
 
@@ -32,7 +32,7 @@ namespace ZiLib.FileVersion.V3 {
         public uint CharDataLength { get; set; }
         public int BytesPerChar { get; set; }
 
-        public Character[] Characters { get; set; } = new Character[0];
+        public IZiCharacter[] Characters { get; set; } = new IZiCharacter[0];
 
         public List<Bitmap> CharBitmaps { get; set; } = new List<Bitmap>();
 
@@ -184,11 +184,10 @@ namespace ZiLib.FileVersion.V3 {
 
             return false;
         }
-        public void AddCharacter(ushort index, byte[] bytes, byte width, byte kerningL = 0, byte kerningR = 0) {
+        public void AddCharacter(uint codepoint, IZiCharacter character) {
         }
 
         public void RemoveCharacter(int index) {
         }
-  }
-
+    }
 }

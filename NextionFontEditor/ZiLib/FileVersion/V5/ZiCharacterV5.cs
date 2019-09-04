@@ -1,34 +1,97 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
 
-namespace ZiLib.FileVersion.Common
+namespace ZiLib.FileVersion.V5
 {
     internal enum ValidData : byte
     {
         UNCHANGED = 0x0,
-        BITMAP = 0x01,
-        CHARDATA = 0x02
+        TEXT = 0x01,
+        BITMAP = 0x02,
+        CHARDATA = 0x04
     }
 
-    public class Character
+    public class ZiCharacterV5 : IZiCharacter
     {
         byte ColorMode { get; set; }
+        private ValidData DataState { get; set; }
+
+        /* Common Properties */
+        public IZiFont Parent { get; set; }
         public uint CodePoint { get; set; }
+        public byte Width { get; set; }
+        public byte KerningLeft { get; set; }
+        public byte KerningRight { get; set; }
 
-        Bitmap _Bitmap { get; set; }
+        /* FromString Constructor */
+        public String Txt { get; set; }
+        public Point TxtPosition { get; set; }
+        public Font Font { get; set; }
 
-        ValidData DataState { get; set; }
+        /* FromBitmap Constructor and after rendering with DrawString*/
+        private Bitmap _Bitmap { get; set; }
 
+        /* FromBytes constructor and after encoding the bitmap */
+        private byte[] _CharacterData { get; set; }
 
-        byte Width { get; set; }
-        byte Height { get; set; }
-
-        byte KerningLeft { get; set; }
-        byte KerningRight { get; set; }
-        byte[] _CharacterData { get; set; }
-
+        /* Helpers */
         byte TotalWidth => (byte)(Width + KerningLeft + KerningRight);
+        public byte[] ToBytes() => GetCharacterData();
+
+
+        /* Constructors */
+        public ZiCharacterV5(IZiFont parent, Bitmap bmp, uint codepoint, byte kerningL = 0, byte kerningR = 0)
+        {
+            Parent = parent;
+            CodePoint = codepoint;
+            _Bitmap = new Bitmap(bmp.Width, bmp.Height);
+            using (var graphics = Graphics.FromImage(_Bitmap))
+            {
+                graphics.DrawImage(bmp, 0, 0);
+            }
+            _CharacterData = new byte[0];
+            KerningLeft = kerningL;
+            KerningRight = kerningR;
+            Width = (byte)(bmp.Width - kerningL - kerningR);
+            DataState = ValidData.BITMAP;
+        }
+        public ZiCharacterV5(IZiFont parent, byte[] bytes, uint codepoint, byte width, byte kerningL = 0, byte kerningR = 0)
+        {
+            Parent = parent;
+            CodePoint = codepoint;
+            if ((width + kerningL + kerningR) > 0 && Parent.CharacterHeight > 0)
+            {
+                // _Bitmap = new Bitmap(width, height);
+            }
+            else
+            {
+                if (_Bitmap != null && _Bitmap.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
+                {
+                    _Bitmap.Dispose();
+                }
+            }
+            _CharacterData = bytes;
+            KerningLeft = kerningL;
+            KerningRight = kerningR;
+            DataState = ValidData.CHARDATA;
+            Width = width;
+            // Decode only when needed;
+        }
+
+        /* Bitmap Operations */
+        public void SetPixel(int x, int y, System.Drawing.Color pixel)
+        {
+            DataState = ValidData.BITMAP;
+            _Bitmap.SetPixel(x, y, pixel);
+        }
+
+        public Color GetPixel(int x, int y)
+        {
+            var bmp = ToBitmap();
+            return bmp.GetPixel(x, y);
+        }
 
         public void SetPixelNumber(int number, Color color)
         {
@@ -42,77 +105,42 @@ namespace ZiLib.FileVersion.Common
             SetPixel(l.X, l.Y, color);
         }
 
-        public Character(Bitmap bmp, uint codepoint, byte kerningL =0, byte kerningR=0)
-        {
-            CodePoint = codepoint;
-            _Bitmap = bmp;
-            _CharacterData = new byte[0];
-            KerningLeft = kerningL;
-            KerningRight = kerningR;
-            DataState = ValidData.BITMAP;
-        }
-        public Character(byte[] bytes, uint codepoint, byte width, byte height, byte kerningL = 0, byte kerningR = 0)
-        {
-            CodePoint = codepoint;
-            if ((width+kerningL+kerningR) > 0 && height > 0)
-            {
-               // _Bitmap = new Bitmap(width, height);
-            }
-            else {
-                if (_Bitmap!=null && _Bitmap.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined) {
-                    _Bitmap.Dispose();
-                }
-            }
-            _CharacterData = bytes;
-            KerningLeft = kerningL;
-            KerningRight = kerningR;
-            DataState = ValidData.CHARDATA;
-            Height = height;
-            Width = width;
-            //Decompress();
-        }
-
-        public Bitmap GetBitmap() {
+        public Bitmap ToBitmap() {
             if (DataState == ValidData.CHARDATA) {
-                Decompress();
+                Decode();
                 DataState = ValidData.UNCHANGED;
             }
+            if (DataState == ValidData.BITMAP)
+            {
+                _CharacterData = ZiLib.FileVersion.V5.BinaryTools.BitmapTo3BppData(_Bitmap);
+                DataState = ValidData.CHARDATA;
+                return ToBitmap();
+            }
             return _Bitmap;
+        }
+
+        public void SetBitmap(Bitmap bmp)
+        {
+            _Bitmap = new Bitmap(_Bitmap.Width, _Bitmap.Height);
+            using (var graphics = Graphics.FromImage(_Bitmap))
+            {
+                graphics.FillRectangle(Brushes.White, 0, 0, _Bitmap.Width, _Bitmap.Height);
+                graphics.DrawImage(bmp, 0, 0);
+            }
+            DataState = ValidData.BITMAP;
         }
 
         public Bitmap RevertBitmap()
         {
             DataState = ValidData.CHARDATA;
-            return GetBitmap();
+            return ToBitmap();
         }
         public bool CanRevert()
         {
             return (DataState == ValidData.BITMAP || (_Bitmap != null && _Bitmap.Tag != null));
         }
 
-        public void SetPixel(int x, int y, System.Drawing.Color pixel)
-        {
-            DataState = ValidData.BITMAP;
-            _Bitmap.SetPixel(x, y, pixel);
-        }
-
-        public System.Drawing.Color GetPixel(int x, int y)
-        {
-            var bmp = GetBitmap();
-            return bmp.GetPixel(x, y);
-        }
-
-        public void PasteFromClipboard()
-        {
-            DataState = ValidData.BITMAP;
-        }
-
-        public void CopyToClipboard()
-        {
-            var bmp = GetBitmap();
-            System.Windows.Forms.Clipboard.SetImage(bmp);
-        }
-
+        /* Byte Array Operations */
         public byte[] GetCharacterData()
         {
             if (DataState == ValidData.BITMAP)
@@ -123,18 +151,12 @@ namespace ZiLib.FileVersion.Common
             return _CharacterData;
         }
 
-        public byte[] GetCharacterIndex(uint dataoffset)
-        {
-            var bytes = new byte[10];
-            return bytes;
-        }
-
-        private void Decompress() {
+        private void Decode() {
 
             var charData = _CharacterData;
-            if (TotalWidth > 0 && Height > 0)
+            if (TotalWidth > 0 && Parent.CharacterHeight > 0)
             {
-                _Bitmap = new Bitmap(TotalWidth, Height);
+                _Bitmap = new Bitmap(TotalWidth, Parent.CharacterHeight);
             }
             else
             {

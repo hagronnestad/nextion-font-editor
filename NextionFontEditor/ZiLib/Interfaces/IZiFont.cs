@@ -12,14 +12,15 @@ namespace ZiLib {
 
         byte CharacterWidth { get; set; }
         byte CharacterHeight { get; set; }
-        uint CharacterCount { get; set; }
+        int CharacterCount { get; }
 
         long FileSize { get; set; }
 
-        List<Bitmap> CharBitmaps { get; set; }
-        Character[] Characters { get; set; }
+        //List<Bitmap> CharBitmaps { get; set; }
+        IZiCharacter[] Characters { get; set; }
         void Save(string fileName, CodePage codepage);
-        void AddCharacter(ushort codepoint, byte[] bytes, byte width, byte kerningL=0, byte kerningR=0);
+        //void AddCharacter(uint codepoint, byte[] bytes, byte width, byte kerningL = 0, byte kerningR = 0);
+        void AddCharacter(uint codepoint, IZiCharacter character);
         void RemoveCharacter(int index);
     }
 }

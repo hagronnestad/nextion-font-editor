@@ -30,7 +30,7 @@ namespace NextionFontEditor {
             this.SuspendLayout();
 
             for (int i=0; i<font.Characters.Length; i++) {
-                var b = font.Characters[i].GetBitmap();
+                var b = font.Characters[i].ToBitmap();
                 if (b!=null && b.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
                 {
                     var p = new PictureBox()
