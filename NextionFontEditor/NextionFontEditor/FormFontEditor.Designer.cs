@@ -138,7 +138,7 @@
             // charEditor1
             // 
             this.charEditor1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.charEditor1.CharImage = ((System.Drawing.Bitmap)(resources.GetObject("charEditor1.CharImage")));
+            //this.charEditor1.CharImage = ((System.Drawing.Bitmap)(resources.GetObject("charEditor1.CharImage")));
             this.charEditor1.Location = new System.Drawing.Point(53, 36);
             this.charEditor1.Margin = new System.Windows.Forms.Padding(20);
             this.charEditor1.Name = "charEditor1";
