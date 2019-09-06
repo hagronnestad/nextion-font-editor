@@ -29,7 +29,7 @@ namespace NextionFontEditor {
             flowPanel.Controls.Clear();
             this.SuspendLayout();
 
-            for (int i=0; i<font.Characters.Length; i++) {
+            for (int i=0; i<font.Characters.Count; i++) {
                 var b = font.Characters[i].ToBitmap();
                 if (b!=null && b.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
                 {

@@ -24,7 +24,7 @@ namespace ZiLib.FileVersion.V5 {
 
         public byte CharacterWidth { get; set; } // 0 = variable width font
         public byte CharacterHeight { get; set; }
-        public int CharacterCount => Characters.Length;
+        public int CharacterCount => Characters.Count;
 
         //public List<CharMapEntry> CharacterEntries { get; set; } = new List<CharMapEntry>();
 
@@ -38,7 +38,7 @@ namespace ZiLib.FileVersion.V5 {
         public uint VariableDataLength { get; set; }
         public uint CharDataLength { get; set; }
 
-        public IZiCharacter[] Characters { get; set; } = new IZiCharacter[0];
+        public List<IZiCharacter> Characters { get; set; } = new List<IZiCharacter>();
 
         //public List<Bitmap> CharBitmaps { get; set; } = new List<Bitmap>();
 
@@ -176,11 +176,11 @@ namespace ZiLib.FileVersion.V5 {
 
             var codePageId = ziFont._header[0x4];
             var characterCount = BitConverter.ToUInt32(ziFont._header.Skip(0x0C).Take(4).ToArray(), 0);
-            ziFont.Characters = new IZiCharacter[characterCount];
+            ziFont.Characters = new List<IZiCharacter>();
 
             ziFont.CodePage = new CodePage((CodePageIdentifier) codePageId);
 
-            var charMapData = bytes.Skip(HEADER_LENGTH + ziFont.FileNameLength).Take(10 * (int) ziFont.CharacterCount).ToArray();
+            var charMapData = bytes.Skip(HEADER_LENGTH + ziFont.FileNameLength).Take(10 * (int)characterCount).ToArray();
 
             for (int i = 0; i < charMapData.Length; i += 10) {
                 /*
@@ -209,7 +209,7 @@ namespace ZiLib.FileVersion.V5 {
                     charMapData[i + 3],
                     charMapData[i + 4]
                 );
-                ziFont.Characters[i/10]=(ch);
+                ziFont.AddCharacter(0,ch);
 
                 //Debug.WriteLine($"i: {i} code: {ch.CodePoint} width: {ch.GetBitmap().Width} dataOffset: n/a length: {ch.GetCharacterData().Length}");
             }
@@ -442,7 +442,7 @@ namespace ZiLib.FileVersion.V5 {
         }
 
         public void AddCharacter(uint codepoint, IZiCharacter character) {
-            IZiCharacter[] newCharacters = new IZiCharacter[Characters.Length + 1];
+            Characters.Add(character);
             /*
             int i = 0;
 
@@ -462,30 +462,15 @@ namespace ZiLib.FileVersion.V5 {
             }
             */
 
-
-            Array.Copy(Characters, 0, newCharacters, 0, Characters.Length);
+//            Array.Copy(Characters, 0, newCharacters, 0, Characters.Count);
             //newCharacters[Characters.Length] = new ZiCharacterV5(this, chardata, codepoint, width, CharacterHeight, kerningL, kerningR);
-            newCharacters[Characters.Length] = character;
+  //          newCharacters[Characters.Count] = character;
 
-            Characters = newCharacters;
+    //        Characters = newCharacters;
         }
 
         public void RemoveCharacter(int index) {
-            IZiCharacter[] newCharacters = new IZiCharacter[Characters.Length - 1];
-
-            int i = 0;
-            int j = 0;
-            while (i < Characters.Length)
-            {
-                if (i != index)
-                {
-                    newCharacters[j] = Characters[i];
-                    j++;
-                }
-
-                i++;
-            }
-
+            List<IZiCharacter> newCharacters = new List<IZiCharacter>();
             Characters = newCharacters;
         }
 
