@@ -92,6 +92,30 @@ namespace ZiLib.FileVersion.V5 {
             }
             VariableDataLength = (uint)(offset + FileNameLength + encodingNameLength);
 
+            // V6 8 byte aligned charData for file bigger than 16 MB
+            if (offset > 16 * 1024 * 1024) {
+                Version = 6;
+                byte[] paddingbytes = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+                charData.Clear();
+
+                offset = (uint)CharacterCount * 10u;
+                var paddinglength = (int)offset % 8;
+                charData.AddRange(paddingbytes.Take(paddinglength));
+                offset = (uint)((bytes.Length + paddinglength) >> 3);
+
+                for (int i = 0; i < CharacterCount; i++) {
+                    bytes = Characters[i].GetCharacterData();
+                    charData.AddRange(bytes);
+
+                    paddinglength = bytes.Length % 8;
+                    charData.AddRange(paddingbytes.Take(paddinglength));
+
+                    indexData.AddRange(GetCharacterIndex(Characters[i], offset, bytes.Length));
+                    offset += (uint)((bytes.Length + paddinglength) >> 3);
+                }
+                VariableDataLength = (uint)(offset*8 + FileNameLength + encodingNameLength);
+            }
+
             file.AddRange(MagicNumbers);
             file.Add(CodePage.FirstByteSkipAfter);
             file.Add(CodePage.FirstByteSkipCount);
@@ -203,13 +227,13 @@ namespace ZiLib.FileVersion.V5 {
                 var ch = new ZiCharacterV5
                 (
                     ziFont,
-                    data,
                     BitConverter.ToUInt16(charMapData, i),
+                    data,
                     charMapData[i + 2],
                     charMapData[i + 3],
                     charMapData[i + 4]
                 );
-                ziFont.AddCharacter(0,ch);
+                ziFont.Characters.Add(ch);
 
                 //Debug.WriteLine($"i: {i} code: {ch.CodePoint} width: {ch.GetBitmap().Width} dataOffset: n/a length: {ch.GetCharacterData().Length}");
             }
@@ -443,35 +467,10 @@ namespace ZiLib.FileVersion.V5 {
 
         public void AddCharacter(uint codepoint, IZiCharacter character) {
             Characters.Add(character);
-            /*
-            int i = 0;
-
-            foreach (var c in CodePage.CodePoints) {
-                var index = Array.FindIndex(Characters, character => { return character.CodePoint == c; });
-                if (index >= 0)
-                {
-                    newCharacters[i] = Characters[index];
-                    i++;
-                }
-                else {
-                    if (c == codepoint) {
-                        newCharacters[i] = new Character(chardata, codepoint, width, CharacterHeight, kerningL, kerningR);
-                        i++;
-                    }
-                }
-            }
-            */
-
-//            Array.Copy(Characters, 0, newCharacters, 0, Characters.Count);
-            //newCharacters[Characters.Length] = new ZiCharacterV5(this, chardata, codepoint, width, CharacterHeight, kerningL, kerningR);
-  //          newCharacters[Characters.Count] = character;
-
-    //        Characters = newCharacters;
         }
 
         public void RemoveCharacter(int index) {
-            List<IZiCharacter> newCharacters = new List<IZiCharacter>();
-            Characters = newCharacters;
+            Characters.RemoveAt(index);
         }
 
     }
