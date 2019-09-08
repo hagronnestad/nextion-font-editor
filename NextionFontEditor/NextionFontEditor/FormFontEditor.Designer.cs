@@ -39,8 +39,6 @@
             this.btnAddCharacters = new System.Windows.Forms.ToolStripButton();
             this.btnCopy = new System.Windows.Forms.ToolStripButton();
             this.btnPaste = new System.Windows.Forms.ToolStripButton();
-            this.btnUndo = new System.Windows.Forms.ToolStripButton();
-            this.btnRedo = new System.Windows.Forms.ToolStripButton();
             this.btnRevertCharacter = new System.Windows.Forms.ToolStripButton();
             this.btnClear = new System.Windows.Forms.ToolStripButton();
             this.btnDeleteCharacter = new System.Windows.Forms.ToolStripButton();
@@ -138,7 +136,7 @@
             // charEditor1
             // 
             this.charEditor1.BackColor = System.Drawing.Color.WhiteSmoke;
-            //this.charEditor1.CharImage = ((System.Drawing.Bitmap)(resources.GetObject("charEditor1.CharImage")));
+            this.charEditor1.Character = null;
             this.charEditor1.Location = new System.Drawing.Point(53, 36);
             this.charEditor1.Margin = new System.Windows.Forms.Padding(20);
             this.charEditor1.Name = "charEditor1";
@@ -159,8 +157,6 @@
             this.btnAddCharacters,
             this.btnCopy,
             this.btnPaste,
-            this.btnUndo,
-            this.btnRedo,
             this.btnRevertCharacter,
             this.btnClear,
             this.btnDeleteCharacter,
@@ -238,27 +234,6 @@
             this.btnPaste.Size = new System.Drawing.Size(23, 22);
             this.btnPaste.Text = "Paste";
             this.btnPaste.ToolTipText = "Paste Character";
-            // 
-            // btnUndo
-            // 
-            this.btnUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnUndo.Image = ((System.Drawing.Image)(resources.GetObject("btnUndo.Image")));
-            this.btnUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnUndo.Name = "btnUndo";
-            this.btnUndo.Size = new System.Drawing.Size(23, 22);
-            this.btnUndo.Text = "Undo";
-            this.btnUndo.ToolTipText = "Undo";
-            this.btnUndo.Click += new System.EventHandler(this.BtnUndo_Click);
-            // 
-            // btnRedo
-            // 
-            this.btnRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnRedo.Image = ((System.Drawing.Image)(resources.GetObject("btnRedo.Image")));
-            this.btnRedo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnRedo.Name = "btnRedo";
-            this.btnRedo.Size = new System.Drawing.Size(23, 22);
-            this.btnRedo.Text = "Redo";
-            this.btnRedo.ToolTipText = "Redo";
             // 
             // btnRevertCharacter
             // 
@@ -474,8 +449,6 @@
         private System.Windows.Forms.ToolStripButton btnRevertCharacter;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton btnDeleteCharacter;
-        private System.Windows.Forms.ToolStripButton btnUndo;
-        private System.Windows.Forms.ToolStripButton btnRedo;
         private System.Windows.Forms.ToolStripButton btnAddCharacters;
     }
 }
