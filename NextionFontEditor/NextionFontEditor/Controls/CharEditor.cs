@@ -16,9 +16,6 @@ namespace NextionFontEditor.Controls {
         private Bitmap _bBuffer;
         private Graphics _gBuffer;
 
-        private byte _kerningL;
-        private byte _kerningR;
-
         private const int GUIDE_SIZE = 5;
 
         public CharEditor() : base() {
@@ -64,13 +61,13 @@ namespace NextionFontEditor.Controls {
                 e.Graphics.FillPie(fgBrush, rect, 90, 90);
                 fgBrush = new SolidBrush(Color.Red);
                 rect = new Rectangle(2 * Zoom - GUIDE_SIZE, -GUIDE_SIZE, 2* GUIDE_SIZE, 2* GUIDE_SIZE);
+                e.Graphics.FillPie(fgBrush, rect, 90, -90);
                 rect = new Rectangle(2 * Zoom - GUIDE_SIZE, _charImage.Height * Zoom - GUIDE_SIZE, 2* GUIDE_SIZE, 2* GUIDE_SIZE);
                 e.Graphics.FillPie(fgBrush, rect, 90, -90);
 
                 fgBrush = new SolidBrush(Color.Red);
                 rect = new Rectangle(2 * Zoom - GUIDE_SIZE, 0, 2* GUIDE_SIZE, GUIDE_SIZE);
                 e.Graphics.FillPie(fgBrush, rect, 270, 90);
-                fgBrush = new SolidBrush(Color.Red);
                 rect = new Rectangle(2 * Zoom - GUIDE_SIZE, _charImage.Height * Zoom + GUIDE_SIZE, 2* GUIDE_SIZE, GUIDE_SIZE);
                 e.Graphics.FillPie(fgBrush, rect, 270, 90);
 
@@ -82,12 +79,12 @@ namespace NextionFontEditor.Controls {
         protected override void OnMouseClick(MouseEventArgs e) {
             base.OnMouseClick(e);
             if (e.Button != MouseButtons.Left) return;
-            var _charImage = _character.ToBitmap();
+            var _charImage = _character?.ToBitmap();
 
             var x = e.X / Zoom;
             var y = (e.Y- GUIDE_SIZE) / Zoom;
 
-            if (x < 0 || x > _character.Width - 1 || y < 0 || y > _character.Parent.CharacterHeight - 1) return;
+            if (x < 0 || x > _character?.Width - 1 || y < 0 || y > _character?.Parent.CharacterHeight - 1) return;
 
             TogglePixel(_charImage, x, y);
 
@@ -101,12 +98,12 @@ namespace NextionFontEditor.Controls {
         protected override void OnMouseDown(MouseEventArgs e) {
             base.OnMouseDown(e);
             if (e.Button != MouseButtons.Left) return;
-            var _charImage = _character.ToBitmap();
+            var _charImage = _character?.ToBitmap();
 
             var x = e.X / Zoom;
             var y = (e.Y - GUIDE_SIZE) / Zoom;
 
-            if (x < 0 || x > _charImage.Width - 1 || y < 0 || y > _charImage.Height - 1) return;
+            if (x < 0 || x > _charImage?.Width - 1 || y < 0 || y > _charImage?.Height - 1) return;
 
             lastX = x;
             lastY = y;
@@ -114,15 +111,15 @@ namespace NextionFontEditor.Controls {
 
         protected override void OnMouseMove(MouseEventArgs e) {
             base.OnMouseMove(e);
-            var _charImage = _character.ToBitmap();
+            var _charImage = _character?.ToBitmap();
 
             var x = e.X / Zoom;
             var y = (e.Y - GUIDE_SIZE) / Zoom;
 
             if (x < 0) x = 0;
             if (y < 0) y = 0;
-            if (y > _charImage.Height - 1) y = _charImage.Height - 1;
-            if (x > _charImage.Width - 1) x = _charImage.Width - 1;
+            if (y > _charImage?.Height - 1) y = _charImage.Height - 1;
+            if (x > _charImage?.Width - 1) x = _charImage.Width - 1;
 
             if (e.Button == MouseButtons.Left) {
                 if (x != lastX || y != lastY) {
@@ -197,14 +194,16 @@ namespace NextionFontEditor.Controls {
 
         private void TogglePixel(Bitmap b, int x, int y) {
             if (x < 0 || y < 0) { return; }
-            b = _character.ToBitmap();
+            b = _character?.ToBitmap();
 
-            var p = b.GetPixel(x, y);
-            b.SetPixel(x, y, p.A == 255 && p.R == 0 && p.G == 0 && p.B == 0 ? Color.FromArgb(0, 255, 255, 255) : Color.FromArgb(255, 0, 0, 0));
+            if (b != null) {
+                var p = b.GetPixel(x, y);
+                b.SetPixel(x, y, p.A == 255 && p.R == 0 && p.G == 0 && p.B == 0 ? Color.FromArgb(0, 255, 255, 255) : Color.FromArgb(255, 0, 0, 0));
 
-            //_charImage.Tag = true;   // Bitmap is dirty or has changed
-            var ts = (ToolStrip)this.Parent.Parent.Controls["tsCharEditor"];
-            ts.Items["btnRevertCharacter"].Enabled = true;
+                //_charImage.Tag = true;   // Bitmap is dirty or has changed
+                var ts = (ToolStrip)this.Parent.Parent.Controls["tsCharEditor"];
+                ts.Items["btnRevertCharacter"].Enabled = true;
+            }
         }
 
         private void SetSize() {
@@ -237,12 +236,12 @@ namespace NextionFontEditor.Controls {
             if (_gBuffer == null) return;
             var _charImage = _character.ToBitmap();
 
-            if (_kerningL > 0) {
-                _gBuffer.DrawLine(Pens.Red, _kerningL * Zoom, 0, _kerningL * Zoom, _charImage.Height * Zoom);
+            if (_character.KerningLeft > 0) {
+                _gBuffer.DrawLine(Pens.Red, _character.KerningLeft * Zoom, 0, _character.KerningLeft * Zoom, _charImage.Height * Zoom);
             }
 
-            if (_kerningR > 0) {
-                _gBuffer.DrawLine(Pens.Red, (_charImage.Width - _kerningR) * Zoom, 0, (_charImage.Width - _kerningR) * Zoom, _charImage.Height * Zoom);
+            if (_character.KerningRight > 0) {
+                _gBuffer.DrawLine(Pens.Red, (_charImage.Width - _character.KerningRight) * Zoom, 0, (_charImage.Width - _character.KerningRight) * Zoom, _charImage.Height * Zoom);
             }
 
         }
@@ -252,32 +251,17 @@ namespace NextionFontEditor.Controls {
             get => _character;
             set
             {
+                Bitmap b;
                 _character = value;
-                _charGraphics = Graphics.FromImage(_character.ToBitmap());
+                if (_character == null) {
+                    b = new Bitmap(8,16);
+                } else {
+                    b = _character.ToBitmap();
+                }
+                _charGraphics = Graphics.FromImage(b);
 
                 CreateBuffer();
                 SetSize();
-                Invalidate();
-            }
-
-        }
-
-        public byte KerningL
-        {
-            get => _kerningL;
-            set
-            {
-                _kerningL = value;
-                Invalidate();
-            }
-
-        }
-        public byte KerningR
-        {
-            get => _kerningR;
-            set
-            {
-                _kerningR = value;
                 Invalidate();
             }
 
