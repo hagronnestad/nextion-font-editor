@@ -27,10 +27,10 @@ namespace ZiLib.FileVersion.V5
 
         /* FromString Constructor */
         public String Txt { get; set; }
-        public Point TxtPosition { get; set; }
+        public PointF TxtPosition { get; set; }
         public Font Font { get; set; }
 
-        /* FromBitmap Constructor and after rendering with DrawString*/
+        /* FromBitmap Constructor and after rendering with DrawString or Decode from bytes */
         private Bitmap _Bitmap { get; set; }
 
         /* FromBytes constructor and after encoding the bitmap */
@@ -40,9 +40,8 @@ namespace ZiLib.FileVersion.V5
         byte TotalWidth => (byte)(Width + KerningLeft + KerningRight);
         public byte[] ToBytes() => GetCharacterData();
 
-
         /* Constructors */
-        public ZiCharacterV5(IZiFont parent, Bitmap bmp, uint codepoint, byte kerningL = 0, byte kerningR = 0)
+        public ZiCharacterV5(IZiFont parent, uint codepoint, Bitmap bmp, byte kerningL = 0, byte kerningR = 0)
         {
             Parent = parent;
             CodePoint = codepoint;
@@ -57,7 +56,7 @@ namespace ZiLib.FileVersion.V5
             Width = (byte)(bmp.Width - kerningL - kerningR);
             DataState = ValidData.BITMAP;
         }
-        public ZiCharacterV5(IZiFont parent, byte[] bytes, uint codepoint, byte width, byte kerningL = 0, byte kerningR = 0)
+        public ZiCharacterV5(IZiFont parent, uint codepoint, byte[] bytes, byte width, byte kerningL = 0, byte kerningR = 0)
         {
             Parent = parent;
             CodePoint = codepoint;
@@ -78,6 +77,12 @@ namespace ZiLib.FileVersion.V5
             DataState = ValidData.CHARDATA;
             Width = width;
             // Decode only when needed;
+        }
+
+        public ZiCharacterV5(IZiFont parent, uint codepoint, Font font, PointF location, String txt=null) {
+            Parent = parent;
+            CodePoint = codepoint;
+            SetString(font, location, txt);
         }
 
         /* Bitmap Operations */
@@ -106,15 +111,15 @@ namespace ZiLib.FileVersion.V5
         }
 
         public Bitmap ToBitmap() {
-            if (DataState == ValidData.CHARDATA) {
-                Decode();
-                DataState = ValidData.UNCHANGED;
-            }
-            if (DataState == ValidData.BITMAP)
-            {
-                _CharacterData = ZiLib.FileVersion.V5.BinaryTools.BitmapTo3BppData(_Bitmap);
-                DataState = ValidData.CHARDATA;
-                return ToBitmap();
+            /* Check if Bitmap bit is 0 in the DataState */
+            if ((DataState & ValidData.BITMAP) == 0) {
+                if ((DataState & ValidData.CHARDATA) != 0) {
+                    Decode();
+                } else {
+                    _Bitmap = DrawString(Txt, Font, Parent.CharacterHeight, TxtPosition);
+                    Width = (byte)_Bitmap.Width;
+                }
+                DataState = DataState | ValidData.BITMAP;
             }
             return _Bitmap;
         }
@@ -130,6 +135,14 @@ namespace ZiLib.FileVersion.V5
             DataState = ValidData.BITMAP;
         }
 
+        public void SetString(Font font, PointF location, String txt = null) {
+            DataState = ValidData.TEXT;
+
+            Txt = txt;
+            TxtPosition = location;
+            Font = font;
+        }
+
         public Bitmap RevertBitmap()
         {
             DataState = ValidData.CHARDATA;
@@ -143,12 +156,51 @@ namespace ZiLib.FileVersion.V5
         /* Byte Array Operations */
         public byte[] GetCharacterData()
         {
-            if (DataState == ValidData.BITMAP)
-            {
+            /* Check if CharData bit is 0 in the DataState */
+            if ((DataState & ValidData.CHARDATA) == 0) {
                 _CharacterData = ZiLib.FileVersion.V5.BinaryTools.BitmapTo3BppData(_Bitmap, false);
-                DataState = ValidData.UNCHANGED;
+                DataState = DataState & ValidData.CHARDATA;
             }
             return _CharacterData;
+        }
+
+        private Bitmap DrawString(string txt, Font font, byte height, PointF location, byte contrast = 0) {
+            var fontsize = (float)height;
+
+            var strFormat = (StringFormat)StringFormat.GenericTypographic.Clone();
+            strFormat.FormatFlags = strFormat.FormatFlags | StringFormatFlags.MeasureTrailingSpaces | StringFormatFlags.NoWrap | StringFormatFlags.NoFontFallback;
+
+            var tmp = new Bitmap(1, 1);
+            var grphtmp = Graphics.FromImage(tmp);
+
+            var width = (int)Math.Round((grphtmp.MeasureString(txt, font, new PointF(0, 0), strFormat)).Width);
+            width = width > 255 ? 255 : width;
+
+            if (width > 0) {
+                var b = new Bitmap(width, height);
+
+                using (var graphics = Graphics.FromImage(b)) {
+
+                    //Adjust for high quality
+                    graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                    graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                    graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;  // AntiAlias // HighQuality
+                    graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit; //AntiAliasGridFit; //    (B/W = SingleBitPerPixelGridFit)
+                    graphics.TextContrast = contrast;
+
+                    graphics.FillRectangle(Brushes.White, 0, 0, b.Width, b.Height);
+                    graphics.DrawString(txt, font, Brushes.Black, location, strFormat);  // experimental
+
+                    //TextRenderer.DrawText(graphics, txt, font, new Point(x, y), Color.Black, Color.White);
+                }
+                return b;
+
+            } else {
+                // Nextion requires a minimum width of 1 pixel. It doesn't like zero length chardata as it crashes the Application when rotating the font.
+                return new Bitmap(1, height);
+            }
+
         }
 
         private void Decode() {

@@ -9,14 +9,14 @@ namespace ZiLib.FileVersion.Common
 
     public class ZiCharacter
     {
-        public static IZiCharacter FromBitmap(IZiFont parent, Bitmap bmp, uint ch, byte kerningL, byte kerningR)
+        public static IZiCharacter FromBitmap(IZiFont parent, uint codepoint, Bitmap bmp, byte kerningL, byte kerningR)
         {
             switch (parent.Version)
             {
                 //    case 3:
                 //        return new ZiCharacterV3();
                 case 5:
-                    return new ZiCharacterV5(parent, bmp, ch, kerningL, kerningR);
+                    return new ZiCharacterV5(parent, codepoint, bmp, kerningL, kerningR);
                 default:
                     return null;
             }
@@ -28,20 +28,20 @@ namespace ZiLib.FileVersion.Common
                 //    case 3:
                 //        return new ZiCharacterV3();
                 case 5:
-                    return new ZiCharacterV5(parent, bytes, codepoint, width, kerningL, kerningR);
+                    return new ZiCharacterV5(parent, codepoint, bytes, width, kerningL, kerningR);
                 default:
                     return null;
             }
         }
 
-        public static IZiCharacter FromString(IZiFont parent, uint codepoint, byte[] bytes, byte width, byte kerningL, byte kerningR)
+        public static IZiCharacter FromString(IZiFont parent, uint codepoint, Font font, PointF location, String txt)
         {
             switch (parent.Version)
             {
                 //    case 3:
                 //        return new ZiCharacterV3();
                 case 5:
-                    return new ZiCharacterV5(parent, bytes, codepoint, width, kerningL, kerningR);
+                    return new ZiCharacterV5(parent, codepoint, font, location, txt);
                 default:
                     return null;
             }

@@ -12,7 +12,7 @@ namespace ZiLib {
 
         Font Font { get; set; }
 
-        Point TxtPosition { get; set; }
+        PointF TxtPosition { get; set; }
 
         byte KerningLeft { get; set; }
         byte KerningRight { get; set; }
@@ -32,5 +32,8 @@ namespace ZiLib {
         Bitmap RevertBitmap();
 
         void SetBitmap(Bitmap bmp);
+
+        void SetString(Font font, PointF location, string txt);
+
+        }
     }
-}
