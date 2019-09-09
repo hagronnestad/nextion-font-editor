@@ -19,7 +19,7 @@ namespace ZiLib.FileVersion.V3 {
 
         public byte CharacterWidth { get; set; }
         public byte CharacterHeight { get; set; }
-        public uint CharacterCount { get; set; }
+        public int CharacterCount => Characters.Count;
 
         public CodePage CodePage { get; set; }
 
@@ -31,6 +31,8 @@ namespace ZiLib.FileVersion.V3 {
         public uint VariableDataLength { get; set; }
         public uint CharDataLength { get; set; }
         public int BytesPerChar { get; set; }
+
+        public List<IZiCharacter> Characters { get; set; } = new List<IZiCharacter>();
 
         public List<Bitmap> CharBitmaps { get; set; } = new List<Bitmap>();
 
@@ -114,8 +116,9 @@ namespace ZiLib.FileVersion.V3 {
             CharBitmaps.Clear();
 
             var bb = new SolidBrush(Color.Black);
+            var pr = new Pen(Color.DarkCyan);
 
-            for (ushort charIndex = 0; charIndex < CodePage.CharacterCount; charIndex++) {
+            for (int charIndex = 0; charIndex < CodePage.CharacterCount; charIndex++) {
                 var charBitmap = new Bitmap(CharacterWidth, CharacterHeight);
                 var g = Graphics.FromImage(charBitmap);
 
@@ -161,7 +164,7 @@ namespace ZiLib.FileVersion.V3 {
                 BytesPerChar = bytesPerChar,
             };
 
-            //ziFont._charData = ziFont.CreateCharData(characters, invertColour);
+            ziFont._charData = ziFont.CreateCharData(characters, invertColour);
 
             //var charData = new List<byte>();
             //foreach (var cb in characters) {
@@ -180,6 +183,11 @@ namespace ZiLib.FileVersion.V3 {
             if (header.SequenceEqual(MagicNumbersBig5)) return true;
 
             return false;
+        }
+        public void AddCharacter(uint codepoint, IZiCharacter character) {
+        }
+
+        public void RemoveCharacter(int index) {
         }
     }
 }

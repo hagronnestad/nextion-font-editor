@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using ZiLib.FileVersion.V3;
+using ZiLib.FileVersion.Common;
 
 namespace NextionFontEditor {
 
@@ -18,34 +18,65 @@ namespace NextionFontEditor {
             cmbZoom.SelectedIndex = 9;
         }
 
-        private void numChar_ValueChanged(object sender, EventArgs e) {
-            if (ziFont == null) {
+        private void UpdateCharacter() {
+            btnAddCharacters.Enabled = ziFont != null;
+            btnClear.Enabled = ziFont != null;
+            btnCopy.Enabled = ziFont != null;
+            btnDeleteCharacter.Enabled = ziFont != null;
+            btnMoveDown.Enabled = ziFont != null;
+            btnMoveLeft.Enabled = ziFont != null;
+            btnMoveUp.Enabled = ziFont != null;
+
+            if (ziFont == null)
+            {
                 numChar.Value = 0;
                 return;
             }
 
-            if (numChar.Value >= ziFont.CharBitmaps.Count) {
+            if (numChar.Value >= ziFont.Characters.Count) {
                 numChar.Value = 0;
             }
-            charEditor1.CharImage = ziFont.CharBitmaps.Skip((int)numChar.Value).First();
 
-            charEditor1.CharImage = ziFont.CharBitmaps.Skip((int) numChar.Value).First();
-            if (charEditor1.CharImage.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined) {
-                pPreview.Image = charEditor1.CharImage;
+            if (numChar.Value < 0) {
+                numChar.Value = ziFont.Characters.Count - 1;
+            }
+
+            var bmp = ziFont.Characters[(int)numChar.Value].ToBitmap();
+            if (bmp != null && bmp.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
+            {
+                charEditor1.Character = ziFont.Characters[(int)numChar.Value];
+                pPreview.Image = bmp;
             } else {
             }
+            txtEncoding.Text = ziFont.CodePage.CodePageIdentifier.GetDescription();
+            txtCodePoint.Text = ziFont.Characters[(int)numChar.Value].CodePoint.ToString();
+
+            btnRevertCharacter.Enabled = ziFont.Characters[(int)numChar.Value].CanRevert();
         }
 
-        private void btnOpenFont_Click(object sender, EventArgs e) {
+        private void numChar_ValueChanged(object sender, EventArgs e) {
+            UpdateCharacter();
+        }
+
+        private void btnOpenFont_Click(object sender, EventArgs e)
+        {
             var res = ofd.ShowDialog();
 
-            if (res == DialogResult.OK) {
-                ziFont = ZiLib.FileVersion.Common.ZiFont.FromFile(ofd.FileName);
+            if (res == DialogResult.OK)
+            {
+                var ziFont2 = ZiLib.FileVersion.Common.ZiFont.FromFile(ofd.FileName);
 
-                numChar.Maximum = ziFont.CodePage.CharacterCount - 1;
-
-                charEditor1.CharImage = ziFont.CharBitmaps.Skip(1).First();
-                numChar.Value = 1;
+                if (ziFont2 != null)
+                {
+                    ziFont = ziFont2;
+                    numChar.Maximum = ziFont.CodePage.CharacterCount; // - 1;
+                    numChar.Minimum = -1;
+                    numChar.Value = 1;
+                }
+                else {
+                    MessageBox.Show("Unsopported file format.","Error",MessageBoxButtons.OK);
+                }
+                UpdateCharacter();
             }
         }
 
@@ -84,9 +115,10 @@ namespace NextionFontEditor {
         }
 
         private void charEditor1_Paint(object sender, PaintEventArgs e) {
-            if (charEditor1.CharImage.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
+            var CharImage = charEditor1.Character?.ToBitmap();
+            if (CharImage?.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
             {
-                pPreview.Image = charEditor1.CharImage;
+                pPreview.Image = CharImage;
             }
             else
             {
@@ -117,6 +149,63 @@ namespace NextionFontEditor {
         private void Panel1_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void btnCopy_Click(object sender, EventArgs e)
+        {
+            ZiClipboard.CopyToClipboard(ziFont.Characters[(int)numChar.Value]);
+        }
+
+        private void btnDeleteCharacter_Click(object sender, EventArgs e)
+        {
+            ziFont.RemoveCharacter((int)numChar.Value);
+            UpdateCharacter();
+        }
+
+        private void btnRevertCharacter_Click(object sender, EventArgs e)
+        {
+            ziFont.Characters[(int)numChar.Value].RevertBitmap();
+            UpdateCharacter();
+        }
+
+        private void BtnUndo_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Panel1_Paint_1(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void btnAddCharacters_Click(object sender, EventArgs e)
+        {
+            using (var form = new FormAddCharacters())
+            {
+                var result = form.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+
+                    for (ushort ch = 32; ch <= 127; ch++) {
+                        if (ziFont.CodePage.CodePoints.Contains(ch)) {
+                            if (ziFont.Characters.Exists(character => { return character.CodePoint == ch; }))
+                            {
+                                if (true) {
+                                    // replace existing char
+                                }
+                            } else
+                            {
+                                var txt = Char.ConvertFromUtf32((int)ch);
+                                var bmp = ZiLib.Extensions.BitmapExtensions.DrawString(txt, "", (byte)ziFont.CharacterHeight);
+                                var bytes = ZiLib.FileVersion.V5.BinaryTools.BitmapTo3BppData(bmp);
+                                var character = ZiCharacter.FromBytes(ziFont, ch, bytes, (byte)bmp.Width,0,0);
+                                ziFont.AddCharacter(ch,character);
+                            }
+                        }
+                    }
+
+                }
+            }
         }
     }
 }

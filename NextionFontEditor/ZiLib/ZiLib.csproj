@@ -34,6 +34,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,11 +44,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryTools.cs" />
+    <Compile Include="FileVersion\Common\ZiClipboard.cs" />
+    <Compile Include="FileVersion\Common\ZiCharacter.cs" />
+    <Compile Include="FileVersion\V5\ZiCharacterV5.cs" />
     <Compile Include="FileVersion\Common\CodePageMode.cs" />
-    <Compile Include="FileVersion\Common\CharBitmap.cs" />
     <Compile Include="FileVersion\Common\CodePage.cs" />
     <Compile Include="FileVersion\Common\CodePageIdentifier.cs" />
-    <Compile Include="FileVersion\Common\CodePages.cs" />
     <Compile Include="Extensions\BitmapExtensions.cs" />
     <Compile Include="FileVersion\Common\ZiFont.cs" />
     <Compile Include="FileVersion\V5\CharMapEntry.cs" />
@@ -55,6 +57,7 @@
     <Compile Include="FileVersion\V5\BinaryTools.cs" />
     <Compile Include="FileVersion\V5\CompressedByte.cs" />
     <Compile Include="FileVersion\V5\ZiFontV5.cs" />
+    <Compile Include="Interfaces\IZiCharacter.cs" />
     <Compile Include="Interfaces\IZiFont.cs" />
     <Compile Include="FileVersion\V3\ZiFontV3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

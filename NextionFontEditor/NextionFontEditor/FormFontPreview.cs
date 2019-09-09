@@ -27,9 +27,11 @@ namespace NextionFontEditor {
 
         private void CreateCharacterPreview(IZiFont font) {
             flowPanel.Controls.Clear();
+            this.SuspendLayout();
 
-            foreach (var b in font.CharBitmaps.Take(300)) {
-                if (b.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
+            for (int i=0; i<font.Characters.Count; i++) {
+                var b = font.Characters[i].ToBitmap();
+                if (b!=null && b.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
                 {
                     var p = new PictureBox()
                     {
@@ -39,7 +41,6 @@ namespace NextionFontEditor {
                         BorderStyle = BorderStyle.FixedSingle,
                         BackColor = Color.White
                     };
-
                     flowPanel.Controls.Add(p);
                 }
                 else
@@ -56,7 +57,9 @@ namespace NextionFontEditor {
 
                     flowPanel.Controls.Add(p);
                 }
+                if (i >= 124) { break;  }
             }
+            this.ResumeLayout();
         }
 
         private void btnOpen_Click(object sender, EventArgs e) {
@@ -68,7 +71,7 @@ namespace NextionFontEditor {
 
                 lblFile.Text = Path.GetFileName(ofd.FileName);
                 lblFontName.Text = zifont.Name;
-                lblCodePage.Text = zifont.CodePage.CodePageIdentifier.GetDescription();
+                lblCodePage.Text = zifont.CodePage.CodePageIdentifier.ToString();
 
                 lblWidth.Text = zifont.CharacterWidth.ToString();
                 lblHeight.Text = zifont.CharacterHeight.ToString();
@@ -78,16 +81,6 @@ namespace NextionFontEditor {
                 lblFileVersion.Text = zifont.Version.ToString();
                 //lblBytesPerChar.Text = zifont.BytesPerChar.ToString();
             }
-        }
-
-        private void LblCodePage_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void FlowPanel_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }

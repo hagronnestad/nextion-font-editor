@@ -9,8 +9,6 @@ Version 6 can support larger files by using an 8 **byte** alignment of the chara
 
 Version 6 also supports subsets of a codepage, allowing for arbitrary sets of characters instead of the full characterset. This way files can be reduced in size and drawing times speeded up while still supporting a large number of characters and UTF-8.
 
-*Note:* Nextion Editor 0.58 doesn't seem to support UTF-8 properly yet.
-
 ## General information
 
 The Nextion Font Format is a proprietary font format used by the Nextion/USART Editor HMI software. The editor has a built in "Font Generator"-tool which converts standard fonts into .zi files that is compatible with the Nextion and TJC HMI displays.
@@ -93,7 +91,7 @@ The Nextion Font Format is a proprietary font format used by the Nextion/USART E
 | 0x0000001E | 1      | `01`                                     | byte   | 1                   | Anti-alias                                                                            |
 | 0x0000001F | 1      | `01`                                     | byte   | 1                   | Variable Width (0=monospace, 1=variable width)                                        |
 | 0x00000020 | 1      | `05`                                     | byte   | 5                   | Length of font name                                                                   |
-| 0x00000021 | 1      | `00`                                     | byte   | 0                   | Align Chardata offsets to 8 bytes                                                     |
+| 0x00000021 | 1      | `00`                                     | byte   | 0                   | 0x01 = Align Chardata offsets to 8 bytes (files >= 16MB)                                     |
 | 0x00000022 | 2      | `00 00`                                  | uint16 | 0                   | Reserved                                                                              |
 | 0x00000024 | 4      | `00 00 00 00`                            | uint32 | 0                   | Actual Number of Characters of the subset                                             |
 | 0x00000028 | 4      | `00 00 00 00`                            | uint32 | 0                   | Reserved                                                                              |

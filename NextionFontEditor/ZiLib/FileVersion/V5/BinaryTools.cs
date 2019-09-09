@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ZiLib.FileVersion.V5
 {
@@ -8,7 +9,6 @@ namespace ZiLib.FileVersion.V5
     {
         public static byte Get3bppColor(Color pixel, bool invertColour) {
             var curColor = (byte)0u;
-
             if (invertColour)
             {
                 curColor = (byte)((pixel.R + 2 * pixel.G + pixel.B) / 4);    // Weighted Color2Grayscale;
@@ -17,9 +17,7 @@ namespace ZiLib.FileVersion.V5
             {
                 curColor = (byte)(255 - (pixel.R + 2 * pixel.G + pixel.B) / 4);    // Weighted Color2Grayscale;
             }
-
             curColor = (byte)(curColor * pixel.A / 255);
-
             // convert to 3 bits
             return (byte)(curColor >> 5);
         }
@@ -29,9 +27,12 @@ namespace ZiLib.FileVersion.V5
         {
             var data = new List<byte>();
 
-            byte curColor;
+             byte curColor;
             var prevColor = (byte)0u;
             var prevCount = 0u;
+
+            var antialias = false;
+
 
             if (b == null)
             {
@@ -151,6 +152,7 @@ namespace ZiLib.FileVersion.V5
                     }
 
                     // a grayscale
+                    antialias = true;
 
                     while (prevCount >= 2)
                     {
@@ -221,7 +223,7 @@ namespace ZiLib.FileVersion.V5
 
                 if (prevCount > 0)
                 {
-                    data.Add(CompressedByte.RepeatedWhites(0, prevColor));   // zero whites + one color
+                    data.Add(CompressedByte.RepeatedWhites((byte)0, prevColor));   // zero whites + one color
                 }
             }
 

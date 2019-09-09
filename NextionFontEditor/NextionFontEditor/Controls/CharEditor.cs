@@ -2,17 +2,21 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using ZiLib;
 
 namespace NextionFontEditor.Controls {
 
     public class CharEditor : Control {
-        private Bitmap _charImage;
+        private IZiCharacter _character;
         private Graphics _charGraphics;
         private int _zoom = 10;
         private bool _showGrid = true;
+        private bool _showKerning = true;
 
         private Bitmap _bBuffer;
         private Graphics _gBuffer;
+
+        private const int GUIDE_SIZE = 5;
 
         public CharEditor() : base() {
             BackColor = Color.WhiteSmoke;
@@ -23,7 +27,7 @@ namespace NextionFontEditor.Controls {
         protected override void OnCreateControl() {
             base.OnCreateControl();
 
-            CharImage = new Bitmap(16, 32);
+            //CharImage = new Bitmap(16, 32);
         }
 
         protected override void OnResize(EventArgs e) {
@@ -37,21 +41,37 @@ namespace NextionFontEditor.Controls {
 
         protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
+            var _charImage = _character?.ToBitmap();
 
             if (_charImage != null && _bBuffer != null && _gBuffer != null) {
                 _gBuffer.Clear(Color.Transparent);
-
-                if (_charImage.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
-                {
-                    _gBuffer.DrawImage(_charImage, 0, 0, _charImage.Width * Zoom, CharImage.Height * Zoom);
-                }
-                else
-                {
-                }
+                _gBuffer.DrawImage(_charImage, 0, 0, _charImage.Width * Zoom, _charImage.Height * Zoom);
 
                 if (_showGrid) DrawGrid();
 
-                e.Graphics.DrawImage(_bBuffer, 0, 0, _bBuffer.Width, _bBuffer.Height);
+                /* Kerning updates */
+                if (_showKerning) DrawKerning();
+
+                SolidBrush bgBrush = new SolidBrush(SystemColors.ControlDark);
+                e.Graphics.FillRectangle(bgBrush, 0, 0, _charImage.Width * Zoom, GUIDE_SIZE);
+                e.Graphics.FillRectangle(bgBrush, 0, _charImage.Height * Zoom + GUIDE_SIZE, _charImage.Width * Zoom, GUIDE_SIZE);
+
+                SolidBrush fgBrush = new SolidBrush(Color.Red);
+                Rectangle rect = new Rectangle(2 * Zoom - GUIDE_SIZE, -GUIDE_SIZE, 2* GUIDE_SIZE, 2* GUIDE_SIZE);
+                e.Graphics.FillPie(fgBrush, rect, 90, 90);
+                fgBrush = new SolidBrush(Color.Red);
+                rect = new Rectangle(2 * Zoom - GUIDE_SIZE, -GUIDE_SIZE, 2* GUIDE_SIZE, 2* GUIDE_SIZE);
+                e.Graphics.FillPie(fgBrush, rect, 90, -90);
+                rect = new Rectangle(2 * Zoom - GUIDE_SIZE, _charImage.Height * Zoom - GUIDE_SIZE, 2* GUIDE_SIZE, 2* GUIDE_SIZE);
+                e.Graphics.FillPie(fgBrush, rect, 90, -90);
+
+                fgBrush = new SolidBrush(Color.Red);
+                rect = new Rectangle(2 * Zoom - GUIDE_SIZE, 0, 2* GUIDE_SIZE, GUIDE_SIZE);
+                e.Graphics.FillPie(fgBrush, rect, 270, 90);
+                rect = new Rectangle(2 * Zoom - GUIDE_SIZE, _charImage.Height * Zoom + GUIDE_SIZE, 2* GUIDE_SIZE, GUIDE_SIZE);
+                e.Graphics.FillPie(fgBrush, rect, 270, 90);
+
+                e.Graphics.DrawImage(_bBuffer, 0, GUIDE_SIZE, _bBuffer.Width, _bBuffer.Height);
             }
 
         }
@@ -59,11 +79,12 @@ namespace NextionFontEditor.Controls {
         protected override void OnMouseClick(MouseEventArgs e) {
             base.OnMouseClick(e);
             if (e.Button != MouseButtons.Left) return;
+            var _charImage = _character?.ToBitmap();
 
             var x = e.X / Zoom;
-            var y = e.Y / Zoom;
+            var y = (e.Y- GUIDE_SIZE) / Zoom;
 
-            if (x < 0 || x > _charImage.Width - 1 || y < 0 || y > _charImage.Height - 1) return;
+            if (x < 0 || x > _character?.Width - 1 || y < 0 || y > _character?.Parent.CharacterHeight - 1) return;
 
             TogglePixel(_charImage, x, y);
 
@@ -71,17 +92,18 @@ namespace NextionFontEditor.Controls {
             Refresh();
         }
 
-        private int lastX = 0;
-        private int lastY = 0;
+        private int lastX = -1;
+        private int lastY = -1;
 
         protected override void OnMouseDown(MouseEventArgs e) {
             base.OnMouseDown(e);
             if (e.Button != MouseButtons.Left) return;
+            var _charImage = _character?.ToBitmap();
 
             var x = e.X / Zoom;
-            var y = e.Y / Zoom;
+            var y = (e.Y - GUIDE_SIZE) / Zoom;
 
-            if (x < 0 || x > _charImage.Width - 1 || y < 0 || y > _charImage.Height - 1) return;
+            if (x < 0 || x > _charImage?.Width - 1 || y < 0 || y > _charImage?.Height - 1) return;
 
             lastX = x;
             lastY = y;
@@ -89,14 +111,15 @@ namespace NextionFontEditor.Controls {
 
         protected override void OnMouseMove(MouseEventArgs e) {
             base.OnMouseMove(e);
+            var _charImage = _character?.ToBitmap();
 
             var x = e.X / Zoom;
-            var y = e.Y / Zoom;
+            var y = (e.Y - GUIDE_SIZE) / Zoom;
 
             if (x < 0) x = 0;
             if (y < 0) y = 0;
-            if (y > _charImage.Height - 1) y = _charImage.Height - 1;
-            if (x > _charImage.Width - 1) x = _charImage.Width - 1;
+            if (y > _charImage?.Height - 1) y = _charImage.Height - 1;
+            if (x > _charImage?.Width - 1) x = _charImage.Width - 1;
 
             if (e.Button == MouseButtons.Left) {
                 if (x != lastX || y != lastY) {
@@ -113,19 +136,29 @@ namespace NextionFontEditor.Controls {
 
         public void Clear() {
             if (_charGraphics == null) return;
+            var _charImage = _character.ToBitmap();
 
             _charGraphics.Clear(Color.Transparent);
+
+            _charImage.Tag = true;   // Bitmap is dirty or has changed
+            var ts = (ToolStrip)this.Parent.Parent.Controls["tsCharEditor"];
+            ts.Items["btnRevertCharacter"].Enabled = true;
+
             Invalidate();
             Refresh();
         }
 
         public void MoveCharacterX(int pixels) {
             if (_charGraphics == null) return;
+            var _charImage = _character.ToBitmap();
 
-            using(var b = new Bitmap(_charImage)) {
+            using (var b = new Bitmap(_charImage)) {
                 _charGraphics.Clear(Color.Transparent);
                 _charGraphics.DrawImage(b, pixels, 0);
             }
+            _charImage.Tag = true;   // Bitmap is dirty or has changed
+            var ts = (ToolStrip)this.Parent.Parent.Controls["tsCharEditor"];
+            ts.Items["btnRevertCharacter"].Enabled = true;
 
             Invalidate();
             Refresh();
@@ -133,18 +166,23 @@ namespace NextionFontEditor.Controls {
 
         public void MoveCharacterY(int pixels) {
             if (_charGraphics == null) return;
+            var _charImage = _character.ToBitmap();
 
             using (var b = new Bitmap(_charImage)) {
                 _charGraphics.Clear(Color.Transparent);
                 _charGraphics.DrawImage(b, 0, pixels);
             }
+            _charImage.Tag = true;   // Bitmap is dirty or has changed
+            var ts = (ToolStrip)this.Parent.Parent.Controls["tsCharEditor"];
+            ts.Items["btnRevertCharacter"].Enabled = true;
 
             Invalidate();
             Refresh();
         }
 
         private void CreateBuffer() {
-            if (_charImage == null) return;
+            if (_character == null) return;
+            var _charImage = _character.ToBitmap();
 
             _bBuffer = new Bitmap(_charImage.Width * Zoom, _charImage.Height * Zoom);
             _gBuffer = Graphics.FromImage(_bBuffer);
@@ -155,24 +193,30 @@ namespace NextionFontEditor.Controls {
         }
 
         private void TogglePixel(Bitmap b, int x, int y) {
-            var p = b.GetPixel(x, y);
-            b.SetPixel(x, y, p.A == 255 && p.R == 0 && p.G == 0 && p.B == 0 ? Color.FromArgb(0, 255, 255, 255) : Color.FromArgb(255, 0, 0, 0));
+            if (x < 0 || y < 0) { return; }
+            b = _character?.ToBitmap();
+
+            if (b != null) {
+                var p = b.GetPixel(x, y);
+                b.SetPixel(x, y, p.A == 255 && p.R == 0 && p.G == 0 && p.B == 0 ? Color.FromArgb(0, 255, 255, 255) : Color.FromArgb(255, 0, 0, 0));
+
+                //_charImage.Tag = true;   // Bitmap is dirty or has changed
+                var ts = (ToolStrip)this.Parent.Parent.Controls["tsCharEditor"];
+                ts.Items["btnRevertCharacter"].Enabled = true;
+            }
         }
 
         private void SetSize() {
-            Visible = false;
-            if (_charImage == null) return;
-            if (_charImage.PixelFormat == System.Drawing.Imaging.PixelFormat.Undefined) return;
+            if (_character == null) return;
 
-            Width = _charImage.Width * Zoom;
-            Height = _charImage.Height * Zoom;
-            Visible = true;
+            Width = _character.Width * Zoom;
+            Height = _character.Parent.CharacterHeight * Zoom + 10;
         }
 
         private void DrawGrid() {
-            if (_charImage == null) return;
-            if (_charImage.PixelFormat == System.Drawing.Imaging.PixelFormat.Undefined) return;
+            if (_character == null) return;
             if (_gBuffer == null) return;
+            var _charImage = _character.ToBitmap();
 
             for (int x = 0; x < _charImage.Width; x++) {
                 _gBuffer.DrawLine(Pens.LightGray, x * Zoom, 0, x * Zoom, _charImage.Height * Zoom);
@@ -186,17 +230,37 @@ namespace NextionFontEditor.Controls {
             _gBuffer.DrawRectangle(Pens.LightGray, 1, 1, _charImage.Width * Zoom - 1, _charImage.Height * Zoom - 1);
         }
 
-        public Bitmap CharImage
+        private void DrawKerning()
         {
-            get => _charImage;
+            if (_character == null) return;
+            if (_gBuffer == null) return;
+            var _charImage = _character.ToBitmap();
+
+            if (_character.KerningLeft > 0) {
+                _gBuffer.DrawLine(Pens.Red, _character.KerningLeft * Zoom, 0, _character.KerningLeft * Zoom, _charImage.Height * Zoom);
+            }
+
+            if (_character.KerningRight > 0) {
+                _gBuffer.DrawLine(Pens.Red, (_charImage.Width - _character.KerningRight) * Zoom, 0, (_charImage.Width - _character.KerningRight) * Zoom, _charImage.Height * Zoom);
+            }
+
+        }
+
+        public IZiCharacter Character
+        {
+            get => _character;
             set
             {
-                _charImage = value;
-                if (_charImage.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
-                {
-                    _charGraphics = Graphics.FromImage(_charImage);
-                    CreateBuffer();
+                Bitmap b;
+                _character = value;
+                if (_character == null) {
+                    b = new Bitmap(8,16);
+                } else {
+                    b = _character.ToBitmap();
                 }
+                _charGraphics = Graphics.FromImage(b);
+
+                CreateBuffer();
                 SetSize();
                 Invalidate();
             }

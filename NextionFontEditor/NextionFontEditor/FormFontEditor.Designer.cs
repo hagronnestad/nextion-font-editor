@@ -36,7 +36,13 @@
             this.btnShowGrid = new System.Windows.Forms.ToolStripButton();
             this.cmbZoom = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.btnAddCharacters = new System.Windows.Forms.ToolStripButton();
+            this.btnCopy = new System.Windows.Forms.ToolStripButton();
+            this.btnPaste = new System.Windows.Forms.ToolStripButton();
+            this.btnRevertCharacter = new System.Windows.Forms.ToolStripButton();
             this.btnClear = new System.Windows.Forms.ToolStripButton();
+            this.btnDeleteCharacter = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.btnMoveLeft = new System.Windows.Forms.ToolStripButton();
             this.btnMoveRight = new System.Windows.Forms.ToolStripButton();
             this.btnMoveUp = new System.Windows.Forms.ToolStripButton();
@@ -45,6 +51,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.sfd = new System.Windows.Forms.SaveFileDialog();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtCodePoint = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtEncoding = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pPreview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numChar)).BeginInit();
             this.toolStrip1.SuspendLayout();
@@ -126,7 +136,7 @@
             // charEditor1
             // 
             this.charEditor1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.charEditor1.CharImage = ((System.Drawing.Bitmap)(resources.GetObject("charEditor1.CharImage")));
+            this.charEditor1.Character = null;
             this.charEditor1.Location = new System.Drawing.Point(53, 36);
             this.charEditor1.Margin = new System.Windows.Forms.Padding(20);
             this.charEditor1.Name = "charEditor1";
@@ -144,7 +154,13 @@
             this.btnShowGrid,
             this.cmbZoom,
             this.toolStripLabel1,
+            this.btnAddCharacters,
+            this.btnCopy,
+            this.btnPaste,
+            this.btnRevertCharacter,
             this.btnClear,
+            this.btnDeleteCharacter,
+            this.toolStripSeparator1,
             this.btnMoveLeft,
             this.btnMoveRight,
             this.btnMoveUp,
@@ -158,6 +174,7 @@
             // 
             // btnShowGrid
             // 
+            this.btnShowGrid.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.btnShowGrid.Checked = true;
             this.btnShowGrid.CheckOnClick = true;
             this.btnShowGrid.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -186,6 +203,49 @@
             this.toolStripLabel1.Size = new System.Drawing.Size(39, 22);
             this.toolStripLabel1.Text = "Zoom";
             // 
+            // btnAddCharacters
+            // 
+            this.btnAddCharacters.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnAddCharacters.Image = ((System.Drawing.Image)(resources.GetObject("btnAddCharacters.Image")));
+            this.btnAddCharacters.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnAddCharacters.Name = "btnAddCharacters";
+            this.btnAddCharacters.Size = new System.Drawing.Size(23, 22);
+            this.btnAddCharacters.Text = "Add";
+            this.btnAddCharacters.ToolTipText = "Add Characters";
+            this.btnAddCharacters.Click += new System.EventHandler(this.btnAddCharacters_Click);
+            // 
+            // btnCopy
+            // 
+            this.btnCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnCopy.Image = ((System.Drawing.Image)(resources.GetObject("btnCopy.Image")));
+            this.btnCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnCopy.Name = "btnCopy";
+            this.btnCopy.Size = new System.Drawing.Size(23, 22);
+            this.btnCopy.Text = "Copy";
+            this.btnCopy.ToolTipText = "Copy Character";
+            this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
+            // 
+            // btnPaste
+            // 
+            this.btnPaste.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnPaste.Image = ((System.Drawing.Image)(resources.GetObject("btnPaste.Image")));
+            this.btnPaste.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnPaste.Name = "btnPaste";
+            this.btnPaste.Size = new System.Drawing.Size(23, 22);
+            this.btnPaste.Text = "Paste";
+            this.btnPaste.ToolTipText = "Paste Character";
+            // 
+            // btnRevertCharacter
+            // 
+            this.btnRevertCharacter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnRevertCharacter.Image = ((System.Drawing.Image)(resources.GetObject("btnRevertCharacter.Image")));
+            this.btnRevertCharacter.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnRevertCharacter.Name = "btnRevertCharacter";
+            this.btnRevertCharacter.Size = new System.Drawing.Size(23, 22);
+            this.btnRevertCharacter.Text = "Revert";
+            this.btnRevertCharacter.ToolTipText = "Revert Character";
+            this.btnRevertCharacter.Click += new System.EventHandler(this.btnRevertCharacter_Click);
+            // 
             // btnClear
             // 
             this.btnClear.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -194,7 +254,24 @@
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(23, 22);
             this.btnClear.Text = "Clear";
+            this.btnClear.ToolTipText = "Erase Character";
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // btnDeleteCharacter
+            // 
+            this.btnDeleteCharacter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnDeleteCharacter.Image = ((System.Drawing.Image)(resources.GetObject("btnDeleteCharacter.Image")));
+            this.btnDeleteCharacter.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnDeleteCharacter.Name = "btnDeleteCharacter";
+            this.btnDeleteCharacter.Size = new System.Drawing.Size(23, 22);
+            this.btnDeleteCharacter.Text = "Delete";
+            this.btnDeleteCharacter.ToolTipText = "Delete Character";
+            this.btnDeleteCharacter.Click += new System.EventHandler(this.btnDeleteCharacter_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
             // btnMoveLeft
             // 
@@ -272,11 +349,49 @@
             this.sfd.DefaultExt = "zi";
             this.sfd.Filter = "Nextion Font Files|*.zi";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(9, 218);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(56, 13);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "CodePoint";
+            // 
+            // txtCodePoint
+            // 
+            this.txtCodePoint.Location = new System.Drawing.Point(12, 234);
+            this.txtCodePoint.Name = "txtCodePoint";
+            this.txtCodePoint.ReadOnly = true;
+            this.txtCodePoint.Size = new System.Drawing.Size(100, 20);
+            this.txtCodePoint.TabIndex = 9;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(9, 270);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(52, 13);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "Encoding";
+            // 
+            // txtEncoding
+            // 
+            this.txtEncoding.Location = new System.Drawing.Point(12, 286);
+            this.txtEncoding.Name = "txtEncoding";
+            this.txtEncoding.ReadOnly = true;
+            this.txtEncoding.Size = new System.Drawing.Size(100, 20);
+            this.txtEncoding.TabIndex = 11;
+            // 
             // FormFontEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(553, 536);
+            this.Controls.Add(this.txtEncoding);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.txtCodePoint);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panelWrapper);
@@ -325,5 +440,15 @@
         private System.Windows.Forms.ToolStripButton btnMoveRight;
         private System.Windows.Forms.ToolStripButton btnMoveUp;
         private System.Windows.Forms.ToolStripButton btnMoveDown;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtCodePoint;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtEncoding;
+        private System.Windows.Forms.ToolStripButton btnCopy;
+        private System.Windows.Forms.ToolStripButton btnPaste;
+        private System.Windows.Forms.ToolStripButton btnRevertCharacter;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripButton btnDeleteCharacter;
+        private System.Windows.Forms.ToolStripButton btnAddCharacters;
     }
 }
