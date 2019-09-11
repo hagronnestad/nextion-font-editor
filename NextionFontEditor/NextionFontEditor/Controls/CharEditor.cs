@@ -139,8 +139,7 @@ namespace NextionFontEditor.Controls {
             var _charImage = _character.ToBitmap();
 
             _charGraphics.Clear(Color.Transparent);
-
-            _charImage.Tag = true;   // Bitmap is dirty or has changed
+            Character.SetBitmap(_charImage);
             var ts = (ToolStrip)this.Parent.Parent.Controls["tsCharEditor"];
             ts.Items["btnRevertCharacter"].Enabled = true;
 
@@ -153,7 +152,7 @@ namespace NextionFontEditor.Controls {
             var _charImage = _character.ToBitmap();
 
             using (var b = new Bitmap(_charImage)) {
-                _charGraphics.Clear(Color.Transparent);
+                _charGraphics.Clear(Color.White);
                 _charGraphics.DrawImage(b, pixels, 0);
             }
             _charImage.Tag = true;   // Bitmap is dirty or has changed
@@ -169,7 +168,7 @@ namespace NextionFontEditor.Controls {
             var _charImage = _character.ToBitmap();
 
             using (var b = new Bitmap(_charImage)) {
-                _charGraphics.Clear(Color.Transparent);
+                _charGraphics.Clear(Color.White);
                 _charGraphics.DrawImage(b, 0, pixels);
             }
             _charImage.Tag = true;   // Bitmap is dirty or has changed
@@ -199,7 +198,7 @@ namespace NextionFontEditor.Controls {
             if (b != null) {
                 var p = b.GetPixel(x, y);
                 b.SetPixel(x, y, p.A == 255 && p.R == 0 && p.G == 0 && p.B == 0 ? Color.FromArgb(0, 255, 255, 255) : Color.FromArgb(255, 0, 0, 0));
-
+                Character.SetPixel(x,y, b.GetPixel(x, y));
                 //_charImage.Tag = true;   // Bitmap is dirty or has changed
                 var ts = (ToolStrip)this.Parent.Parent.Controls["tsCharEditor"];
                 ts.Items["btnRevertCharacter"].Enabled = true;
