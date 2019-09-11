@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -94,6 +95,59 @@ namespace ZiLib.FileVersion.Common
                 Encoding = Encoding.GetEncoding(codePageid.GetDescription());
             }
             // MultiByteMode = (byte)(Encoding.IsSingleByte ? 0 : 1);
+        }
+
+
+        public String GetString(int codepoint) {
+            switch (CodePageIdentifier) {
+                case CodePageIdentifier.ASCII:
+                case CodePageIdentifier.ISO_8859_1:
+                case CodePageIdentifier.ISO_8859_2:
+                case CodePageIdentifier.ISO_8859_3:
+                case CodePageIdentifier.ISO_8859_4:
+                case CodePageIdentifier.ISO_8859_5:
+                case CodePageIdentifier.ISO_8859_6:
+                case CodePageIdentifier.ISO_8859_7:
+                case CodePageIdentifier.ISO_8859_8:
+                case CodePageIdentifier.ISO_8859_9:
+                case CodePageIdentifier.ISO_8859_11:
+                case CodePageIdentifier.ISO_8859_13:
+                case CodePageIdentifier.ISO_8859_15:
+                case CodePageIdentifier.WINDOWS_1255:
+                case CodePageIdentifier.WINDOWS_1256:
+                case CodePageIdentifier.WINDOWS_1257:
+                case CodePageIdentifier.WINDOWS_1258:
+                case CodePageIdentifier.WINDOWS_874:
+                case CodePageIdentifier.KOI8_R:
+                    if ((codepoint >= 0) & (codepoint <= 255)) {
+                        var bytes = new byte[1];
+                        bytes[0] = (byte)codepoint;
+                        return Encoding.GetString(bytes);
+                    } else {
+                        return "?";
+                    }
+
+                case CodePageIdentifier.KS_C_5601_1987:
+                case CodePageIdentifier.SHIFT_JIS:
+                case CodePageIdentifier.GB2312:
+                case CodePageIdentifier.BIG5:
+                    if ((codepoint >= 0) & (codepoint <= 255)) {
+                        var bytes = new byte[1];
+                        bytes[0] = (byte)codepoint;
+                        return Encoding.GetString(bytes);
+                    } else if ((codepoint >= 256) & (codepoint <= 65535)) {
+                        var bytes = BitConverter.GetBytes((ushort)codepoint);
+                        return Encoding.GetString(bytes);
+                    } else {
+                        return "?";
+                    }
+
+                case CodePageIdentifier.UTF_8:
+                    return Char.ConvertFromUtf32(codepoint);
+
+                default:
+                    return "?";
+            }
         }
 
         private void CreateSingleByte(byte start, byte count, CodePageIdentifier codepageid)
