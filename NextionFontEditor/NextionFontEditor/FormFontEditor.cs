@@ -9,6 +9,7 @@ namespace NextionFontEditor {
 
         public FormFontEditor() {
             InitializeComponent();
+            UpdateCharacter();
         }
 
         private ZiLib.IZiFont ziFont;
@@ -22,14 +23,16 @@ namespace NextionFontEditor {
             btnAddCharacters.Enabled = ziFont != null;
             btnClear.Enabled = ziFont != null;
             btnCopy.Enabled = ziFont != null;
+            btnPaste.Enabled = ziFont != null;
             btnDeleteCharacter.Enabled = ziFont != null;
             btnMoveDown.Enabled = ziFont != null;
             btnMoveLeft.Enabled = ziFont != null;
+            btnMoveRight.Enabled = ziFont != null;
             btnMoveUp.Enabled = ziFont != null;
 
-            if (ziFont == null)
-            {
+            if (ziFont == null) {
                 numChar.Value = 0;
+                btnRevertCharacter.Enabled = false;
                 return;
             }
 
@@ -41,7 +44,9 @@ namespace NextionFontEditor {
                 numChar.Value = ziFont.Characters.Count - 1;
             }
 
-            var bmp = ziFont.Characters[(int)numChar.Value].ToBitmap();
+            btnRevertCharacter.Enabled = (ziFont.Characters.Count > 0) && ziFont.Characters[(int)numChar.Value].CanRevert();
+
+            var bmp = ziFont.Characters.Skip((int)numChar.Value).First().ToBitmap();
             if (bmp != null && bmp.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
             {
                 charEditor1.Character = ziFont.Characters[(int)numChar.Value];
@@ -50,8 +55,6 @@ namespace NextionFontEditor {
             }
             txtEncoding.Text = ziFont.CodePage.CodePageIdentifier.GetDescription();
             txtCodePoint.Text = ziFont.Characters[(int)numChar.Value].CodePoint.ToString();
-
-            btnRevertCharacter.Enabled = ziFont.Characters[(int)numChar.Value].CanRevert();
         }
 
         private void numChar_ValueChanged(object sender, EventArgs e) {
@@ -68,6 +71,8 @@ namespace NextionFontEditor {
 
                 if (ziFont2 != null)
                 {
+                    ziFont?.Characters.Clear();
+
                     ziFont = ziFont2;
                     numChar.Maximum = ziFont.CodePage.CharacterCount; // - 1;
                     numChar.Minimum = -1;
@@ -186,22 +191,33 @@ namespace NextionFontEditor {
                 if (result == DialogResult.OK)
                 {
 
-                    for (ushort ch = 32; ch <= 127; ch++) {
-                        if (ziFont.CodePage.CodePoints.Contains(ch)) {
-                            if (ziFont.Characters.Exists(character => { return character.CodePoint == ch; }))
+                    foreach (var item in ziFont.Characters) {
+                        //if (ziFont.CodePage.CodePoints.Contains(ch)) {
+                            //var item = ziFont.Characters.Find(character => { return character.CodePoint == ch; });
+                            if (item != null)
                             {
                                 if (true) {
-                                    // replace existing char
+                                var font = new System.Drawing.Font("Arial", 24);
+                                var emheight = font.FontFamily.GetEmHeight(System.Drawing.FontStyle.Regular);
+                                var linespacing = font.FontFamily.GetLineSpacing(System.Drawing.FontStyle.Regular);
+                                var fontsize = (float)(ziFont.CharacterHeight * emheight / linespacing * 0.975);
+                                font = new System.Drawing.Font(font.FontFamily, fontsize, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+
+                                // replace existing char
+                                if ((item.CodePoint < 0x00d800) | (item.CodePoint > 0x00dfff)) {
+                                        item.SetString(font, new System.Drawing.PointF(0, 0), item.GetString());
+                                    } else {
+                                        item.SetString(font, new System.Drawing.PointF(0, 0), " ");
+                                    }
                                 }
-                            } else
-                            {
-                                var txt = Char.ConvertFromUtf32((int)ch);
-                                var bmp = ZiLib.Extensions.BitmapExtensions.DrawString(txt, "", (byte)ziFont.CharacterHeight);
-                                var bytes = ZiLib.FileVersion.V5.BinaryTools.BitmapTo3BppData(bmp);
-                                var character = ZiCharacter.FromBytes(ziFont, ch, bytes, (byte)bmp.Width,0,0);
-                                ziFont.AddCharacter(ch,character);
+                            } else {
+                                var txt = Char.ConvertFromUtf32((int)item.CodePoint);
+                               // var bmp = ZiLib.Extensions.BitmapExtensions.DrawString(txt, "", (byte)ziFont.CharacterHeight);
+                               // var bytes = ZiLib.FileVersion.V5.BinaryTools.BitmapTo3BppData(bmp);
+                                var character = ZiCharacter.FromString(ziFont, item.CodePoint, new System.Drawing.Font("Arial",22), new System.Drawing.PointF(0,0), txt);
+                                ziFont.AddCharacter(item.CodePoint,character);
                             }
-                        }
+                        //}
                     }
 
                 }
