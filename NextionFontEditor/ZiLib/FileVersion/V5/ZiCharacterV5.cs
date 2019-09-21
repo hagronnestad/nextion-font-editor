@@ -8,10 +8,13 @@ namespace ZiLib.FileVersion.V5
 {
     internal enum ValidData : byte
     {
-        UNCHANGED = 0x0,
+        UNKNOWN = 0x0,
         TEXT = 0x01,
         BITMAP = 0x02,
-        CHARDATA = 0x04
+        TEXT_BITMAP = 0x03,
+        CHARDATA = 0x04,
+        CHARDATA_BITMAP = 0x06,
+        TEXT_CHARDATA_BITMAP = 0x07
     }
 
     public class ZiCharacterV5 : IZiCharacter
@@ -136,7 +139,7 @@ namespace ZiLib.FileVersion.V5
         {
             if (_Bitmap != null && _Bitmap.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined) {
                 using (var graphics = Graphics.FromImage(_Bitmap)) {
-                    graphics.FillRectangle(Brushes.White, 0, 0, _Bitmap.Width, _Bitmap.Height);
+                    graphics.FillRectangle(Brushes.Transparent, 0, 0, _Bitmap.Width, _Bitmap.Height);
                     graphics.DrawImage(bmp, 0, 0);
                 }
                 DataState = ValidData.BITMAP;
@@ -155,7 +158,7 @@ namespace ZiLib.FileVersion.V5
             TxtPosition = location;
             Font = font;
 
-            ForegroundColor = Color.Magenta;
+            ForegroundColor = Color.Crimson;
         }
 
         public Bitmap RevertBitmap()
@@ -177,7 +180,7 @@ namespace ZiLib.FileVersion.V5
                     var b = ToBitmap();
                 }
                 _CharacterData = Encode(_Bitmap, false);
-                DataState &= ValidData.CHARDATA;
+                DataState = DataState | ValidData.CHARDATA;
             }
             return _CharacterData;
         }
@@ -200,7 +203,8 @@ namespace ZiLib.FileVersion.V5
                 return;
             }
 
-            var b = new Bitmap(width, height);
+            var b = new Bitmap(width+KerningLeft+KerningRight, height);
+            location.X += KerningLeft;
 
             using (var graphics = Graphics.FromImage(b)) {
 
