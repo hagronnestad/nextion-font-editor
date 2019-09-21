@@ -143,7 +143,11 @@ namespace ZiLib.FileVersion.Common
                     }
 
                 case CodePageIdentifier.UTF_8:
-                    return Char.ConvertFromUtf32(codepoint);
+                    if (codepoint < 0x00d800 | codepoint > 0x00dfff) {
+                        return Char.ConvertFromUtf32(codepoint);
+                    } else {
+                        return "?";
+                    }
 
                 default:
                     return "?";
