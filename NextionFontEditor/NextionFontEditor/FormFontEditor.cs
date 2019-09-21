@@ -1,14 +1,20 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Windows;
 using System.Linq;
 using System.Windows.Forms;
 using ZiLib.FileVersion.Common;
+using ZiLib.FileVersion.V5;
+using System.Windows.Media;
+using System.Diagnostics;
 
 namespace NextionFontEditor {
 
     public partial class FormFontEditor : Form {
-
         public FormFontEditor() {
             InitializeComponent();
+            backgroundWorker1.WorkerReportsProgress = true;
+            backgroundWorker1.WorkerSupportsCancellation = false;
             UpdateCharacter();
         }
 
@@ -79,7 +85,7 @@ namespace NextionFontEditor {
                     numChar.Value = 1;
                 }
                 else {
-                    MessageBox.Show("Unsopported file format.","Error",MessageBoxButtons.OK);
+                    MessageBox.Show("Unsupported file format.","Error",MessageBoxButtons.OK);
                 }
                 UpdateCharacter();
             }
@@ -106,13 +112,65 @@ namespace NextionFontEditor {
             charEditor1.ShowGrid = btnShowGrid.Checked;
         }
 
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.RealTime;
+            BackgroundWorker worker = sender as BackgroundWorker;
+            //Debugger.Break();
+            ZiLib.IZiFont myFont = e.Argument as ZiLib.IZiFont;
+            int totalbytecount = 0;
+            int count = myFont.CharacterCount;
+   
+            for (int i=0; i<count; i++) {
+                totalbytecount += myFont.Characters[i].GetCharacterData().Length;
+                if (i % 100 == 0) {
+                    worker.ReportProgress(i * 100 / count);
+                }
+            }
+        }
+
         private void btnSave_Click(object sender, EventArgs e) {
             var res = sfd.ShowDialog();
 
             if (res == DialogResult.OK) {
+                var count = ziFont.CharacterCount;
+                var step = (int)(count / 100);
 
-                ziFont.Save(sfd.FileName, ziFont.CodePage);
+                /* Encode all characters first */
+                /*                Cursor.Current = Cursors.WaitCursor;
+                                for (var i = 0; i < count; i+=step) {
+                                    for (var j = 0; j < step; j++) {
+                                        if ((i + j) >= count) {
+                                            break;
+                                        }
+                                        var tmp = ziFont.Characters[i + j].GetCharacterData().Length;
+                                    }
+                                    Debug.WriteLine( i.ToString() + " / " + count.ToString() );
+                                }
+                */
+                if (!backgroundWorker1.IsBusy && count > 256) {
+                    btnSave.Enabled = false;
+                    progressBar1.Value = 0;
+                    progressBar1.Visible = true;
+                    backgroundWorker1.RunWorkerAsync(ziFont);
+                } else {
+                    ziFont.Save(sfd.FileName, ziFont.CodePage);
+                    Cursor.Current = Cursors.Default;
+                }
+                
             }
+        }
+        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+            progressBar1.Value = e.ProgressPercentage;
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+            /* Quick call to save method */
+            ziFont.Save(sfd.FileName, ziFont.CodePage);
+            Cursor.Current = Cursors.Default;
+            btnSave.Enabled = true;
+            progressBar1.Visible = false;
         }
 
         private void btnClear_Click(object sender, EventArgs e) {
@@ -183,6 +241,10 @@ namespace NextionFontEditor {
 
         }
 
+        /* Speed up debugger
+        https://devblogs.microsoft.com/devops/performance-improvement-when-debugging-net-code-with-visual-studio-2015/
+        */
+        [DebuggerNonUserCode]
         private void btnAddCharacters_Click(object sender, EventArgs e)
         {
             using (var form = new FormAddCharacters())
@@ -191,26 +253,65 @@ namespace NextionFontEditor {
                 if (result == DialogResult.OK)
                 {
 
+                    var font = new System.Drawing.Font("Arial Unicode MS", 24);
+                    var emheight = font.FontFamily.GetEmHeight(System.Drawing.FontStyle.Regular);
+                    var linespacing = font.FontFamily.GetLineSpacing(System.Drawing.FontStyle.Regular);
+                    var fontsize = (float)(ziFont.CharacterHeight * emheight / linespacing * 0.985);
+                    font = new System.Drawing.Font(font.FontFamily, fontsize, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+
+                    /* System.Windows.Media */
+                    var fontface = new Typeface("Arial Unicode MS");
+                    var ret = false;
+                    GlyphTypeface glyphFace;
+                    ret = fontface.TryGetGlyphTypeface(out glyphFace);
+
+                    //GlyphRun glyphRun = null;
+                    //glyphRun = new GlyphRun(glyphFace, 0, false, 24, new ushort[] { 0 }, new Point(0, 0), new double[] { 0 },
+                    //    null, null, null, null, null, null);
+
                     foreach (var item in ziFont.Characters) {
                         //if (ziFont.CodePage.CodePoints.Contains(ch)) {
                             //var item = ziFont.Characters.Find(character => { return character.CodePoint == ch; });
                             if (item != null)
                             {
                                 if (true) {
-                                var font = new System.Drawing.Font("Arial", 24);
-                                var emheight = font.FontFamily.GetEmHeight(System.Drawing.FontStyle.Regular);
-                                var linespacing = font.FontFamily.GetLineSpacing(System.Drawing.FontStyle.Regular);
-                                var fontsize = (float)(ziFont.CharacterHeight * emheight / linespacing * 0.975);
-                                font = new System.Drawing.Font(font.FontFamily, fontsize, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+                                    var leftKern = 0d;
+                                    var rightKern = 0d;
+                                try {
+                                        ushort glyphIndex = glyphFace.CharacterToGlyphMap[(int)item.CodePoint];
 
-                                // replace existing char
-                                if ((item.CodePoint < 0x00d800) | (item.CodePoint > 0x00dfff)) {
-                                        item.SetString(font, new System.Drawing.PointF(0, 0), item.GetString());
-                                    } else {
-                                        item.SetString(font, new System.Drawing.PointF(0, 0), " ");
+                                        //glyphRun = new GlyphRun(glyphFace, 0, false, 24, new ushort[] { (ushort)item.CodePoint }, new Point(0, 0), new double[] { glyphFace.AdvanceWidths[glyphIndex] },
+                                        //        null, null, null, null, null, null);
+                                        //glyphRun.GlyphTypeface = glyphFace;
+                                        //glyphRun.FontRenderingEmSize = emheight;
+
+
+                                        string txt = item.GetString();
+                                        leftKern = glyphFace.LeftSideBearings[glyphIndex] * fontsize;
+                                        rightKern = glyphFace.RightSideBearings[glyphIndex] * fontsize;
+                                        double charWidth = glyphFace.AdvanceWidths[glyphIndex] * fontsize;
+                                        if (leftKern < -0.5 || rightKern < -0.5) {
+                                            var a = 0;
+                                        }
                                     }
-                                }
-                            } else {
+                                    catch (Exception err) {
+                                    }
+
+                                    // replace existing char
+                                    item.SetString(font, new System.Drawing.PointF(0, 0), item.GetString());
+                                    if (leftKern < -0) {
+                                        item.KerningLeft = (byte)Math.Ceiling(-leftKern + 1);
+                                    } else {
+                                        item.KerningLeft = 0;
+                                    }
+                                    if (rightKern < -0) {
+                                        item.KerningRight = (byte)Math.Ceiling(-rightKern+1);
+                                    } else {
+                                        item.KerningRight = 0;
+                                    }
+
+                            }
+                        } else {
                                 var txt = Char.ConvertFromUtf32((int)item.CodePoint);
                                // var bmp = ZiLib.Extensions.BitmapExtensions.DrawString(txt, "", (byte)ziFont.CharacterHeight);
                                // var bytes = ZiLib.FileVersion.V5.BinaryTools.BitmapTo3BppData(bmp);
@@ -222,6 +323,15 @@ namespace NextionFontEditor {
 
                 }
             }
+        }
+
+        private void BackgroundWorker1_DoWork_1(object sender, DoWorkEventArgs e) {
+
+        }
+
+        private void BtnPaste_Click(object sender, EventArgs e) {
+            ZiClipboard.PasteFromClipboard(ziFont.Characters[(int)numChar.Value]);
+            UpdateCharacter();
         }
     }
 }
