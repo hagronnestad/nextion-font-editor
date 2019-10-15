@@ -57,17 +57,58 @@ namespace NextionFontEditor {
 
                     flowPanel.Controls.Add(p);
                 }
-                if (i >= 124) { break;  }
+                if (i >= 1024) { break;  }
             }
             this.ResumeLayout();
         }
+
+        private void CreateCharacterPreview2(IZiFont font) {
+            flowPanel.Controls.Clear();
+            this.SuspendLayout();
+
+            var preview = new Bitmap(flowPanel.Width-15, flowPanel.Height-15);
+            var x = 0;
+            var y = 0;
+
+            using (var graphics = Graphics.FromImage(preview)) {
+                graphics.FillRectangle(Brushes.Transparent, 0, 0, preview.Width, preview.Height);
+
+                foreach (var ch in font.Characters) {
+                    var b = ch.ToBitmap();
+
+                    if ((x + b.Width) > preview.Width) {
+                        x = 0;
+                        y += b.Height;
+                    }
+
+                    if (y >= preview.Height) { break; }
+
+                    graphics.DrawImage(b, x, y);
+                    x += b.Width;
+                }
+
+            }
+
+            var p = new PictureBox() {
+                Width = preview.Width,
+                Height = preview.Height,
+                Image = preview,
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.Black
+            };
+
+            flowPanel.Controls.Add(p);
+
+            this.ResumeLayout();
+        }
+
 
         private void btnOpen_Click(object sender, EventArgs e) {
             var res = ofd.ShowDialog();
 
             if (res == DialogResult.OK) {
                 var zifont = ZiFont.FromFile(ofd.FileName);
-                CreateCharacterPreview(zifont);
+                CreateCharacterPreview2(zifont);
 
                 lblFile.Text = Path.GetFileName(ofd.FileName);
                 lblFontName.Text = zifont.Name;

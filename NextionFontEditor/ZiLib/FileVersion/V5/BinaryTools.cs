@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ZiLib.FileVersion.V5
 {
@@ -11,13 +10,14 @@ namespace ZiLib.FileVersion.V5
             var curColor = (byte)0u;
             if (invertColour)
             {
-                curColor = (byte)((pixel.R + 2 * pixel.G + pixel.B) / 4);    // Weighted Color2Grayscale;
-            }
-            else
+                // curColor = (byte)((pixel.R + 2 * pixel.G + pixel.B) / 4);    // Weighted Color2Grayscale;
+                curColor = (byte)(255 - pixel.A);
+            } else
             {
-                curColor = (byte)(255 - (pixel.R + 2 * pixel.G + pixel.B) / 4);    // Weighted Color2Grayscale;
+                // curColor = (byte)(255 - (pixel.R + 2 * pixel.G + pixel.B) / 4);    // Weighted Color2Grayscale;
+                curColor = (byte)pixel.A;
             }
-            curColor = (byte)(curColor * pixel.A / 255);
+            // curColor = (byte)(curColor * pixel.A / 255);
             // convert to 3 bits
             return (byte)(curColor >> 5);
         }

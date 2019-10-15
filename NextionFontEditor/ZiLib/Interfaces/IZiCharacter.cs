@@ -33,7 +33,10 @@ namespace ZiLib {
 
         void SetBitmap(Bitmap bmp);
 
+        void SetPixel(int x, int y, Color pixel);
+
         void SetString(Font font, PointF location, string txt);
 
+        string GetString();
         }
     }

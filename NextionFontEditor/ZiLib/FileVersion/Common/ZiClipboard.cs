@@ -13,12 +13,31 @@ namespace ZiLib.FileVersion.Common
             }
             // Remove transparency
             var clip = new Bitmap(bmp.Width, bmp.Height);
+            Color color;
+
             using (var graphics = Graphics.FromImage(clip)) {
                 graphics.FillRectangle(Brushes.White, 0, 0, clip.Width, clip.Height);
-                graphics.DrawImage(bmp, 0, 0);
+                //graphics.DrawImage(bmp, 0, 0);
             }
-            Clipboard.SetImage(clip);
+
+            // Remove ForegroundColor, replace with black
+            for (int y = 0; y < bmp.Height; y++) {
+                for (int x = 0; x < bmp.Width; x++) {
+                    color = Color.FromArgb(bmp.GetPixel(x, y).A, Color.Black);
+                    clip.SetPixel(x, y, color);
+                }
+            }
+
+            var clip2 = new Bitmap(bmp.Width, bmp.Height);
+
+            using (var graphics = Graphics.FromImage(clip2)) {
+                graphics.FillRectangle(Brushes.White, 0, 0, clip.Width, clip.Height);
+                graphics.DrawImage(clip, 0, 0);
+            }
+
+            Clipboard.SetImage(clip2);
             clip.Dispose();
+            clip2.Dispose();
         }
 
         public static bool PasteFromClipboard(IZiCharacter character) {
@@ -31,7 +50,9 @@ namespace ZiLib.FileVersion.Common
                     {
                         MemoryStream pngstream = png as MemoryStream;
                         var clip = Image.FromStream(pngstream);
-                        character.SetBitmap(new Bitmap(clip));
+                        var newbmp = Convert(new Bitmap(clip));
+                        character.SetBitmap(newbmp);
+                        clip.Dispose();
                         return true;
                     }
 
@@ -44,16 +65,37 @@ namespace ZiLib.FileVersion.Common
                 var clip = Clipboard.GetImage();
                 if (clip.Height > character.Parent.CharacterHeight)
                 {
-                    character.SetBitmap(new Bitmap(clip));
+                    var newbmp = Convert(new Bitmap(clip));
+                    character.SetBitmap(newbmp);
+                    clip.Dispose();
                     return true;
                 }
                 else {
-                    character.SetBitmap(new Bitmap(clip));
+                    var newbmp = Convert(new Bitmap(clip));
+                    character.SetBitmap(newbmp);
+                    clip.Dispose();
                     return true;
                 }
             }
 
             return false;
+        }
+
+        private static Color GetAlphaColor(Color pixel) {
+            var curColor = (byte)(255 - (pixel.R + 2 * pixel.G + pixel.B) / 4);    // Weighted Color2Grayscale;
+            return Color.FromArgb(curColor, Color.Black);
+        }
+
+        private static Bitmap Convert(Bitmap clip) {
+            var bmp = new Bitmap(clip.Width, clip.Height);
+            Color color; 
+            for (int y = 0; y < bmp.Height; y++) {
+                for (int x = 0; x < bmp.Width; x++) {
+                    color = GetAlphaColor(clip.GetPixel(x,y));
+                    bmp.SetPixel(x, y, color);
+                }
+            }
+            return bmp;
         }
 
         public static bool ContainsImage() {

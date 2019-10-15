@@ -55,6 +55,8 @@
             this.txtCodePoint = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.txtEncoding = new System.Windows.Forms.TextBox();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.pPreview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numChar)).BeginInit();
             this.toolStrip1.SuspendLayout();
@@ -147,7 +149,7 @@
             this.charEditor1.Zoom = 10;
             this.charEditor1.Click += new System.EventHandler(this.CharEditor1_Click);
             this.charEditor1.Paint += new System.Windows.Forms.PaintEventHandler(this.charEditor1_Paint);
-            // 
+            //
             // tsCharEditor
             // 
             this.tsCharEditor.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -234,6 +236,7 @@
             this.btnPaste.Size = new System.Drawing.Size(23, 22);
             this.btnPaste.Text = "Paste";
             this.btnPaste.ToolTipText = "Paste Character";
+            this.btnPaste.Click += new System.EventHandler(this.BtnPaste_Click);
             // 
             // btnRevertCharacter
             // 
@@ -383,11 +386,28 @@
             this.txtEncoding.Size = new System.Drawing.Size(100, 20);
             this.txtEncoding.TabIndex = 11;
             // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.WorkerReportsProgress = true;
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(126, 5);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(150, 16);
+            this.progressBar1.Step = 1;
+            this.progressBar1.TabIndex = 12;
+            this.progressBar1.Visible = false;
+            // 
             // FormFontEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(553, 536);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.txtEncoding);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.txtCodePoint);
@@ -450,5 +470,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton btnDeleteCharacter;
         private System.Windows.Forms.ToolStripButton btnAddCharacters;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
