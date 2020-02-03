@@ -137,13 +137,24 @@ namespace ZiLib.FileVersion.V5
 
         public void SetBitmap(Bitmap bmp)
         {
-            if (_Bitmap != null && _Bitmap.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined) {
+            /*if (_Bitmap != null && _Bitmap.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined) {
                 using (var graphics = Graphics.FromImage(_Bitmap)) {
-                    graphics.FillRectangle(Brushes.Transparent, 0, 0, _Bitmap.Width, _Bitmap.Height);
+                    graphics.FillRectangle(Brushes.Transparent, 0, 0, bmp.Width, _Bitmap.Height);
                     graphics.DrawImage(bmp, 0, 0);
                 }
                 DataState = ValidData.BITMAP;
+            }*/
+
+            _Bitmap = new Bitmap(Width, Parent.CharacterHeight);
+            using (var graphics = Graphics.FromImage(_Bitmap)) {
+                graphics.DrawImage(bmp, 0, 0);
             }
+
+            DataState = ValidData.BITMAP;
+            OriginalFormat = DataState;
+            ForegroundColor = Color.Cyan;
+
+            DataState = ValidData.BITMAP;
         }
 
         public String GetString() {

@@ -9,6 +9,9 @@ using ZiLib.FileVersion.Common;
 namespace NextionFontEditor {
 
     public partial class FormFontEditor : Form {
+
+        private FormCharacterWidth frmCharWidth;
+
         public FormFontEditor() {
             InitializeComponent();
             backgroundWorker1.WorkerReportsProgress = true;
@@ -21,6 +24,8 @@ namespace NextionFontEditor {
         private void FormFontEditor_Load(object sender, EventArgs e) {
             cmbZoom.Items.AddRange(Enumerable.Range(1, 30).Select(x => $"{x}x").ToArray());
             cmbZoom.SelectedIndex = 9;
+
+            frmCharWidth = new FormCharacterWidth();
         }
 
         private void UpdateCharacter() {
@@ -310,6 +315,27 @@ namespace NextionFontEditor {
         private void BtnPaste_Click(object sender, EventArgs e) {
             ZiClipboard.PasteFromClipboard(ziFont.Characters[(int)numChar.Value]);
             UpdateCharacter();
+        }
+
+        private void btnCharacterWidth_Click(object sender, EventArgs e) {
+
+            frmCharWidth.numWidth.Value = ziFont.Characters[(int)numChar.Value].Width;
+            frmCharWidth.numKerningL.Value = ziFont.Characters[(int)numChar.Value].KerningLeft;
+            frmCharWidth.numKerningR.Value = ziFont.Characters[(int)numChar.Value].KerningRight;
+            frmCharWidth.numKerningL.Maximum = ziFont.Characters[(int)numChar.Value].Width-1;
+            frmCharWidth.numKerningR.Maximum = ziFont.Characters[(int)numChar.Value].Width-1;
+
+            var result = frmCharWidth.ShowDialog();
+                if (result == DialogResult.OK) {
+                    ziFont.Characters[(int)numChar.Value].Width = (byte)frmCharWidth.numWidth.Value;
+                    ziFont.Characters[(int)numChar.Value].KerningLeft = (byte)frmCharWidth.numKerningL.Value;
+                    ziFont.Characters[(int)numChar.Value].KerningRight = (byte)frmCharWidth.numKerningR.Value;
+
+                    ziFont.Characters[(int)numChar.Value].SetBitmap(ziFont.Characters[(int)numChar.Value].ToBitmap());
+                    UpdateCharacter();
+                }
+
+
         }
     }
 }
