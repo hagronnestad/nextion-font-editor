@@ -62,9 +62,9 @@
             this.lblKerningR.AutoSize = true;
             this.lblKerningR.Location = new System.Drawing.Point(54, 67);
             this.lblKerningR.Name = "lblKerningR";
-            this.lblKerningR.Size = new System.Drawing.Size(80, 13);
+            this.lblKerningR.Size = new System.Drawing.Size(74, 13);
             this.lblKerningR.TabIndex = 4;
-            this.lblKerningR.Text = "Kerning Reight:";
+            this.lblKerningR.Text = "Kerning Right:";
             this.lblKerningR.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // btnOK
