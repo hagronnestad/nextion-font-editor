@@ -49,7 +49,7 @@ namespace NextionFontEditor {
             var codePage = new CodePage(ZiLib.CodePageIdentifier.ISO_8859_1);
 
             var fontName = lstFonts.SelectedItem?.ToString() ?? "";
-            var fontSize = (int) numFontSize.Value;
+            var fontSize = (int)numFontSize.Value;
 
             var size = int.Parse(cmbNextionFontSize.Text);
             var width = size / 2;
@@ -84,7 +84,7 @@ namespace NextionFontEditor {
 
                         gChar.DrawString(txt, font,
                             PreviewWB.Checked ? bWhite : bBlack,
-                            (float) numCharOffsetX.Value, (float) numCharOffsetY.Value, StringFormat.GenericTypographic
+                            (float)numCharOffsetX.Value, (float)numCharOffsetY.Value, StringFormat.GenericTypographic
                         );
                     }
 
@@ -116,7 +116,7 @@ namespace NextionFontEditor {
                 }).ToArray());
             panelPreview.ResumeLayout();
 
-            ziFont = ZiFontV3.FromCharacterBitmaps(fontName + " " + cmbNextionFontSize.Text, (byte) width, (byte) height, codePage, pPreviews, PreviewWB.Checked);
+            ziFont = ZiFontV3.FromCharacterBitmaps(fontName + " " + cmbNextionFontSize.Text, (byte)width, (byte)height, codePage, pPreviews, PreviewWB.Checked);
         }
 
         private int GetMaxFontSizeForRect(string text, String fontName, int fontSize, SizeF rect) {

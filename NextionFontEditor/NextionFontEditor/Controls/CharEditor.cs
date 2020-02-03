@@ -57,18 +57,18 @@ namespace NextionFontEditor.Controls {
                 e.Graphics.FillRectangle(bgBrush, 0, _charImage.Height * Zoom + GUIDE_SIZE, _charImage.Width * Zoom, GUIDE_SIZE);
 
                 SolidBrush fgBrush = new SolidBrush(Color.Red);
-                Rectangle rect = new Rectangle(2 * Zoom - GUIDE_SIZE, -GUIDE_SIZE, 2* GUIDE_SIZE, 2* GUIDE_SIZE);
+                Rectangle rect = new Rectangle(2 * Zoom - GUIDE_SIZE, -GUIDE_SIZE, 2 * GUIDE_SIZE, 2 * GUIDE_SIZE);
                 e.Graphics.FillPie(fgBrush, rect, 90, 90);
                 fgBrush = new SolidBrush(Color.Red);
-                rect = new Rectangle(2 * Zoom - GUIDE_SIZE, -GUIDE_SIZE, 2* GUIDE_SIZE, 2* GUIDE_SIZE);
+                rect = new Rectangle(2 * Zoom - GUIDE_SIZE, -GUIDE_SIZE, 2 * GUIDE_SIZE, 2 * GUIDE_SIZE);
                 e.Graphics.FillPie(fgBrush, rect, 90, -90);
-                rect = new Rectangle(2 * Zoom - GUIDE_SIZE, _charImage.Height * Zoom - GUIDE_SIZE, 2* GUIDE_SIZE, 2* GUIDE_SIZE);
+                rect = new Rectangle(2 * Zoom - GUIDE_SIZE, _charImage.Height * Zoom - GUIDE_SIZE, 2 * GUIDE_SIZE, 2 * GUIDE_SIZE);
                 e.Graphics.FillPie(fgBrush, rect, 90, -90);
 
                 fgBrush = new SolidBrush(Color.Red);
-                rect = new Rectangle(2 * Zoom - GUIDE_SIZE, 0, 2* GUIDE_SIZE, GUIDE_SIZE);
+                rect = new Rectangle(2 * Zoom - GUIDE_SIZE, 0, 2 * GUIDE_SIZE, GUIDE_SIZE);
                 e.Graphics.FillPie(fgBrush, rect, 270, 90);
-                rect = new Rectangle(2 * Zoom - GUIDE_SIZE, _charImage.Height * Zoom + GUIDE_SIZE, 2* GUIDE_SIZE, GUIDE_SIZE);
+                rect = new Rectangle(2 * Zoom - GUIDE_SIZE, _charImage.Height * Zoom + GUIDE_SIZE, 2 * GUIDE_SIZE, GUIDE_SIZE);
                 e.Graphics.FillPie(fgBrush, rect, 270, 90);
 
                 e.Graphics.DrawImage(_bBuffer, 0, GUIDE_SIZE, _bBuffer.Width, _bBuffer.Height);
@@ -82,7 +82,7 @@ namespace NextionFontEditor.Controls {
             var _charImage = _character?.ToBitmap();
 
             var x = e.X / Zoom;
-            var y = (e.Y- GUIDE_SIZE) / Zoom;
+            var y = (e.Y - GUIDE_SIZE) / Zoom;
 
             if (x < 0 || x > _character?.Width - 1 || y < 0 || y > _character?.Parent.CharacterHeight - 1) return;
 
@@ -198,7 +198,7 @@ namespace NextionFontEditor.Controls {
             if (b != null) {
                 var p = b.GetPixel(x, y);
                 b.SetPixel(x, y, p.A == 255 && p.R == 0 && p.G == 0 && p.B == 0 ? Color.FromArgb(0, 255, 255, 255) : Color.FromArgb(255, 0, 0, 0));
-                Character.SetPixel(x,y, b.GetPixel(x, y));
+                Character.SetPixel(x, y, b.GetPixel(x, y));
                 //_charImage.Tag = true;   // Bitmap is dirty or has changed
                 var ts = (ToolStrip)this.Parent.Parent.Controls["tsCharEditor"];
                 ts.Items["btnRevertCharacter"].Enabled = true;
@@ -229,8 +229,7 @@ namespace NextionFontEditor.Controls {
             _gBuffer.DrawRectangle(Pens.LightGray, 1, 1, _charImage.Width * Zoom - 1, _charImage.Height * Zoom - 1);
         }
 
-        private void DrawKerning()
-        {
+        private void DrawKerning() {
             if (_character == null) return;
             if (_gBuffer == null) return;
             var _charImage = _character.ToBitmap();
@@ -245,15 +244,13 @@ namespace NextionFontEditor.Controls {
 
         }
 
-        public IZiCharacter Character
-        {
+        public IZiCharacter Character {
             get => _character;
-            set
-            {
+            set {
                 Bitmap b;
                 _character = value;
                 if (_character == null) {
-                    b = new Bitmap(8,16);
+                    b = new Bitmap(8, 16);
                 } else {
                     b = _character.ToBitmap();
                 }
@@ -266,11 +263,9 @@ namespace NextionFontEditor.Controls {
 
         }
 
-        public int Zoom
-        {
+        public int Zoom {
             get => _zoom;
-            set
-            {
+            set {
                 _zoom = value;
                 ShowGrid = _zoom > 3;
                 CreateBuffer();
@@ -279,11 +274,9 @@ namespace NextionFontEditor.Controls {
             }
         }
 
-        public bool ShowGrid
-        {
+        public bool ShowGrid {
             get => _showGrid;
-            set
-            {
+            set {
                 _showGrid = value;
                 Invalidate();
             }
