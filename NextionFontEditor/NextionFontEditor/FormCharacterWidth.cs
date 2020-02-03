@@ -51,5 +51,9 @@ namespace NextionFontEditor {
             numWidth.Minimum = numKerningL.Value + numKerningR.Value + 1;
             numKerningL.Maximum = numWidth.Value - numKerningR.Value - 1;
         }
+
+        private void lblKerningL_Click(object sender, EventArgs e) {
+
+        }
     }
 }

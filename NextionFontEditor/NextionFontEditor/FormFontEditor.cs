@@ -34,6 +34,7 @@ namespace NextionFontEditor {
             btnCopy.Enabled = ziFont != null;
             btnPaste.Enabled = ziFont != null;
             btnDeleteCharacter.Enabled = ziFont != null;
+            btnCharacterWidth.Enabled = ziFont != null;
             btnMoveDown.Enabled = ziFont != null;
             btnMoveLeft.Enabled = ziFont != null;
             btnMoveRight.Enabled = ziFont != null;

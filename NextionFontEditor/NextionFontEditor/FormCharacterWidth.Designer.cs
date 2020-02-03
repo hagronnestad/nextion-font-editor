@@ -40,7 +40,7 @@
             // lblWidth
             // 
             this.lblWidth.AutoSize = true;
-            this.lblWidth.Location = new System.Drawing.Point(47, 15);
+            this.lblWidth.Location = new System.Drawing.Point(47, 14);
             this.lblWidth.Name = "lblWidth";
             this.lblWidth.Size = new System.Drawing.Size(87, 13);
             this.lblWidth.TabIndex = 0;
@@ -50,17 +50,18 @@
             // lblKerningL
             // 
             this.lblKerningL.AutoSize = true;
-            this.lblKerningL.Location = new System.Drawing.Point(67, 41);
+            this.lblKerningL.Location = new System.Drawing.Point(67, 42);
             this.lblKerningL.Name = "lblKerningL";
             this.lblKerningL.Size = new System.Drawing.Size(67, 13);
             this.lblKerningL.TabIndex = 2;
             this.lblKerningL.Text = "Kerning Left:";
             this.lblKerningL.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lblKerningL.Click += new System.EventHandler(this.lblKerningL_Click);
             // 
             // lblKerningR
             // 
             this.lblKerningR.AutoSize = true;
-            this.lblKerningR.Location = new System.Drawing.Point(54, 67);
+            this.lblKerningR.Location = new System.Drawing.Point(60, 70);
             this.lblKerningR.Name = "lblKerningR";
             this.lblKerningR.Size = new System.Drawing.Size(74, 13);
             this.lblKerningR.TabIndex = 4;
@@ -70,7 +71,7 @@
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(235, 61);
+            this.btnOK.Location = new System.Drawing.Point(235, 65);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 6;
@@ -115,7 +116,7 @@
             // 
             // numKerningL
             // 
-            this.numKerningL.Location = new System.Drawing.Point(140, 39);
+            this.numKerningL.Location = new System.Drawing.Point(140, 40);
             this.numKerningL.Maximum = new decimal(new int[] {
             254,
             0,
@@ -128,7 +129,7 @@
             // 
             // numKerningR
             // 
-            this.numKerningR.Location = new System.Drawing.Point(140, 69);
+            this.numKerningR.Location = new System.Drawing.Point(140, 68);
             this.numKerningR.Maximum = new decimal(new int[] {
             254,
             0,
