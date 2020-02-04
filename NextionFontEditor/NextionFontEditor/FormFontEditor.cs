@@ -320,22 +320,54 @@ namespace NextionFontEditor {
 
         private void btnCharacterWidth_Click(object sender, EventArgs e) {
 
-            frmCharWidth.numWidth.Value = ziFont.Characters[(int)numChar.Value].Width;
-            frmCharWidth.numKerningL.Value = ziFont.Characters[(int)numChar.Value].KerningLeft;
-            frmCharWidth.numKerningR.Value = ziFont.Characters[(int)numChar.Value].KerningRight;
-            frmCharWidth.numKerningL.Maximum = ziFont.Characters[(int)numChar.Value].Width-1;
-            frmCharWidth.numKerningR.Maximum = ziFont.Characters[(int)numChar.Value].Width-1;
+            frmCharWidth.numWidth.Value = 1;
+            frmCharWidth.numWidth.Minimum = 1;
+            frmCharWidth.numWidth.Maximum = 255;
+
+            int Width = ziFont.Characters[(int)numChar.Value].Width;
+            if (Width > frmCharWidth.numWidth.Maximum) {
+                frmCharWidth.numWidth.Value = frmCharWidth.numWidth.Maximum;
+            } else if (Width < frmCharWidth.numWidth.Minimum) {
+                frmCharWidth.numWidth.Value = frmCharWidth.numWidth.Minimum;
+            } else {
+                frmCharWidth.numWidth.Value = Width;
+            }
+
+            frmCharWidth.numKerningL.Minimum = 0;
+            frmCharWidth.numKerningL.Value = 0;
+            frmCharWidth.numKerningL.Maximum = frmCharWidth.numWidth.Value-1;
+
+            int KernL = ziFont.Characters[(int)numChar.Value].KerningLeft;
+            if (KernL > frmCharWidth.numKerningL.Maximum) {
+                frmCharWidth.numKerningL.Value = frmCharWidth.numKerningL.Maximum;
+            } else if (KernL < frmCharWidth.numWidth.Minimum) {
+                frmCharWidth.numKerningL.Value = frmCharWidth.numKerningL.Minimum;
+            } else {
+                frmCharWidth.numKerningL.Value = KernL;
+            }
+
+            frmCharWidth.numKerningR.Minimum = 0;
+            frmCharWidth.numKerningR.Value = 0;
+            frmCharWidth.numKerningR.Maximum = frmCharWidth.numWidth.Value - 1;
+
+            int KernR = ziFont.Characters[(int)numChar.Value].KerningRight;
+            if (KernR > frmCharWidth.numKerningR.Maximum) {
+                frmCharWidth.numKerningR.Value = frmCharWidth.numKerningR.Maximum;
+            } else if (KernR < frmCharWidth.numWidth.Minimum) {
+                frmCharWidth.numKerningR.Value = frmCharWidth.numKerningR.Minimum;
+            } else {
+                frmCharWidth.numKerningR.Value = KernR;
+            }
 
             var result = frmCharWidth.ShowDialog();
-                if (result == DialogResult.OK) {
-                    ziFont.Characters[(int)numChar.Value].Width = (byte)frmCharWidth.numWidth.Value;
-                    ziFont.Characters[(int)numChar.Value].KerningLeft = (byte)frmCharWidth.numKerningL.Value;
-                    ziFont.Characters[(int)numChar.Value].KerningRight = (byte)frmCharWidth.numKerningR.Value;
+            if (result == DialogResult.OK) {
+                ziFont.Characters[(int)numChar.Value].Width = (byte)frmCharWidth.numWidth.Value;
+                ziFont.Characters[(int)numChar.Value].KerningLeft = (byte)frmCharWidth.numKerningL.Value;
+                ziFont.Characters[(int)numChar.Value].KerningRight = (byte)frmCharWidth.numKerningR.Value;
 
-                    ziFont.Characters[(int)numChar.Value].SetBitmap(ziFont.Characters[(int)numChar.Value].ToBitmap());
-                    UpdateCharacter();
-                }
-
+                ziFont.Characters[(int)numChar.Value].SetBitmap(ziFont.Characters[(int)numChar.Value].ToBitmap());
+                UpdateCharacter();
+            }
 
         }
     }
