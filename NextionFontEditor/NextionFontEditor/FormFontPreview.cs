@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using ZiLib;
 using ZiLib.FileVersion.Common;
@@ -29,12 +28,10 @@ namespace NextionFontEditor {
             flowPanel.Controls.Clear();
             this.SuspendLayout();
 
-            for (int i=0; i<font.Characters.Count; i++) {
+            for (int i = 0; i < font.Characters.Count; i++) {
                 var b = font.Characters[i].ToBitmap();
-                if (b!=null && b.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined)
-                {
-                    var p = new PictureBox()
-                    {
+                if (b != null && b.PixelFormat != System.Drawing.Imaging.PixelFormat.Undefined) {
+                    var p = new PictureBox() {
                         Width = b.Width + 2,
                         Height = font.CharacterHeight + 2,
                         Image = b,
@@ -42,12 +39,9 @@ namespace NextionFontEditor {
                         BackColor = Color.White
                     };
                     flowPanel.Controls.Add(p);
-                }
-                else
-                {
+                } else {
                     var img = new Bitmap(font.CharacterHeight + 2, 2);
-                    var p = new PictureBox()
-                    {
+                    var p = new PictureBox() {
                         Width = 2,
                         Height = font.CharacterHeight + 2,
                         Image = img,
@@ -57,7 +51,7 @@ namespace NextionFontEditor {
 
                     flowPanel.Controls.Add(p);
                 }
-                if (i >= 1024) { break;  }
+                if (i >= 1024) { break; }
             }
             this.ResumeLayout();
         }
@@ -66,7 +60,7 @@ namespace NextionFontEditor {
             flowPanel.Controls.Clear();
             this.SuspendLayout();
 
-            var preview = new Bitmap(flowPanel.Width-15, flowPanel.Height-15);
+            var preview = new Bitmap(flowPanel.Width - 15, flowPanel.Height - 15);
             var x = 0;
             var y = 0;
 

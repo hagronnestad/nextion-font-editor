@@ -59,7 +59,7 @@
     <ManifestKeyFile>NextionFontEditor_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
@@ -68,6 +68,10 @@
     <ApplicationIcon>icons8-text-box.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
+  <PropertyGroup />
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -92,6 +96,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Extensions\FormExtensions.cs" />
+    <Compile Include="FormCharacterWidth.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCharacterWidth.Designer.cs">
+      <DependentUpon>FormCharacterWidth.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormFontEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -124,6 +134,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormCharacterWidth.resx">
+      <DependentUpon>FormCharacterWidth.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormFontEditor.resx">
       <DependentUpon>FormFontEditor.cs</DependentUpon>
     </EmbeddedResource>

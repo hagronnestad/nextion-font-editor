@@ -31,7 +31,6 @@
             this.btnSave = new System.Windows.Forms.ToolStripButton();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.charEditor1 = new NextionFontEditor.Controls.CharEditor();
             this.tsCharEditor = new System.Windows.Forms.ToolStrip();
             this.btnShowGrid = new System.Windows.Forms.ToolStripButton();
             this.cmbZoom = new System.Windows.Forms.ToolStripComboBox();
@@ -43,6 +42,7 @@
             this.btnClear = new System.Windows.Forms.ToolStripButton();
             this.btnDeleteCharacter = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.btnCharacterWidth = new System.Windows.Forms.ToolStripButton();
             this.btnMoveLeft = new System.Windows.Forms.ToolStripButton();
             this.btnMoveRight = new System.Windows.Forms.ToolStripButton();
             this.btnMoveUp = new System.Windows.Forms.ToolStripButton();
@@ -57,6 +57,7 @@
             this.txtEncoding = new System.Windows.Forms.TextBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.charEditor1 = new NextionFontEditor.Controls.CharEditor();
             ((System.ComponentModel.ISupportInitialize)(this.pPreview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numChar)).BeginInit();
             this.toolStrip1.SuspendLayout();
@@ -135,21 +136,6 @@
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.Panel1_Paint);
             this.panel1.Resize += new System.EventHandler(this.panel1_Resize);
             // 
-            // charEditor1
-            // 
-            this.charEditor1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.charEditor1.Character = null;
-            this.charEditor1.Location = new System.Drawing.Point(53, 36);
-            this.charEditor1.Margin = new System.Windows.Forms.Padding(20);
-            this.charEditor1.Name = "charEditor1";
-            this.charEditor1.ShowGrid = true;
-            this.charEditor1.Size = new System.Drawing.Size(160, 320);
-            this.charEditor1.TabIndex = 0;
-            this.charEditor1.Text = "charEditor1";
-            this.charEditor1.Zoom = 10;
-            this.charEditor1.Click += new System.EventHandler(this.CharEditor1_Click);
-            this.charEditor1.Paint += new System.Windows.Forms.PaintEventHandler(this.charEditor1_Paint);
-            //
             // tsCharEditor
             // 
             this.tsCharEditor.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -163,6 +149,7 @@
             this.btnClear,
             this.btnDeleteCharacter,
             this.toolStripSeparator1,
+            this.btnCharacterWidth,
             this.btnMoveLeft,
             this.btnMoveRight,
             this.btnMoveUp,
@@ -275,6 +262,16 @@
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // btnCharacterWidth
+            // 
+            this.btnCharacterWidth.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnCharacterWidth.Image = ((System.Drawing.Image)(resources.GetObject("btnCharacterWidth.Image")));
+            this.btnCharacterWidth.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnCharacterWidth.Name = "btnCharacterWidth";
+            this.btnCharacterWidth.Size = new System.Drawing.Size(23, 22);
+            this.btnCharacterWidth.Text = "Character Width";
+            this.btnCharacterWidth.Click += new System.EventHandler(this.btnCharacterWidth_Click);
             // 
             // btnMoveLeft
             // 
@@ -402,6 +399,21 @@
             this.progressBar1.TabIndex = 12;
             this.progressBar1.Visible = false;
             // 
+            // charEditor1
+            // 
+            this.charEditor1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.charEditor1.Character = null;
+            this.charEditor1.Location = new System.Drawing.Point(53, 36);
+            this.charEditor1.Margin = new System.Windows.Forms.Padding(20);
+            this.charEditor1.Name = "charEditor1";
+            this.charEditor1.ShowGrid = true;
+            this.charEditor1.Size = new System.Drawing.Size(160, 320);
+            this.charEditor1.TabIndex = 0;
+            this.charEditor1.Text = "charEditor1";
+            this.charEditor1.Zoom = 10;
+            this.charEditor1.Click += new System.EventHandler(this.CharEditor1_Click);
+            this.charEditor1.Paint += new System.Windows.Forms.PaintEventHandler(this.charEditor1_Paint);
+            // 
             // FormFontEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -472,5 +484,6 @@
         private System.Windows.Forms.ToolStripButton btnAddCharacters;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ToolStripButton btnCharacterWidth;
     }
 }
