@@ -125,6 +125,11 @@
             this.numKerningL.Name = "numKerningL";
             this.numKerningL.Size = new System.Drawing.Size(60, 20);
             this.numKerningL.TabIndex = 9;
+            this.numKerningL.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.numKerningL.ValueChanged += new System.EventHandler(this.numKerningL_ValueChanged);
             // 
             // numKerningR

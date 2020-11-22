@@ -29,27 +29,27 @@ namespace NextionFontEditor {
         }
 
         private void numWidth_ValueChanged(object sender, EventArgs e) {
+            numKerningL.Maximum = numWidth.Value - numKerningR.Value - 1;
             if (numKerningL.Value > (numWidth.Value - numKerningR.Value - 1))
                 numKerningL.Value = numWidth.Value - numKerningR.Value - 1;
-            numKerningL.Maximum = numWidth.Value- numKerningR.Value - 1;
 
+            numKerningR.Maximum = numWidth.Value - numKerningL.Value - 1;
             if (numKerningR.Value > (numWidth.Value - numKerningL.Value - 1))
                 numKerningR.Value = numWidth.Value - numKerningL.Value - 1;
-            numKerningR.Maximum = numWidth.Value - numKerningL.Value - 1;
         }
 
         private void numKerningL_ValueChanged(object sender, EventArgs e) {
-            if(numWidth.Value < (numKerningL.Value + numKerningR.Value + 1))
-                numWidth.Value = numKerningL.Value + numKerningR.Value + 1;
             numWidth.Minimum = numKerningL.Value + numKerningR.Value + 1;
             numKerningR.Maximum = numWidth.Value - numKerningL.Value - 1;
+            if (numWidth.Value < (numKerningL.Value + numKerningR.Value + 1))
+                numWidth.Value = numKerningL.Value + numKerningR.Value + 1;
         }
 
         private void numKerningR_ValueChanged(object sender, EventArgs e) {
-            if (numWidth.Value < (numKerningL.Value + numKerningR.Value + 1))
-                numWidth.Value = numKerningL.Value + numKerningR.Value + 1;
             numWidth.Minimum = numKerningL.Value + numKerningR.Value + 1;
             numKerningL.Maximum = numWidth.Value - numKerningR.Value - 1;
+            if (numWidth.Value < (numKerningL.Value + numKerningR.Value + 1))
+                numWidth.Value = numKerningL.Value + numKerningR.Value + 1;
         }
 
         private void lblKerningL_Click(object sender, EventArgs e) {
