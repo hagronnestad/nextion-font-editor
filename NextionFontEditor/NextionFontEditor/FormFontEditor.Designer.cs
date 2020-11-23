@@ -31,6 +31,7 @@
             this.btnSave = new System.Windows.Forms.ToolStripButton();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.charEditor1 = new NextionFontEditor.Controls.CharEditor();
             this.tsCharEditor = new System.Windows.Forms.ToolStrip();
             this.btnShowGrid = new System.Windows.Forms.ToolStripButton();
             this.cmbZoom = new System.Windows.Forms.ToolStripComboBox();
@@ -57,7 +58,6 @@
             this.txtEncoding = new System.Windows.Forms.TextBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.charEditor1 = new NextionFontEditor.Controls.CharEditor();
             ((System.ComponentModel.ISupportInitialize)(this.pPreview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numChar)).BeginInit();
             this.toolStrip1.SuspendLayout();
@@ -135,6 +135,21 @@
             this.panel1.TabIndex = 4;
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.Panel1_Paint);
             this.panel1.Resize += new System.EventHandler(this.panel1_Resize);
+            // 
+            // charEditor1
+            // 
+            this.charEditor1.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.charEditor1.Character = null;
+            this.charEditor1.Location = new System.Drawing.Point(53, 36);
+            this.charEditor1.Margin = new System.Windows.Forms.Padding(20);
+            this.charEditor1.Name = "charEditor1";
+            this.charEditor1.ShowGrid = true;
+            this.charEditor1.Size = new System.Drawing.Size(160, 320);
+            this.charEditor1.TabIndex = 0;
+            this.charEditor1.Text = "charEditor1";
+            this.charEditor1.Zoom = 10;
+            this.charEditor1.Click += new System.EventHandler(this.CharEditor1_Click);
+            this.charEditor1.Paint += new System.Windows.Forms.PaintEventHandler(this.charEditor1_Paint);
             // 
             // tsCharEditor
             // 
@@ -398,21 +413,6 @@
             this.progressBar1.Step = 1;
             this.progressBar1.TabIndex = 12;
             this.progressBar1.Visible = false;
-            // 
-            // charEditor1
-            // 
-            this.charEditor1.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.charEditor1.Character = null;
-            this.charEditor1.Location = new System.Drawing.Point(53, 36);
-            this.charEditor1.Margin = new System.Windows.Forms.Padding(20);
-            this.charEditor1.Name = "charEditor1";
-            this.charEditor1.ShowGrid = true;
-            this.charEditor1.Size = new System.Drawing.Size(160, 320);
-            this.charEditor1.TabIndex = 0;
-            this.charEditor1.Text = "charEditor1";
-            this.charEditor1.Zoom = 10;
-            this.charEditor1.Click += new System.EventHandler(this.CharEditor1_Click);
-            this.charEditor1.Paint += new System.Windows.Forms.PaintEventHandler(this.charEditor1_Paint);
             // 
             // FormFontEditor
             // 

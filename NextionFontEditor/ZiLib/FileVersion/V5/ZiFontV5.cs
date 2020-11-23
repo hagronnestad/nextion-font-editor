@@ -185,7 +185,8 @@ namespace ZiLib.FileVersion.V5 {
             ziFont.bytes = bytes;
 
             ziFont._header = bytes.Take(HEADER_LENGTH).ToArray();
-            var fileNameLength = ziFont._header[0x11];
+            var fileNameLength = ziFont._header[0x20];
+            var descriptionLength = ziFont._header[0x11];
             ziFont.Name = Encoding.ASCII.GetString(bytes.Skip(HEADER_LENGTH).Take(fileNameLength).ToArray());
             ziFont.FileSize = bytes.Length;
 
@@ -193,18 +194,18 @@ namespace ZiLib.FileVersion.V5 {
             ziFont.CharacterHeight = ziFont._header[0x7];
 
             ziFont.VariableDataLength = BitConverter.ToUInt32(ziFont._header.Skip(0x14).Take(4).ToArray(), 0);
-            ziFont.CharDataLength = ziFont.VariableDataLength - fileNameLength;
+            ziFont.CharDataLength = ziFont.VariableDataLength - descriptionLength;
 
             var dataStartAddress = BitConverter.ToUInt32(ziFont._header.Skip(0x18).Take(4).ToArray(), 0);
 
-            ziFont._charData = bytes.Skip((int) dataStartAddress + fileNameLength).ToArray();
+            ziFont._charData = bytes.Skip((int) dataStartAddress + descriptionLength).ToArray();
 
             var codePageId = ziFont._header[0x4];
             var characterCount = BitConverter.ToUInt32(ziFont._header.Skip(0x0C).Take(4).ToArray(), 0);
             ziFont.Characters = new List<IZiCharacter>();
             ziFont.CodePage = new CodePage((CodePageIdentifier) codePageId);
 
-            var charMapData = bytes.Skip(HEADER_LENGTH + ziFont.FileNameLength).Take(10 * (int)characterCount).ToArray();
+            var charMapData = bytes.Skip(HEADER_LENGTH + descriptionLength).Take(10 * (int)characterCount).ToArray();
             var align8byte = bytes.Skip(33).First();
 
             for (int i = 0; i < charMapData.Length; i += 10) {
@@ -215,7 +216,7 @@ namespace ZiLib.FileVersion.V5 {
                 var dataLength = BitConverter.ToUInt16(charMapData, i + 8);
 
                 var data = new byte[dataLength];
-                Array.Copy(bytes, HEADER_LENGTH + ziFont.FileNameLength + dataAddressOffset, data, 0, dataLength);
+                Array.Copy(bytes, HEADER_LENGTH + descriptionLength + dataAddressOffset, data, 0, dataLength);
 
                 var ch = new ZiCharacterV5
                 (

@@ -320,7 +320,12 @@ namespace NextionFontEditor {
 
         private void btnCharacterWidth_Click(object sender, EventArgs e) {
 
-            frmCharWidth.numWidth.Value = 1;
+            frmCharWidth.numKerningL.Minimum = 0;
+            frmCharWidth.numKerningL.Maximum = 254;
+
+            frmCharWidth.numKerningR.Minimum = 0;
+            frmCharWidth.numKerningR.Maximum = 254;
+
             frmCharWidth.numWidth.Minimum = 1;
             frmCharWidth.numWidth.Maximum = 255;
 
@@ -333,27 +338,25 @@ namespace NextionFontEditor {
                 frmCharWidth.numWidth.Value = Width;
             }
 
-            frmCharWidth.numKerningL.Minimum = 0;
-            frmCharWidth.numKerningL.Value = 0;
-            frmCharWidth.numKerningL.Maximum = frmCharWidth.numWidth.Value-1;
+            frmCharWidth.numKerningL.Value = ziFont.Characters[(int)numChar.Value].KerningLeft;
+            frmCharWidth.numKerningL.Maximum = frmCharWidth.numWidth.Value - ziFont.Characters[(int)numChar.Value].KerningRight - 1;
 
             int KernL = ziFont.Characters[(int)numChar.Value].KerningLeft;
             if (KernL > frmCharWidth.numKerningL.Maximum) {
                 frmCharWidth.numKerningL.Value = frmCharWidth.numKerningL.Maximum;
-            } else if (KernL < frmCharWidth.numWidth.Minimum) {
+            } else if (KernL < frmCharWidth.numKerningL.Minimum) {
                 frmCharWidth.numKerningL.Value = frmCharWidth.numKerningL.Minimum;
             } else {
                 frmCharWidth.numKerningL.Value = KernL;
             }
 
-            frmCharWidth.numKerningR.Minimum = 0;
-            frmCharWidth.numKerningR.Value = 0;
-            frmCharWidth.numKerningR.Maximum = frmCharWidth.numWidth.Value - 1;
+            frmCharWidth.numKerningR.Value = ziFont.Characters[(int)numChar.Value].KerningRight;
+            frmCharWidth.numKerningR.Maximum = frmCharWidth.numWidth.Value - ziFont.Characters[(int)numChar.Value].KerningLeft - 1;
 
             int KernR = ziFont.Characters[(int)numChar.Value].KerningRight;
             if (KernR > frmCharWidth.numKerningR.Maximum) {
                 frmCharWidth.numKerningR.Value = frmCharWidth.numKerningR.Maximum;
-            } else if (KernR < frmCharWidth.numWidth.Minimum) {
+            } else if (KernR < frmCharWidth.numKerningR.Minimum) {
                 frmCharWidth.numKerningR.Value = frmCharWidth.numKerningR.Minimum;
             } else {
                 frmCharWidth.numKerningR.Value = KernR;
